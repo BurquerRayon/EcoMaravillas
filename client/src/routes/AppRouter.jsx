@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from '../pages/Home';
+import Home from '../pages/Home/Home';
+import HomeClient from '../pages/Home/HomeClient';
+import HomeEmployee from '../pages/Home/HomeEmployee';
 import Login from '../pages/Login';
 import Reservas from '../pages/Reservas';
 import Reportes from '../pages/Reportes';
@@ -29,6 +31,13 @@ const AppRouter = () => {
         <Route path="/admin/usuarios" element={<GestionUsuarios />} />
         <Route path="/admin/configuracion" element={<Configuracion />} />
         
+
+        {/* Rutas de Paginas Home */}
+        <Route path="/home/client" element={<HomeClient />} />
+        <Route path="/home/employee" element={<HomeEmployee />} />
+
+
+
         {/* Ruta para errores 404 */}
         <Route path="*" element={<NotFound />} />
       </Routes>
