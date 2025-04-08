@@ -13,6 +13,8 @@ import Configuracion from '../pages/Configuracion';
 import Registro from '../pages/Registro';
 import NotFound from '../pages/NotFound';
 import Navbar from '../components/Navbar';
+import Mapa from '../pages/Map';
+import Galeria from '../pages/Gallery';
 
 const AppRouter = () => {
   return (
@@ -36,7 +38,8 @@ const AppRouter = () => {
         <Route path="/home/client" element={<HomeClient />} />
         <Route path="/home/employee" element={<HomeEmployee />} />
 
-
+        <Route path="/map" element={<Mapa />} />
+        <Route path="/gallery" element={<Galeria />} />
 
         {/* Ruta para errores 404 */}
         <Route path="*" element={<NotFound />} />
