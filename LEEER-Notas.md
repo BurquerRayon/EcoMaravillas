@@ -8,7 +8,7 @@ Ok tenemos lo siguiente:
            es Una barra de navegacion dinamica (aun sin probar ya que no esta recibiendo el valor que nesecita para cambiar)
 
     Paginas:
-
+    
         Inicio/Home
             2 botones: Galeria y Mapa
             un carrosel con imagenes
@@ -23,6 +23,40 @@ Ok tenemos lo siguiente:
 
         No iniciado/HomeGuest
             Esta pagina hereda de Home osea actua como home pero no es el home como tal (espara los usuarios que no han iniciado sesion)
+
+        Configuraciones
+            Pagina destinada a los Usuarios administradores para generar cambios y modificaciones a la plataforma.
+
+        dashboard
+            Pagina principal y el panel de control de los usuarios administradores
+
+        Gallery
+            pagina destinada a ser una galeria de fotos con informacion/Descripcion de las diferentes especies de flora y fauna dentro de la cueva
+
+        Gestion Reservas
+            Pagina destinada a la gestion de la reservas creadas por los Usuarios clientes
+
+        Gestion Usuario
+            Pagina destinada a los administradores para la gestion y administracion los perfiles y accesos de usuarios.
+
+        Login
+            Inicio de sesion
+
+        Map
+            Pagina destinada para ser el mapa geografico, que funciona de manera interactiva para con los clientes
+
+        NotFound
+            pagina de error (funcion solo para nosotros como programadores)
+
+
+        Registro 
+            Pagina destinada al registro de nuevos usuarios
+
+        Reportes
+            Pagina destinada A la generacion de reportes por parte de los usuarios Empleados
+        
+        Reservas
+            Pagina destinada a la creacion de reservas por parte de los usuarios clientes
 
     SRC
 
