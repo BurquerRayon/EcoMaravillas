@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import '../styles/Carrusel.css'; // Estilos en carpeta styles
+import '../styles/Carrusel.css'; // Asegúrate de que este CSS exista
 
-const importAll = (r) => r.keys().map(r);
-const images = importAll(require.context('../assets/img', false, /\.(png|jpe?g|svg)$/));
+const images = [
+  '/assets/img/i1.jpeg',
+  '/assets/img/i2.jpeg',
+  '/assets/img/i3.jpeg',
+  // Agrega más rutas según tus imágenes
+];
 
 const Carrusel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
