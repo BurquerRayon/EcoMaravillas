@@ -24,6 +24,10 @@ Ok tenemos lo siguiente:
         No iniciado/HomeGuest
             Esta pagina hereda de Home osea actua como home pero no es el home como tal (espara los usuarios que no han iniciado sesion)
 
+        About
+            Esta pagina muestra la mision, vision y valor asi como otros datos de la pagina y de las cuevas
+
+
         Configuraciones
             Pagina destinada a los Usuarios administradores para generar cambios y modificaciones a la plataforma.
 

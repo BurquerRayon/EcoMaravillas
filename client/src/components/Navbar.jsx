@@ -4,7 +4,6 @@ import '../styles/Navbar.css'; // 👈 importa el CSS externo
 
 
 const Navbar = () => {
-
   const user = JSON.parse(localStorage.getItem('user'));
 
   return (
@@ -36,7 +35,9 @@ const Navbar = () => {
           <>
             <li><Link to="/gallery">Galería</Link></li>
             <li><Link to="/map">Mapa</Link></li>
+            <li><Link to="/about">Sobre Nosotros</Link></li>
             <li><Link to="/login">Login</Link></li>
+            <li><Link to="/registro">Registro</Link></li>
           </>
         )}
       </ul>

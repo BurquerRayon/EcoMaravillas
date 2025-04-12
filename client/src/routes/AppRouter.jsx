@@ -4,17 +4,18 @@ import Home from '../pages/Home/Home';
 import HomeClient from '../pages/Home/HomeClient';
 import HomeEmployee from '../pages/Home/HomeEmployee';
 import Login from '../pages/Login';
-import Reservas from '../pages/Reservas';
-import Reportes from '../pages/Reportes';
+import Reservas from '../pages/Reservations';
+import Reportes from '../pages/Reports';
 import Dashboard from '../pages/Dashboard';
 import GestionReservas from '../pages/GestionReservas';
 import GestionUsuarios from '../pages/GestionUsuarios';
 import Configuracion from '../pages/Configuracion';
-import Registro from '../pages/Registro';
+import Registro from '../pages/Register';
 import NotFound from '../pages/NotFound';
 import Navbar from '../components/Navbar';
 import Mapa from '../pages/Map';
 import Galeria from '../pages/Gallery';
+import Nosotros from '../pages/About';
 
 const AppRouter = () => {
   return (
@@ -38,6 +39,11 @@ const AppRouter = () => {
         <Route path="/home/client" element={<HomeClient />} />
         <Route path="/home/employee" element={<HomeEmployee />} />
 
+
+        {/* Rutas de Paginas de Reportes */}
+        <Route path="/about" element={<Nosotros/>} />
+
+        {/* Rutas de Paginas de Reservas */}
         <Route path="/map" element={<Mapa />} />
         <Route path="/gallery" element={<Galeria />} />
 

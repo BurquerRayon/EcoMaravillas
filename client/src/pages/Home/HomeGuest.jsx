@@ -20,33 +20,12 @@ const HomeGuest = () => {
               </div>
       </section>
 
-      <section className="about">
-        <h2>¿Qué es EcoMaravillas?</h2>
-        <p>Una plataforma que conecta a los amantes de la naturaleza con experiencias inolvidables.</p>
-      </section>
-
-      <section className="about">
-        <h2>Mision</h2>
-        <p>Una plataforma que conecta a los amantes de la naturaleza con experiencias inolvidables.</p>
-      </section>
-
-      <section className="about">
-        <h2>Visision</h2>
-        <p>Una plataforma que conecta a los amantes de la naturaleza con experiencias inolvidables.</p>
-      </section>
-
-      <section className="about">
-        <h2>Valores</h2>
-        <p>Una plataforma que conecta a los amantes de la naturaleza con experiencias inolvidables.</p>
-      </section>
-
       <section className="hero2">
         <h1>Exploremos una Maravilla Natural</h1>
         <h3> </h3>
           <div>
             {/* Carrusel visual */}
               <Carrusel />
-            {/* Aquí puedes seguir con más contenido */}
           </div>
       </section>
 
