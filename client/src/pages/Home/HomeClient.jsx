@@ -3,7 +3,6 @@ import '../../styles/Home.css';
 import '../../styles/HomeClient.css';
 import '../../styles/HomeGuest.css';
 
-
 const HomeClient = () => (
   
   <div className="home-container">
@@ -23,7 +22,6 @@ const HomeClient = () => (
         </button>
     </section>
 
-
     <ul>
       <li>🔎 Explorar reservas</li>
       <li>📅 Ver tus reservas</li>
@@ -33,3 +31,6 @@ const HomeClient = () => (
 );
 
 export default HomeClient;
+
+
+

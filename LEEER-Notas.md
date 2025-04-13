@@ -1,5 +1,9 @@
 Ok tenemos lo siguiente:
 
+        eco-maravillas/     # Proyecto
+        ├── client/         # React frontend
+        └── server/         # Node.js backend
+
     Funcionalidades:
 
     Solo el cambio de pagina a otra con botones
@@ -68,3 +72,19 @@ Ok tenemos lo siguiente:
 
         AppRouter
             Es el gestor de las rutas de cada una de las paginas dentro del sistema
+
+    Styles
+
+        la carpeta donde se alojan los estilos .css de cada pagina
+
+    
+
+
+
+
+
+
+
+Errores/Corregir
+
+La barra de navegacion no quiere cambiar de forma dinamica (no muestra el boton de cerrar sesion no los botones correspondientes de cada tipo de cuenta cuando sube si no que lo hace cuando se recarga la app)

@@ -18,14 +18,14 @@ const Navbar = () => {
             <li><Link to="/reservas">Mis Reservas</Link></li>
             <li><Link to="/gallery">Galería</Link></li>
             <li><Link to="/map">Mapa</Link></li>
+            <li><Link to="/about">Sobre Nosotros</Link></li>
             <li><button onClick={() => { localStorage.removeItem('user'); window.location.href = '/'; }}>Cerrar sesión</button></li>
           </>
         )}
 
         {user && user.role === 'empleado' && (
           <>
-            <li><Link to="/Reportes">Reportes</Link></li>
-            <li><Link to="/reservas">Gestión de Reservas</Link></li>
+            <li><Link to="/admin/dashboard">Panel De Control</Link></li>
             <li><button onClick={() => { localStorage.removeItem('user'); window.location.href = '/'; }}>Cerrar sesión</button></li>
           </>
         )}

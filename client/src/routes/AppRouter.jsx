@@ -5,11 +5,11 @@ import HomeClient from '../pages/Home/HomeClient';
 import HomeEmployee from '../pages/Home/HomeEmployee';
 import Login from '../pages/Login';
 import Reservas from '../pages/Reservations';
-import Reportes from '../pages/Reports';
-import Dashboard from '../pages/Dashboard';
-import GestionReservas from '../pages/GestionReservas';
-import GestionUsuarios from '../pages/GestionUsuarios';
-import Configuracion from '../pages/Configuracion';
+import Reportes from '../pages/Empleados/Reports';
+import Dashboard from '../pages/Empleados/Dashboard';
+import GestionReservas from '../pages/Empleados/GestionReservas';
+import GestionUsuarios from '../pages/Empleados/GestionUsuarios';
+import Config from '../pages/Empleados/Config';
 import Registro from '../pages/Register';
 import NotFound from '../pages/NotFound';
 import Navbar from '../components/Navbar';
@@ -32,7 +32,7 @@ const AppRouter = () => {
         <Route path="/admin/dashboard" element={<Dashboard />} />
         <Route path="/admin/reservas" element={<GestionReservas />} />
         <Route path="/admin/usuarios" element={<GestionUsuarios />} />
-        <Route path="/admin/configuracion" element={<Configuracion />} />
+        <Route path="/admin/config" element={<Config />} />
         
 
         {/* Rutas de Paginas Home */}
