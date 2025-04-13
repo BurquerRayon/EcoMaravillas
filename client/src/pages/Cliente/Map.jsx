@@ -1,5 +1,5 @@
 import React from 'react';
-import '../styles/Map.css'; // Estilos personalizados opcionalmente
+import '../../styles/Map.css'; // Estilos personalizados opcionalmente
 
 const Mapa = () => {
   return (

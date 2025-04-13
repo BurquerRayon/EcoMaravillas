@@ -4,17 +4,17 @@ import Home from '../pages/Home/Home';
 import HomeClient from '../pages/Home/HomeClient';
 import HomeEmployee from '../pages/Home/HomeEmployee';
 import Login from '../pages/Login';
-import Reservas from '../pages/Reservations';
+import Reservas from '../pages/Cliente/Reservations';
 import Reportes from '../pages/Empleados/Reports';
 import Dashboard from '../pages/Empleados/Dashboard';
 import GestionReservas from '../pages/Empleados/GestionReservas';
 import GestionUsuarios from '../pages/Empleados/GestionUsuarios';
 import Config from '../pages/Empleados/Config';
-import Registro from '../pages/Register';
+import Registro from '../pages/Cliente/Register';
 import NotFound from '../pages/NotFound';
 import Navbar from '../components/Navbar';
-import Mapa from '../pages/Map';
-import Galeria from '../pages/Gallery';
+import Mapa from '../pages/Cliente/Map';
+import Galeria from '../pages/Cliente/Gallery';
 import Nosotros from '../pages/About';
 
 const AppRouter = () => {

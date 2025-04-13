@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import '../styles/Carrusel.css'; // Asegúrate de que este CSS exista
 
 const images = [
-  '/assets/img/i1.jpeg',
-  '/assets/img/i2.jpeg',
-  '/assets/img/i3.jpeg',
+  '/assets/img/e1.jpeg',
+  '/assets/img/e2.jpeg',
+  '/assets/img/e3.jpeg',
   // Agrega más rutas según tus imágenes
 ];
 

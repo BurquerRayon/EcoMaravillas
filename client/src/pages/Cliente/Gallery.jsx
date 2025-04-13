@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Carrusel from '../components/Carousel';
-import '../styles/Gallery.css';
+import Carrusel from '../../components/Carousel';
+import '../../styles/Gallery.css';
 
 const Galeria = () => {
   const [filtroEspecie, setFiltroEspecie] = useState('');
