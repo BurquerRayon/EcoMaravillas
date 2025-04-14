@@ -20,14 +20,14 @@ const Dashboard = () => {
           <FaClipboardList className="icon" />
           <h3>Gestión de Reservas</h3>
           <p>Visualiza y modifica las reservas realizadas.</p>
-          <Link to="/admin/reservas" className="btn-dashboard">Ir</Link>
+          <Link to="/admin/gestor-reservas" className="btn-dashboard">Ir</Link>
         </div>
 
         <div className="dashboard-card">
           <FaChartBar className="icon" />
           <h3>Reportes</h3>
           <p>Revisa reportes de ocupación, ventas y más.</p>
-          <Link to="/reportes" className="btn-dashboard">Ir</Link>
+          <Link to="/admin/reportes" className="btn-dashboard">Ir</Link>
         </div>
 
         <div className="dashboard-card">

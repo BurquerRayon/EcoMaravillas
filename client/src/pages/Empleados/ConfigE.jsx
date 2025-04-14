@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../styles/Config.css';
+import '../../styles/ConfigE.css';
 
 const Config = () => {
   return (

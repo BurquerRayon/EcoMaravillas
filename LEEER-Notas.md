@@ -71,7 +71,51 @@ Ok tenemos lo siguiente:
     Es donde se guarda el contenido del lado servidor (componentes, Stlyes css, etc.)
 
         AppRouter
-            Es el gestor de las rutas de cada una de las paginas dentro del sistema
+            Es el gestor de las rutas de cada una de las paginas dentro del sistema estas son las rutas
+
+        {/* Rutas de Paginas Home */}
+        <Route path="/" element={<Home />} />
+        <Route path="/home/client" element={<HomeClient />} />
+        <Route path="/home/employee" element={<HomeEmployee />} />
+
+        {/* Rutas de Pagina login */}
+        <Route path="/login" element={<Login />} />
+
+        {/* Rutas de Pagina registro */}
+        <Route path="/registro" element={<Registro />} />
+
+        {/* Rutas de Pagina reservas del cliente */}
+        <Route path="/reservas" element={<Reservas />} />
+
+        {/* Rutas de Pagina reportes del empleado - admins */}
+        <Route path="/reportes" element={<Reportes />} />
+        
+        {/* Rutas del dashboard del empleado - adimns */}
+        <Route path="/admin/dashboard" element={<Dashboard />} />
+
+        {/* Rutas de Pagina gestor de usuarios */}
+        <Route path="/admin/usuarios" element={<GestionUsuarios />} />
+
+        {/* Rutas de Pagina configuracion */}
+        <Route path="/admin/config" element={<Config />} />
+        
+        {/* Rutas de Pagina sobre nosotros */}
+        <Route path="/about" element={<Nosotros/>} />
+        {/* Rutas de Pagina de reservas del cliente */}
+        <Route path="/mis-reservas" element={<GestionReservas />} />
+
+        {/* Rutas de Paginas de Gestion de Reservas para los admins - empleados */}
+        <Route path="/gestor-reservas" element={<GestorReservas />} />
+
+        {/* Rutas de ls pagina del mapa */}
+        <Route path="/map" element={<Mapa />} />
+        
+        {/* Rutas de ls pagina de la galeria */}
+        <Route path="/gallery" element={<Galeria />} />
+
+        {/* Ruta para errores 404 */}
+        <Route path="*" element={<NotFound />} />
+
 
     Styles
 
@@ -87,4 +131,10 @@ Ok tenemos lo siguiente:
 
 Errores/Corregir
 
-La barra de navegacion no quiere cambiar de forma dinamica (no muestra el boton de cerrar sesion no los botones correspondientes de cada tipo de cuenta cuando sube si no que lo hace cuando se recarga la app)
+    1. La barra de navegacion no quiere cambiar de forma dinamica (no muestra el boton de cerrar sesion no los botones correspondientes de cada tipo de cuenta cuando sube si no que lo hace cuando se recarga la app)
+
+
+
+
+Componentes usados
+    

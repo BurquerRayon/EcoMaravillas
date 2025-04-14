@@ -15,10 +15,11 @@ const Navbar = () => {
         {/* Links comunes para todos los usuarios logueados */}
         {user && user.role === 'cliente' && (
           <>
-            <li><Link to="/reservas">Mis Reservas</Link></li>
+            <li><Link to="/mis-reservas">Mis Reservas</Link></li>
             <li><Link to="/gallery">Galería</Link></li>
             <li><Link to="/map">Mapa</Link></li>
             <li><Link to="/about">Sobre Nosotros</Link></li>
+            <li><Link to="/perfil">Perfil</Link></li>
             <li><button onClick={() => { localStorage.removeItem('user'); window.location.href = '/'; }}>Cerrar sesión</button></li>
           </>
         )}

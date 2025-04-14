@@ -1,0 +1,79 @@
+.crear-usuario {
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+    border-radius: 12px;
+  }
+  
+  .crear-usuario h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #0a558c;
+  }
+  
+  form .campo {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  form label {
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  
+  form input,
+  form select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+  }
+  
+  .acciones-formulario {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  
+  .acciones-formulario button {
+    flex: 1;
+    padding: 12px;
+    font-size: 15px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .acciones-formulario button[type='submit'] {
+    background-color: #0a558c;
+    color: white;
+  }
+  
+  .acciones-formulario button[type='submit']:hover {
+    background-color: #083b63;
+  }
+  
+  .acciones-formulario button[type='button'] {
+    background-color: #ccc;
+  }
+  
+  .acciones-formulario button[type='button']:hover {
+    background-color: #aaa;
+  }
+  
+  .mensaje-exito {
+    background-color: #e6f9ed;
+    color: #228b49;
+    border: 1px solid #a4d4ae;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-align: center;
+  }
+  

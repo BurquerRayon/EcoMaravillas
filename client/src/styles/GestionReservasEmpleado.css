@@ -1,0 +1,59 @@
+.gestor-reservas {
+    padding: 40px;
+    background: #f9f9f9;
+    min-height: 100vh;
+  }
+  
+  .gestor-reservas h1 {
+    margin-bottom: 20px;
+    color: #0a558c;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  }
+  
+  thead {
+    background-color: #0a558c;
+    color: white;
+  }
+  
+  th, td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .estado {
+    padding: 6px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    text-transform: capitalize;
+  }
+  
+  .estado.pendiente {
+    background: #ffeb3b;
+    color: #333;
+  }
+  
+  .estado.confirmada {
+    background: #4caf50;
+    color: white;
+  }
+  
+  .estado.cancelada {
+    background: #f44336;
+    color: white;
+  }
+  
+  select {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  

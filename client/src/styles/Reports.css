@@ -1,0 +1,88 @@
+.visualizar-reportes {
+  padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.visualizar-reportes h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.tabla-reportes table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+}
+
+.tabla-reportes th,
+.tabla-reportes td {
+  border: 1px solid #ddd;
+  padding: 0.8rem;
+  text-align: center;
+}
+
+.tabla-reportes th {
+  background-color: #f5f5f5;
+}
+
+.acciones-reportes {
+  display: flex;
+  justify-content: center;
+}
+
+.acciones-reportes button {
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.acciones-reportes button:hover {
+  background-color: #45a049;
+}
+
+/* Botón primario */
+.btn-primary {
+background-color: #0a558c;
+color: white;
+padding: 10px 20px;
+border-radius: 5px;
+font-size: 1rem; 
+font-weight: bold; 
+border: none; 
+cursor: pointer; 
+transition: background-color 0.3s ease; 
+}
+
+/* Efecto al pasar el mouse por encima */
+.btn-primary:hover {
+background-color: #063971; 
+}
+
+/* Botón secundario */
+.btn-secondary {
+background-color: #f3f4f6;
+color: #333; 
+padding: 8px 16px; 
+border-radius: 5px; 
+font-size: 1rem;
+font-weight: bold;
+border: 2px solid #ccc; 
+cursor: pointer;
+transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Efecto al pasar el mouse por encima */
+.btn-secondary:hover {
+background-color: #e2e8f0; 
+border-color: #0a558c; 
+}
+
+.mb-espaciado {
+  margin-bottom: 14px;
+}
