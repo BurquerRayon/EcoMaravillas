@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // para redireccionar
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useAuth } from '../context/AuthContext'; // Importar el hook de autenticación
 import '../styles/Login.css';
 
 const Login = () => {
@@ -10,39 +12,44 @@ const Login = () => {
 
   const [loginMessage, setLoginMessage] = useState('');
   const navigate = useNavigate();
-
-  // Lista simulada de usuarios válidos
-  const users = [
-    { username: 'c1', password: '1234', role: 'cliente' },
-    { username: 'e1', password: '5678', role: 'empleado' },
-  ];
+  const { login } = useAuth(); // Obtener la función login del contexto
 
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData({ ...formData, [id]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const userFound = users.find(
-      user => user.username === formData.username && user.password === formData.password
-    );
 
     if (!formData.username || !formData.password) {
       setLoginMessage('Por favor, completa los campos con los datos correspondientes.');
       return;
     }
 
-    if (userFound) {
-      // Guardar en localStorage y redirigir a /
-      localStorage.setItem('user', JSON.stringify(userFound));
+    try {
+      const res = await axios.post('http://localhost:3001/api/auth/login', {
+        correo: formData.username,
+        contrasena: formData.password
+      });
+
+      // Cambio principal: Usar la función login del contexto en lugar de localStorage directamente
+      login(res.data.user); // Esto actualizará el estado global automáticamente
       setLoginMessage('¡Inicio de sesión exitoso! Redirigiendo...');
-      setTimeout(() => {
-        navigate('/'); // Redirige al componente Home
-      }, 1000);
-    } else {
-      setLoginMessage('Credenciales incorrectas. Intenta nuevamente.');
+
+      // Redirección basada en el rol
+      const rol = res.data.user.rol;
+
+      if (rol === 'cliente') {
+        navigate('/home/client');
+      } else if (rol === 'empleado') {
+        navigate('/home/employee');
+      } else {
+        navigate('/');
+      }
+
+    } catch (err) {
+      setLoginMessage(err.response?.data?.message || 'Error en la autenticación.');
     }
   };
 
@@ -58,7 +65,7 @@ const Login = () => {
           <h2>Iniciar Sesión</h2>
           <form id="login-form" onSubmit={handleSubmit}>
             <div className="form-group">
-              <label htmlFor="username">Usuario</label>
+              <label htmlFor="username">Correo</label>
               <input
                 type="text"
                 id="username"

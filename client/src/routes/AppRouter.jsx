@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from '../context/AuthContext'; // Importa el AuthProvider
 import Home from '../pages/Home/Home';
 import HomeClient from '../pages/Home/HomeClient';
 import HomeEmployee from '../pages/Home/HomeEmployee';
@@ -19,10 +20,11 @@ import Nosotros from '../pages/About';
 
 const AppRouter = () => {
   return (
-    <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
+    <AuthProvider> {/* Envuelve todo con AuthProvider */}
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/registro" element={<Registro />} />
         <Route path="/reservas" element={<Reservas />} />
@@ -49,8 +51,9 @@ const AppRouter = () => {
 
         {/* Ruta para errores 404 */}
         <Route path="*" element={<NotFound />} />
-      </Routes>
-    </Router>
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 };
 

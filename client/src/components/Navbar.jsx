@@ -1,10 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import '../styles/Navbar.css'; // 👈 importa el CSS externo
-
+import { Link, useNavigate } from 'react-router-dom';
+import '../styles/Navbar.css';
+import { useAuth } from '../context/AuthContext'; // Añadir
 
 const Navbar = () => {
-  const user = JSON.parse(localStorage.getItem('user'));
+  const { user, logout } = useAuth(); // Cambiar esto
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
     <nav className="navbar">
@@ -12,25 +18,23 @@ const Navbar = () => {
       <ul className="nav-links">
         <li><Link to="/">Inicio</Link></li>
 
-        {/* Links comunes para todos los usuarios logueados */}
-        {user && user.role === 'cliente' && (
+        {user?.rol === 'cliente' && (
           <>
             <li><Link to="/reservas">Mis Reservas</Link></li>
             <li><Link to="/gallery">Galería</Link></li>
             <li><Link to="/map">Mapa</Link></li>
             <li><Link to="/about">Sobre Nosotros</Link></li>
-            <li><button onClick={() => { localStorage.removeItem('user'); window.location.href = '/'; }}>Cerrar sesión</button></li>
+            <li><button onClick={handleLogout}>Cerrar sesión</button></li>
           </>
         )}
 
-        {user && user.role === 'empleado' && (
+        {user?.rol === 'empleado' && (
           <>
             <li><Link to="/admin/dashboard">Panel De Control</Link></li>
-            <li><button onClick={() => { localStorage.removeItem('user'); window.location.href = '/'; }}>Cerrar sesión</button></li>
+            <li><button onClick={handleLogout}>Cerrar sesión</button></li>
           </>
         )}
 
-        {/* Usuario sin iniciar sesión */}
         {!user && (
           <>
             <li><Link to="/gallery">Galería</Link></li>

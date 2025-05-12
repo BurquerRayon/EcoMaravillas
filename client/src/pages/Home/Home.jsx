@@ -2,24 +2,23 @@ import React from 'react';
 import HomeGuest from './HomeGuest';
 import HomeClient from './HomeClient';
 import HomeEmployee from './HomeEmployee';
+import { useAuth } from '../../context/AuthContext'; // Añadir
 
 const Home = () => {
-  // Suponiendo que tienes un contexto o estado para auth
-  const user = JSON.parse(localStorage.getItem('user'));
+  const { user } = useAuth(); // Cambiar esto
 
   if (!user) {
     return <HomeGuest />;
   }
 
-  if (user.role === 'cliente') {
+  if (user.rol === 'cliente') { // Corregir de 'role' a 'rol'
     return <HomeClient />;
   }
 
-  if (user.role === 'empleado') {
+  if (user.rol === 'empleado') {
     return <HomeEmployee />;
   }
 
-  // Fallback por si el rol no está bien definido
   return <HomeGuest />;
 };
 
