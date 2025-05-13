@@ -13,4 +13,24 @@
   .reserve-button:hover {
     background-color: #1b5e20;
   }
-  
+
+.welcome-message {
+  background-color: #e8f5e9;
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+  text-align: center;
+  border-left: 4px solid #2e7d32;
+}
+
+.welcome-message p {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #1b5e20;
+  font-weight: 500;
+}
+
+.home-container h1 {
+  color: #2e7d32;
+  margin-bottom: 0.5rem;
+}

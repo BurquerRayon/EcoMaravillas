@@ -45,7 +45,7 @@ const Registro = () => {
         <h2>Crear Cuenta</h2>
         <form className="registro-form" onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="nombre">Nombre completo</label>
+            <label htmlFor="nombre">Nombre</label>
             <input type="text" id="nombre" value={formData.nombre} onChange={handleChange} required />
           </div>
 

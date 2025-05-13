@@ -5,7 +5,6 @@ import Home from '../pages/Home/Home';
 import HomeClient from '../pages/Home/HomeClient';
 import HomeEmployee from '../pages/Home/HomeEmployee';
 import Login from '../pages/Login';
-import Reservas from '../pages/Cliente/Reservations';
 import Reportes from '../pages/Empleados/Reports';
 import Dashboard from '../pages/Empleados/Dashboard';
 import GestionReservas from '../pages/Empleados/GestionReservas';
@@ -17,6 +16,7 @@ import Navbar from '../components/Navbar';
 import Mapa from '../pages/Cliente/Map';
 import Galeria from '../pages/Cliente/Gallery';
 import Nosotros from '../pages/About';
+import ReservasCliente from '../pages/Cliente/reservations/ReservasCliente';
 
 const AppRouter = () => {
   return (
@@ -27,7 +27,6 @@ const AppRouter = () => {
           <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/registro" element={<Registro />} />
-        <Route path="/reservas" element={<Reservas />} />
         <Route path="/reportes" element={<Reportes />} />
         
         {/* Rutas de administrador */}
@@ -46,6 +45,7 @@ const AppRouter = () => {
         <Route path="/about" element={<Nosotros/>} />
 
         {/* Rutas de Paginas de Reservas */}
+        <Route path="/reservas" element={<ReservasCliente />} />
         <Route path="/map" element={<Mapa />} />
         <Route path="/gallery" element={<Galeria />} />
 

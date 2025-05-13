@@ -88,3 +88,19 @@ Ok tenemos lo siguiente:
 Errores/Corregir
 
 La barra de navegacion no quiere cambiar de forma dinamica (no muestra el boton de cerrar sesion no los botones correspondientes de cada tipo de cuenta cuando sube si no que lo hace cuando se recarga la app)
+
+
+
+
+Para La base de datos
+
+Los datos actuales en .env a la hora de crear el proyecto son:
+
+DB_USER=sa                          usuario de la base de datos
+DB_PASSWORD=natanael                contraseña de la base de datos
+DB_SERVER=DESKTOP-2NOMD28           . o nombre del servidor de la base de datos
+DB_DATABASE=eco_maravillas          nodo donde se ubican las tabla dentro de la base de datos (como master)
+DB_PORT=1433                        Puerto donde se conecta la base de datos (creo debo verificar)
+
+
+el contenido de la base de datos lo creare en otro archivo .md
