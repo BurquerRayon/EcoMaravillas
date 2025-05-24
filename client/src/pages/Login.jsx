@@ -1,18 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useAuth } from '../context/AuthContext'; // Importar el hook de autenticación
-import '../styles/Login.css';
+import { useAuth } from '../context/AuthContext'; // Asegúrate de tener este contexto creado
+import '../styles/Login.css'; // Puedes personalizar este CSS
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    username: '',
-    password: ''
-  });
-
-  const [loginMessage, setLoginMessage] = useState('');
+  const [formData, setFormData] = useState({ correo: '', contrasena: '' });
+  const [mensaje, setMensaje] = useState('');
+  const { login } = useAuth();
   const navigate = useNavigate();
-  const { login } = useAuth(); // Obtener la función login del contexto
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -22,75 +18,58 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.username || !formData.password) {
-      setLoginMessage('Por favor, completa los campos con los datos correspondientes.');
+    if (!formData.correo || !formData.contrasena) {
+      setMensaje('Completa todos los campos');
       return;
     }
 
     try {
-      const res = await axios.post('http://localhost:3001/api/auth/login', {
-        correo: formData.username,
-        contrasena: formData.password
-      });
+      const res = await axios.post('http://localhost:3001/api/auth/login', formData);
 
-      // Cambio principal: Usar la función login del contexto en lugar de localStorage directamente
-      login(res.data.user); // Esto actualizará el estado global automáticamente
-      setLoginMessage('¡Inicio de sesión exitoso! Redirigiendo...');
+      login(res.data.user); // Guarda el usuario en el contexto
 
-      // Redirección basada en el rol
+      // Redirigir según rol
       const rol = res.data.user.rol;
-
-      if (rol === 'cliente') {
-        navigate('/home/client');
-      } else if (rol === 'empleado') {
-        navigate('/home/employee');
-      } else {
-        navigate('/');
-      }
+      if (rol === 'cliente') navigate('/home/client');
+      else if (rol === 'empleado') navigate('/home/employee');
+      else if (rol === 'admin') navigate('/home/admin');
+      else navigate('/');
 
     } catch (err) {
-      setLoginMessage(err.response?.data?.message || 'Error en la autenticación.');
+      setMensaje(err.response?.data?.message || 'Error en el inicio de sesión');
     }
   };
 
   return (
-    <div className="home-guest-container">
-      <section className="hero">
-        <h1>Bienvenido a EcoMaravillas</h1>
-        <p>Explora, reserva y descubre la naturaleza.</p>
-      </section>
-
-      <div className="login-container">
-        <div className="login-box">
-          <h2>Iniciar Sesión</h2>
-          <form id="login-form" onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="username">Correo</label>
-              <input
-                type="text"
-                id="username"
-                value={formData.username}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="password">Contraseña</label>
-              <input
-                type="password"
-                id="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <button type="submit" className="btn">Ingresar</button>
-          </form>
-          <p id="login-message">{loginMessage}</p>
+    <div className="login-container">
+      <h2>Iniciar sesión</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="correo">Correo electrónico</label>
+          <input
+            type="email"
+            id="correo"
+            value={formData.correo}
+            onChange={handleChange}
+            required
+          />
         </div>
-      </div>
+
+        <div className="form-group">
+          <label htmlFor="contrasena">Contraseña</label>
+          <input
+            type="password"
+            id="contrasena"
+            value={formData.contrasena}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <button type="submit">Ingresar</button>
+      </form>
+
+      {mensaje && <p className="login-message">{mensaje}</p>}
     </div>
   );
 };

@@ -1,16 +1,18 @@
+// src/pages/Register.jsx
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import '../../styles/Register.css';
 
-const Registro = () => {
+const Register = () => {
   const [formData, setFormData] = useState({
     nombre: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
+    correo: '',
+    contrasena: '',
+    confirmar: ''
   });
 
   const [mensaje, setMensaje] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -20,59 +22,41 @@ const Registro = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (formData.password !== formData.confirmPassword) {
-      setMensaje('Las contraseñas no coinciden');
+    if (formData.contrasena !== formData.confirmar) {
+      setMensaje('❌ Las contraseñas no coinciden');
       return;
     }
 
     try {
       const res = await axios.post('http://localhost:3001/api/auth/register', {
         nombre: formData.nombre,
-        correo: formData.email,
-        contrasena: formData.password,
-        rol: 'cliente' // Por defecto cliente
+        correo: formData.correo,
+        contrasena: formData.contrasena
       });
 
-      setMensaje(res.data.message);
+      setMensaje('✅ Registro exitoso. Redirigiendo...');
+      setTimeout(() => {
+        navigate('/login');
+      }, 1500);
+
     } catch (err) {
-      setMensaje(err.response?.data?.message || 'Error al registrar usuario');
+      setMensaje(err.response?.data?.message || '❌ Error al registrar');
     }
   };
 
   return (
-    <div className="registro-container">
-      <div className="registro-box">
-        <h2>Crear Cuenta</h2>
-        <form className="registro-form" onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="nombre">Nombre</label>
-            <input type="text" id="nombre" value={formData.nombre} onChange={handleChange} required />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="email">Correo electrónico</label>
-            <input type="email" id="email" value={formData.email} onChange={handleChange} required />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="password">Contraseña</label>
-            <input type="password" id="password" value={formData.password} onChange={handleChange} required />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="confirmPassword">Confirmar contraseña</label>
-            <input type="password" id="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required />
-          </div>
-
-          <button type="submit" className="btn-registrar">Registrarse</button>
-        </form>
-        <p className="mensaje-login">
-          ¿Ya tienes una cuenta? <a href="/login">Inicia sesión aquí</a>
-        </p>
-        <p className="mensaje-error">{mensaje}</p>
-      </div>
+    <div className="form-container">
+      <h2>Registro</h2>
+      <form onSubmit={handleSubmit}>
+        <input type="text" id="nombre" placeholder="Nombre" onChange={handleChange} required />
+        <input type="email" id="correo" placeholder="Correo electrónico" onChange={handleChange} required />
+        <input type="password" id="contrasena" placeholder="Contraseña" onChange={handleChange} required />
+        <input type="password" id="confirmar" placeholder="Confirmar contraseña" onChange={handleChange} required />
+        <button type="submit">Registrarse</button>
+      </form>
+      <p>{mensaje}</p>
     </div>
   );
 };
 
-export default Registro;
+export default Register;

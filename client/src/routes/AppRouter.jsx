@@ -1,15 +1,15 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from '../context/AuthContext'; // Importa el AuthProvider
+import { AuthProvider } from '../context/AuthContext'; 
 import Home from '../pages/Home/Home';
 import HomeClient from '../pages/Home/HomeClient';
 import HomeEmployee from '../pages/Home/HomeEmployee';
 import Login from '../pages/Login';
 import Reportes from '../pages/Empleados/Reports';
-import Dashboard from '../pages/Empleados/Dashboard';
+import Dashboard from '../pages/Admin/Dashboard';
 import GestionReservas from '../pages/Empleados/GestionReservas';
 import GestionUsuarios from '../pages/Empleados/GestionUsuarios';
-import Config from '../pages/Empleados/Config';
+import Config from '../pages/Admin/Config';
 import Registro from '../pages/Cliente/Register';
 import NotFound from '../pages/NotFound';
 import Navbar from '../components/Navbar';
@@ -17,6 +17,7 @@ import Mapa from '../pages/Cliente/Map';
 import Galeria from '../pages/Cliente/Gallery';
 import Nosotros from '../pages/About';
 import ReservasCliente from '../pages/Cliente/reservations/ReservasCliente';
+import AdminHome from '../pages/Home/AdminHome';
 
 const AppRouter = () => {
   return (
@@ -39,7 +40,7 @@ const AppRouter = () => {
         {/* Rutas de Paginas Home */}
         <Route path="/home/client" element={<HomeClient />} />
         <Route path="/home/employee" element={<HomeEmployee />} />
-
+        <Route path="/home/admin" element={<AdminHome />} />
 
         {/* Rutas de Paginas de Reportes */}
         <Route path="/about" element={<Nosotros/>} />

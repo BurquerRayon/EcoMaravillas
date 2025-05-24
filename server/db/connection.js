@@ -9,11 +9,11 @@ const config = {
   port: parseInt(process.env.DB_PORT),
   options: {
     encrypt: false,
-    trustServerCertificate: true
-  }
+    trustServerCertificate: true,
+  },
 };
 
 const pool = new sql.ConnectionPool(config);
 const poolConnect = pool.connect();
 
-module.exports = { sql, pool, poolConnect };
+module.exports = { sql, poolConnect, pool };
