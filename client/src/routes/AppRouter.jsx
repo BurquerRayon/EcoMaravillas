@@ -18,6 +18,12 @@ import Galeria from '../pages/Cliente/Gallery';
 import Nosotros from '../pages/About';
 import ReservasCliente from '../pages/Cliente/reservations/ReservasCliente';
 import AdminHome from '../pages/Home/AdminHome';
+import AtraccionesConfig  from '../pages/Admin/Config/Atracciones';
+import MonedasConfig  from '../pages/Admin/Config/Monedas';
+import NacionalidadesConfig  from '../pages/Admin/Config/Nacionalidades';
+import PermisosConfig  from '../pages/Admin/Config/Permisos';
+import RolesConfig  from '../pages/Admin/Config/Roles';
+import ReportesConfig  from '../pages/Admin/Config/TiposDeReportes';
 
 const AppRouter = () => {
   return (
@@ -28,14 +34,21 @@ const AppRouter = () => {
           <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/registro" element={<Registro />} />
+        
+        {/* Rutas de Empleados */}
+        <Route path="/admin/reservas" element={<GestionReservas />} />
+        <Route path="/admin/usuarios" element={<GestionUsuarios />} />
         <Route path="/reportes" element={<Reportes />} />
         
         {/* Rutas de administrador */}
-        <Route path="/admin/dashboard" element={<Dashboard />} />
-        <Route path="/admin/reservas" element={<GestionReservas />} />
-        <Route path="/admin/usuarios" element={<GestionUsuarios />} />
         <Route path="/admin/config" element={<Config />} />
-        
+        <Route path="/admin/dashboard" element={<Dashboard />} />
+        <Route path="/admin/ajustes/roles" element={<RolesConfig />} />
+        <Route path="/admin/ajustes/permisos" element={<PermisosConfig />} />
+        <Route path="/admin/ajustes/atracciones" element={<AtraccionesConfig />} />
+        <Route path="/admin/ajustes/monedas" element={<MonedasConfig />} />
+        <Route path="/admin/ajustes/reportes" element={<ReportesConfig />} />
+        <Route path="/admin/ajustes/nacionalidades" element={<NacionalidadesConfig />} />
 
         {/* Rutas de Paginas Home */}
         <Route path="/home/client" element={<HomeClient />} />

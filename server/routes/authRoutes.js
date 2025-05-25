@@ -3,7 +3,6 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const { pool, poolConnect } = require('../db/connection');
 
-
 const mapearRol = (idRol) => {
   switch (idRol) {
     case 1: return 'cliente';
@@ -103,5 +102,4 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ message: 'Error interno del servidor' });
   }
 });
-
 module.exports = router;
