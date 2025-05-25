@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const FormularioReserva = () => {
   const [atracciones, setAtracciones] = useState([]);
@@ -12,6 +13,7 @@ const FormularioReserva = () => {
 
   const [mensaje, setMensaje] = useState('');
   const user = JSON.parse(localStorage.getItem('user'));
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAtracciones = async () => {
@@ -40,8 +42,6 @@ const FormularioReserva = () => {
     return;
   }
 }
-
-
     setForm({ ...form, [name]: value });
     setMensaje(''); // Limpiar mensaje al corregir campos
   };
@@ -121,6 +121,19 @@ const FormularioReserva = () => {
       />
 
       <button type="submit">Reservar</button>
+
+        <button onClick={() => navigate('/home/client')} style={{
+        padding: '8px 16px',
+        backgroundColor: '#007bff',
+        color: '#fff',
+        border: 'none',
+        borderRadius: '4px',
+        cursor: 'pointer',
+        marginBottom: '1rem'
+      }}>
+        ⬅ Volver
+      </button>
+
       {mensaje && <p>{mensaje}</p>}
     </form>
   );
