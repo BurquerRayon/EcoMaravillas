@@ -9,6 +9,7 @@ const permisosRoutes = require('./routes/permisosRoutes');
 const rolPermisosRoutes = require('./routes/rolPermisosRoutes');
 const monedasRoutes = require('./routes/monedasRoutes');
 const reportTypesRoutes = require('./routes/reportesTipoRoutes');
+const nacionalidadesRoutes = require('./routes/nacionalidadesRoutes');
 
 // ✅ Conexión SQL Server
 const { poolConnect, pool } = require('./db/connection');
@@ -38,6 +39,7 @@ app.use('/api/permisos', permisosRoutes);
 app.use('/api/rol-permisos', rolPermisosRoutes);
 app.use('/api/monedas', monedasRoutes);
 app.use('/api/reportes', reportTypesRoutes);
+app.use('/api/nacionalidades', nacionalidadesRoutes);
 
 // ✅ Inicio del servidor
 const PORT = 3001;
