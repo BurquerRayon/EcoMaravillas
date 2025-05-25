@@ -16,18 +16,27 @@ const Navbar = () => {
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
   return (
-      <nav className="navbar">
-      <ul className="nav-links">
-          {/* Menú o enlaces a la izquierda */}
+    <nav className="navbar">
+      <h2 className="logo">EcoMaravillas</h2>
 
-        <li><Link to="/">Inicio</Link></li>
+      <ul className="nav-links">
+        <li><Link to="/" className="nav-button">Inicio</Link></li>
+
+        {!user && (
+          <>
+            <li><Link to="/gallery" className="nav-button">Galería</Link></li>
+            <li><Link to="/map" className="nav-button">Mapa</Link></li>
+            <li><Link to="/about" className="nav-button">Sobre Nosotros</Link></li>
+            <li><Link to="/login" className="nav-button">Login</Link></li>
+            <li><Link to="/registro" className="nav-button">Registro</Link></li>
+          </>
+        )}
 
         {user && (
           <li className="dropdown">
-            <button className="dropbtn" onClick={toggleMenu}>
+            <button className="nav-button dropbtn" onClick={toggleMenu}>
               {user.rol.charAt(0).toUpperCase() + user.rol.slice(1)} ▾
             </button>
-
             {menuOpen && (
               <ul className="dropdown-content">
                 {user.rol === 'cliente' && (
@@ -39,14 +48,12 @@ const Navbar = () => {
                     <li><button onClick={handleLogout}>Cerrar sesión</button></li>
                   </>
                 )}
-
                 {user.rol === 'empleado' && (
                   <>
                     <li><Link to="/admin/dashboard">Panel de Control</Link></li>
                     <li><button onClick={handleLogout}>Cerrar sesión</button></li>
                   </>
                 )}
-
                 {user.rol === 'admin' && (
                   <>
                     <li><Link to="/admin/config">Configuraciones</Link></li>
@@ -58,18 +65,7 @@ const Navbar = () => {
             )}
           </li>
         )}
-
-        {!user && (
-          <>
-            <li><Link to="/gallery">Galería</Link></li>
-            <li><Link to="/map">Mapa</Link></li>
-            <li><Link to="/about">Sobre Nosotros</Link></li>
-            <li><Link to="/login">Login</Link></li>
-            <li><Link to="/registro">Registro</Link></li>
-          </>
-        )}
       </ul>
-    <h2 className="logo">EcoMaravillas</h2>
     </nav>
   );
 };

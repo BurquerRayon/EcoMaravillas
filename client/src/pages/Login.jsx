@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useAuth } from '../context/AuthContext'; // Asegúrate de tener este contexto creado
-import '../styles/Login.css'; // Puedes personalizar este CSS
+import { useAuth } from '../context/AuthContext';
+import '../styles/Login.css';
 
 const Login = () => {
   const [formData, setFormData] = useState({ correo: '', contrasena: '' });
@@ -26,9 +26,8 @@ const Login = () => {
     try {
       const res = await axios.post('http://localhost:3001/api/auth/login', formData);
 
-      login(res.data.user); // Guarda el usuario en el contexto
+      login(res.data.user);
 
-      // Redirigir según rol
       const rol = res.data.user.rol;
       if (rol === 'cliente') navigate('/home/client');
       else if (rol === 'empleado') navigate('/home/employee');
@@ -42,34 +41,36 @@ const Login = () => {
 
   return (
     <div className="login-container">
-      <h2>Iniciar sesión</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="correo">Correo electrónico</label>
-          <input
-            type="email"
-            id="correo"
-            value={formData.correo}
-            onChange={handleChange}
-            required
-          />
-        </div>
+      <div className="login-box">
+        <h2>Iniciar sesión</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="correo">Correo electrónico</label>
+            <input
+              type="email"
+              id="correo"
+              value={formData.correo}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="contrasena">Contraseña</label>
-          <input
-            type="password"
-            id="contrasena"
-            value={formData.contrasena}
-            onChange={handleChange}
-            required
-          />
-        </div>
+          <div className="form-group">
+            <label htmlFor="contrasena">Contraseña</label>
+            <input
+              type="password"
+              id="contrasena"
+              value={formData.contrasena}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        <button type="submit">Ingresar</button>
-      </form>
+          <button type="submit" className="btn">Ingresar</button>
+        </form>
 
-      {mensaje && <p className="login-message">{mensaje}</p>}
+        {mensaje && <p id="login-message">{mensaje}</p>}
+      </div>
     </div>
   );
 };

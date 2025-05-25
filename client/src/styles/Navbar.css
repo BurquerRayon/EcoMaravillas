@@ -6,13 +6,20 @@
   align-items: center;
   padding: 10px 20px;
   font-family: Arial, sans-serif;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(148, 43, 43, 0.1);
   position: sticky;
   top: 0;
   z-index: 1000;
 }
 
-.navbar .logo {
+.nav-links li,
+.dropbtn {
+  display: flex;
+  align-items: center;
+  height: 40px;
+}
+
+.navbar .logo{
   margin: 0;
   font-size: 1.5rem;
   font-weight: bold;
