@@ -1,0 +1,21 @@
+.reportes-config-container {
+  padding: 2rem;
+}
+
+.reportes-form input {
+  margin: 0.5rem;
+  padding: 0.4rem;
+}
+
+.lista-tipos {
+  margin-top: 1rem;
+  list-style: none;
+}
+
+.lista-tipos li {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 0.6rem;
+  margin-bottom: 0.5rem;
+  border-radius: 5px;
+}

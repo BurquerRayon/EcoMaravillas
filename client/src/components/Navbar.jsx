@@ -30,7 +30,17 @@ const Navbar = () => {
 
         {user?.rol === 'empleado' && (
           <>
-            <li><Link to="/admin/dashboard">Panel De Control</Link></li>
+            <li><button onClick={handleLogout}>Cerrar sesión</button></li>
+          </>
+        )}
+
+           {user?.rol === 'admin' && (
+          <>
+            <li><Link to="/reservas">Mis Reservas</Link></li>
+            <li><Link to="/gallery">Galería</Link></li>
+            <li><Link to="/map">Mapa</Link></li>
+            <li><Link to="/about">Sobre Nosotros</Link></li>
+            <li><Link to="/admin/dashboard">Panel de Control</Link></li>
             <li><button onClick={handleLogout}>Cerrar sesión</button></li>
           </>
         )}

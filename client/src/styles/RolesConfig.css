@@ -1,0 +1,36 @@
+.roles-container {
+  max-width: 800px;
+  margin: auto;
+  padding: 2rem;
+}
+
+.roles-form {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.roles-form input {
+  flex: 1;
+  padding: 0.5rem;
+}
+
+.roles-form button {
+  padding: 0.5rem 1rem;
+}
+
+.lista-roles {
+  list-style: none;
+  padding: 0;
+}
+
+.lista-roles li {
+  background: #f9f9f9;
+  padding: 1rem;
+  margin-bottom: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
