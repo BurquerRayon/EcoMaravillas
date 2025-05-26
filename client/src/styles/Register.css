@@ -1,97 +1,62 @@
-:root {
-    --primary: #4e73df;
-    --primary-dark: #2e59d9;
-    --white: #ffffff;
-    --gray: #ced4da;
-    --light-gray: #f8f9fc;
-    --text: #343a40;
-  }
-  
-  body {
-    font-family: 'Segoe UI', sans-serif;
-    background: var(--light-gray);
-    margin: 0;
-    padding: 0;
-  }
-  
-  .registro-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-  }
-  
-  .registro-box {
-    background: var(--white);
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 450px;
-  }
-  
-  .registro-box h2 {
-    margin-bottom: 25px;
-    color: var(--primary);
-    text-align: center;
-  }
-  
-  .registro-form .form-group {
-    margin-bottom: 20px;
-  }
-  
-  .registro-form label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: var(--text);
-  }
-  
-  .registro-form input,
-  .registro-form select {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid var(--gray);
-    border-radius: 6px;
-    background-color: #fdfdfd;
-    transition: border 0.3s;
-  }
-  
-  .registro-form input:focus,
-  .registro-form select:focus {
-    outline: none;
-    border-color: var(--primary);
-  }
-  
-  .btn-registrar {
-    width: 100%;
-    padding: 12px;
-    background: var(--primary);
-    color: var(--white);
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  
-  .btn-registrar:hover {
-    background: var(--primary-dark);
-  }
-  
-  .mensaje-login {
-    margin-top: 20px;
-    text-align: center;
-    color: var(--text);
-  }
-  
-  .mensaje-login a {
-    color: var(--primary);
-    text-decoration: none;
-  }
-  
-  .mensaje-login a:hover {
-    text-decoration: underline;
-  }
-  
+/* styles/Register.css */
+
+.form-container {
+  max-width: 400px;
+  margin: 60px auto;
+  padding: 2rem;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', sans-serif;
+  text-align: center;
+}
+
+.form-container h2 {
+  margin-bottom: 1rem;
+  color: #2a7d2e;
+  font-size: 1.8rem;
+}
+
+.form-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-container input {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.form-container input:focus {
+  border-color: #2a7d2e;
+}
+
+.form-container button {
+  padding: 0.75rem;
+  font-size: 1rem;
+  background-color: #2a7d2e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.form-container button:hover {
+  background-color: #256c29;
+}
+
+.form-container p {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.form-container p:empty {
+  display: none;
+}

@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import '../styles/Navbar.css';
 import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation(); // detecta cambios de ruta
+  const menuRef = useRef(null); // referencia al dropdown
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {
@@ -13,27 +15,54 @@ const Navbar = () => {
     navigate('/');
   };
 
-  const toggleMenu = () => setMenuOpen(!menuOpen);
+  const toggleMenu = () => {
+    setMenuOpen((prev) => !prev);
+  };
+
+  // Cierra menú al hacer clic fuera
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Cierra menú al cambiar de ruta
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location]);
+
+  // Cierra menú al cambiar de cuenta
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [user]);
 
   return (
     <nav className="navbar">
-      <h2 className="logo">EcoMaravillas</h2>
+      <h4 className="logo">EcoMaravillas</h4>
 
       <ul className="nav-links">
         <li><Link to="/" className="nav-button">Inicio</Link></li>
 
         {!user && (
-          <>
-            <li><Link to="/gallery" className="nav-button">Galería</Link></li>
-            <li><Link to="/map" className="nav-button">Mapa</Link></li>
-            <li><Link to="/about" className="nav-button">Sobre Nosotros</Link></li>
-            <li><Link to="/login" className="nav-button">Login</Link></li>
-            <li><Link to="/registro" className="nav-button">Registro</Link></li>
-          </>
+          <li className="dropdown" ref={menuRef}>
+            <button className="nav-button dropbtn" onClick={toggleMenu}>☰</button>
+            {menuOpen && (
+              <ul className="dropdown-content">
+                <li><Link to="/about">Sobre Nosotros</Link></li>
+                <li><Link to="/login">Login</Link></li>
+                <li><Link to="/registro">Registro</Link></li>
+              </ul>
+            )}
+          </li>
         )}
 
         {user && (
-          <li className="dropdown">
+          <li className="dropdown" ref={menuRef}>
             <button className="nav-button dropbtn" onClick={toggleMenu}>
               {user.rol.charAt(0).toUpperCase() + user.rol.slice(1)} ▾
             </button>

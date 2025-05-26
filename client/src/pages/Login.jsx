@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import '../styles/Login.css';
+import Footer from '../components/Footer';
+import '../styles/Footer.css'; // si deseas estilos comunes
 
 const Login = () => {
   const [formData, setFormData] = useState({ correo: '', contrasena: '' });
@@ -39,8 +41,13 @@ const Login = () => {
     }
   };
 
+
+
+
   return (
-    <div className="login-container">
+    <div className="page-wrapper">
+      <main className="content">
+ <div className="login-container">
       <div className="login-box">
         <h2>Iniciar sesión</h2>
         <form onSubmit={handleSubmit}>
@@ -70,7 +77,11 @@ const Login = () => {
         </form>
 
         {mensaje && <p id="login-message">{mensaje}</p>}
-      </div>
+      </div>     
+    </div>
+      </main>
+
+      <Footer />
     </div>
   );
 };

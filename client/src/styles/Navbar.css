@@ -1,5 +1,5 @@
 .navbar {
-  background-color: #269c26;
+  background-color: #278f27;
   color: white;
   display: flex;
   justify-content: space-between;
@@ -124,4 +124,15 @@ ul h3 {
   font-size: 1rem;
   font-weight: normal;
   cursor: pointer;
+}
+
+.navbar .dropbtn {
+  background: none;
+  border: none;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 1.2rem;
 }

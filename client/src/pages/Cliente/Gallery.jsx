@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Carrusel from '../../components/Carousel';
 import '../../styles/Gallery.css';
+import Footer from '../../components/Footer'; // Ajusta la ruta según la estructura
+import '../../styles/Footer.css'; // si deseas estilos comunes
 
 const Galeria = () => {
   const [filtroEspecie, setFiltroEspecie] = useState('');
   const [filtroHabitat, setFiltroHabitat] = useState('');
+  const navigate = useNavigate(); // ✅ Para redireccionar
 
   const imagenes = [
     { nombre: 'Iguana Verde', especie: 'iguana', habitat: 'Área Exterior', src: '/assets/img/I1.jpeg' },
@@ -13,7 +17,6 @@ const Galeria = () => {
     // ... más imágenes
   ];
 
-  // Filtro aplicado
   const resultados = imagenes.filter((img) => {
     const especieMatch = !filtroEspecie || img.especie === filtroEspecie;
     const habitatMatch = !filtroHabitat || img.habitat === filtroHabitat;
@@ -23,7 +26,13 @@ const Galeria = () => {
   const hayFiltros = filtroEspecie || filtroHabitat;
 
   return (
-    <div className="galeria-container">
+
+    <div className="page-wrapper">
+      <main className="content">
+  <div className="galeria-container">
+ 
+      <button className="btn-salir" onClick={() => navigate('/')}>← Volver al Inicio</button>
+
       <h1>Galería de Especies</h1>
       <p>Explora nuestras imágenes rotativas o filtra por especie/hábitat:</p>
 
@@ -49,7 +58,6 @@ const Galeria = () => {
         </div>
       </div>
 
-      {/* Muestra el carrusel solo si no hay filtros */}
       {!hayFiltros ? (
         <div className="carousel-container">
           <Carrusel />
@@ -63,6 +71,7 @@ const Galeria = () => {
                 <h3>{img.nombre}</h3>
                 <p><strong>Especie:</strong> {img.especie}</p>
                 <p><strong>Hábitat:</strong> {img.habitat}</p>
+
               </div>
             ))
           ) : (
@@ -71,6 +80,9 @@ const Galeria = () => {
         </div>
       )}
     </div>
+      </main>
+    <Footer />
+    </div>    
   );
 };
 

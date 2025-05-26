@@ -1,11 +1,15 @@
 import React from 'react';
 import '../../styles/HomeGuest.css';
 import Carrusel from '../../components/Carousel'; // ajusta la ruta según ubicación
+import Footer from '../../components/Footer';
+import '../../styles/Footer.css'; // si deseas estilos comunes
 
 const HomeGuest = () => {
   return (
-    <div className="home-guest-container">
-      <section className="hero">
+
+    <div className="page-wrapper">
+      <main className="content">
+<section className="hero">
         <h1>Bienvenido a EcoMaravillas</h1>
           <p>Explora, reserva y descubre la naturaleza.</p>
             <div className="home-buttons">
@@ -28,12 +32,9 @@ const HomeGuest = () => {
               <Carrusel />
           </div>
       </section>
-
-      <footer>
-        <p>&copy; 2025 EcoMaravillas - Todos los derechos reservados</p>
-      </footer>
+      </main>
+      <Footer />
     </div>
   );
 };
-
 export default HomeGuest;

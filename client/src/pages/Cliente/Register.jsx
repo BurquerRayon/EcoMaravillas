@@ -2,6 +2,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import '../../styles/Register.css';
+import Footer from '../../components/Footer';
+import '../../styles/Footer.css';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -29,10 +32,13 @@ const Register = () => {
 
     try {
       const res = await axios.post('http://localhost:3001/api/auth/register', {
-        nombre: formData.nombre,
-        correo: formData.correo,
-        contrasena: formData.contrasena
-      });
+      nombre: formData.nombre,
+      correo: formData.correo,
+      contrasena: formData.contrasena
+    });
+
+setMensaje(`✅ ${res.data.message || 'Registro exitoso. Redirigiendo...'}`);
+
 
       setMensaje('✅ Registro exitoso. Redirigiendo...');
       setTimeout(() => {
@@ -44,7 +50,9 @@ const Register = () => {
     }
   };
 
-  return (
+return (
+    <div className="page-wrapper">
+      <main className="content">
     <div className="form-container">
       <h2>Registro</h2>
       <form onSubmit={handleSubmit}>
@@ -55,6 +63,10 @@ const Register = () => {
         <button type="submit">Registrarse</button>
       </form>
       <p>{mensaje}</p>
+    </div>
+      </main>
+
+      <Footer />
     </div>
   );
 };

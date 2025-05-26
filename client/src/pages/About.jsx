@@ -1,4 +1,6 @@
 import React from 'react';
+import Footer from '../components/Footer';
+import '../styles/Footer.css';
 
 const HomeGuest = () => {
   return (
@@ -40,9 +42,7 @@ const HomeGuest = () => {
       
       </section>
 
-      <footer>
-        <p>&copy; 2025 EcoMaravillas - Todos los derechos reservados</p>
-      </footer>
+      <Footer />
     </div>
   );
 };

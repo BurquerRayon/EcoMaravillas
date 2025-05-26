@@ -1,0 +1,19 @@
+/* styles/Footer.css */
+.footer {
+  background-color: #278f27;
+  color: white;
+  text-align: center;
+  padding: 1rem 0;
+  margin-top: 3rem;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 0.95rem;
+}
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1; /* empuja el footer hacia abajo si hay poco contenido */
+}
