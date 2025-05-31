@@ -43,57 +43,46 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
-      <h4 className="logo">EcoMaravillas</h4>
+      <h4 className="logo"><Link to="/" className="logo-link">EcoMaravillas</Link></h4>
 
       <ul className="nav-links">
-        <li><Link to="/" className="nav-button">Inicio</Link></li>
-
-        {!user && (
-          <li className="dropdown" ref={menuRef}>
-            <button className="nav-button dropbtn" onClick={toggleMenu}>☰</button>
-            {menuOpen && (
-              <ul className="dropdown-content">
-                <li><Link to="/about">Sobre Nosotros</Link></li>
-                <li><Link to="/login">Login</Link></li>
-                <li><Link to="/registro">Registro</Link></li>
-              </ul>
-            )}
-          </li>
-        )}
+        <li><Link to="/login">Login</Link></li>
+        <li><Link to="/registro">Registro</Link></li>
 
         {user && (
-          <li className="dropdown" ref={menuRef}>
-            <button className="nav-button dropbtn" onClick={toggleMenu}>
-              {user.rol.charAt(0).toUpperCase() + user.rol.slice(1)} ▾
-            </button>
-            {menuOpen && (
-              <ul className="dropdown-content">
-                {user.rol === 'cliente' && (
-                  <>
-                    <li><Link to="/reservas">Mis Reservas</Link></li>
-                    <li><Link to="/gallery">Galería</Link></li>
-                    <li><Link to="/map">Mapa</Link></li>
-                    <li><Link to="/about">Sobre Nosotros</Link></li>
-                    <li><button onClick={handleLogout}>Cerrar sesión</button></li>
-                  </>
-                )}
-                {user.rol === 'empleado' && (
-                  <>
-                    <li><Link to="/admin/dashboard">Panel de Control</Link></li>
-                    <li><button onClick={handleLogout}>Cerrar sesión</button></li>
-                  </>
-                )}
-                {user.rol === 'admin' && (
-                  <>
-                    <li><Link to="/admin/config">Configuraciones</Link></li>
-                    <li><Link to="/admin/dashboard">Panel de Control</Link></li>
-                    <li><button onClick={handleLogout}>Cerrar sesión</button></li>
-                  </>
-                )}
-              </ul>
-            )}
-          </li>
-        )}
+        <li className="dropdown" ref={menuRef}>
+          <button className="nav-button dropbtn" onClick={toggleMenu}>
+            {user.nombre} ▾
+          </button>
+          {menuOpen && (
+            <ul className="dropdown-content">
+              {user.rol === 'cliente' && (
+                <>
+                  <li><Link to="/reservas">Mis Reservas</Link></li>
+                  <li><Link to="/gallery">Galería</Link></li>
+                  <li><Link to="/map">Mapa</Link></li>
+                  <li><Link to="/about">Sobre Nosotros</Link></li>
+                  <li><Link to="/">Ajustes</Link></li>
+                  <li><button onClick={handleLogout}>Cerrar sesión</button></li>
+                </>
+              )}
+              {user.rol === 'empleado' && (
+                <>
+                  <li><Link to="/admin/dashboard">Panel de Control</Link></li>
+                  <li><button onClick={handleLogout}>Cerrar sesión</button></li>
+                </>
+              )}
+              {user.rol === 'admin' && (
+                <>
+                  <li><Link to="/admin/config">Configuraciones</Link></li>
+                  <li><Link to="/admin/dashboard">Panel de Control</Link></li>
+                  <li><button onClick={handleLogout}>Cerrar sesión</button></li>
+                </>
+              )}
+            </ul>
+          )}
+        </li>
+      )}
       </ul>
     </nav>
   );

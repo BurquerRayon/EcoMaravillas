@@ -1,19 +1,37 @@
-/* styles/Footer.css */
 .footer {
   background-color: #278f27;
   color: white;
+  padding: 1.5rem 1rem;
   text-align: center;
-  padding: 1rem 0;
-  margin-top: 3rem;
   font-family: 'Segoe UI', sans-serif;
   font-size: 0.95rem;
-}
-.page-wrapper {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+  margin-top: 3rem;
+  border-top: 3px solid #1d701d;
 }
 
-.content {
-  flex: 1; /* empuja el footer hacia abajo si hay poco contenido */
+.footer-content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin-top: 0.8rem;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.footer-links li a {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.2s ease-in-out;
+}
+
+.footer-links li a:hover {
+  color: #d1ffd1;
+  text-decoration: underline;
 }

@@ -76,3 +76,14 @@
     font-weight: bold;
   }
   
+  .secondary-btn {
+  background-color: transparent;
+  color: #278f27;
+  border: 2px solid #278f27;
+  margin-top: 10px;
+}
+
+.secondary-btn:hover {
+  background-color: #278f27;
+  color: white;
+}

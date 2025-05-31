@@ -16,7 +16,7 @@ import Navbar from '../components/Navbar';
 import Mapa from '../pages/Cliente/Map';
 import Galeria from '../pages/Cliente/Gallery';
 import Nosotros from '../pages/About';
-import ReservasCliente from '../pages/Cliente/reservations/ReservasCliente';
+import ReservasCliente from '../pages/Cliente/ReservasCliente';
 import AdminHome from '../pages/Home/AdminHome';
 import AtraccionesConfig  from '../pages/Admin/Config/Atracciones';
 import MonedasConfig  from '../pages/Admin/Config/Monedas';
