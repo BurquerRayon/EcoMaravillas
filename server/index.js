@@ -11,6 +11,7 @@ const monedasRoutes = require('./routes/monedasRoutes');
 const reportTypesRoutes = require('./routes/reportesTipoRoutes');
 const nacionalidadesRoutes = require('./routes/nacionalidadesRoutes');
 const reservasRoutes = require('./routes/reservaRoutes');
+const configRoutes = require('./routes/configRoutes');
 
 // ✅ Conexión SQL Server
 const { poolConnect, pool } = require('./db/connection');
@@ -42,9 +43,8 @@ app.use('/api/monedas', monedasRoutes);
 app.use('/api/reportes', reportTypesRoutes);
 app.use('/api/nacionalidades', nacionalidadesRoutes);
 app.use('/api/reservas', reservasRoutes);
+app.use('/api/config', configRoutes);
 
 // ✅ Inicio del servidor
 const PORT = 3001;
 app.listen(PORT, () => console.log(`Servidor escuchando en http://localhost:${PORT}`));
-
-

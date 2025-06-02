@@ -19,7 +19,7 @@ const Config = () => {
         <Link to="/admin/ajustes/monedas" className="ajuste-card">Monedas</Link>
         <Link to="/admin/ajustes/reportes" className="ajuste-card">Tipos de Reporte</Link>
         <Link to="/admin/ajustes/nacionalidades" className="ajuste-card">Nacionalidades</Link>
-        <Link to="/admin/ajustes/nacionalidades" className="ajuste-card">Horarios</Link>
+        <Link to="/admin/ajustes/configuracionhoras" className="ajuste-card">Horarios</Link>
       </div>
     </div>
   );

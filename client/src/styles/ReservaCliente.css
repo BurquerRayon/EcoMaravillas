@@ -126,3 +126,17 @@ h2, h3 {
 .btn-toggle-form:hover {
   background-color: #218838;
 }
+
+.hora-selectores {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+}
+.hora-selectores label {
+  margin-right: 4px;
+  font-weight: 500;
+}
+.hora-selectores select {
+  padding: 4px 8px;
+}

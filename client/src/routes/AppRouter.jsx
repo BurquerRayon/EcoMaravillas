@@ -24,6 +24,7 @@ import NacionalidadesConfig  from '../pages/Admin/Config/Nacionalidades';
 import PermisosConfig  from '../pages/Admin/Config/Permisos';
 import RolesConfig  from '../pages/Admin/Config/Roles';
 import ReportesConfig  from '../pages/Admin/Config/TiposDeReportes';
+import ConfigHoras  from '../pages/Admin/Config/HorarioReservasConfig';
 
 const AppRouter = () => {
   return (
@@ -49,6 +50,7 @@ const AppRouter = () => {
         <Route path="/admin/ajustes/monedas" element={<MonedasConfig />} />
         <Route path="/admin/ajustes/reportes" element={<ReportesConfig />} />
         <Route path="/admin/ajustes/nacionalidades" element={<NacionalidadesConfig />} />
+        <Route path="/admin/ajustes/configuracionhoras" element={<ConfigHoras />} />
 
         {/* Rutas de Paginas Home */}
         <Route path="/home/client" element={<HomeClient />} />
