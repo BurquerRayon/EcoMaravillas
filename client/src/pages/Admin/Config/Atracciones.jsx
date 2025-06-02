@@ -135,10 +135,6 @@ useEffect(() => {
 
   return (
     <div className="atracciones-admin-container">
-      <button onClick={() => navigate('/admin/config')} className="btn-volver">
-        ⬅ Volver a Configuración
-      </button>
-
       <h2>Gestión de Atracciones</h2>
 
       {mensaje && (

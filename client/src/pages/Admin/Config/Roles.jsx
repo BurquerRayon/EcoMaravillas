@@ -95,10 +95,6 @@ const RolesConfig = () => {
 
   return (
     <div className="roles-container">
-      <button onClick={() => navigate('/admin/config')} className="btn-volver">
-        ⬅ Volver a Configuración
-      </button>
-
       <h2>Gestión de Roles</h2>
 
       <div className="acciones-roles">

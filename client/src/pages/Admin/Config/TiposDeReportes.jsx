@@ -96,10 +96,6 @@ const ReportesConfig = () => {
 
   return (
     <div className="reportes-config-container">
-      <button onClick={() => navigate('/admin/config')} className="btn-volver">
-        ⬅ Volver a Configuración
-      </button>
-
       <h2>Gestión de Tipos de Reporte</h2>
 
       <div className="acciones-reportes">

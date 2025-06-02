@@ -106,10 +106,6 @@ const MonedasConfig = () => {
 
   return (
     <div className="monedas-container">
-      <button onClick={() => navigate('/admin/config')} className="btn-volver">
-        ⬅ Volver a Configuración
-      </button>
-
       <h2>Gestión de Monedas</h2>
 
       <div className="acciones-monedas">

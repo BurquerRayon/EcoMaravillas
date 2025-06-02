@@ -95,9 +95,6 @@ const NacionalidadesConfig = () => {
 
   return (
     <div className="nacionalidades-container">
-      <button onClick={() => navigate('/admin/config')} className="btn-volver">
-        ⬅ Volver a Configuración
-      </button>
 
       <h2>Gestión de Nacionalidades</h2>
 
@@ -114,7 +111,6 @@ const NacionalidadesConfig = () => {
       >
         {mostrarFormulario ? '➖ Cancelar' : '➕ Crear Nueva Nacionalidad'}
       </button>
-
 
         <input
           type="text"

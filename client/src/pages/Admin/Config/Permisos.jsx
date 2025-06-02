@@ -97,7 +97,6 @@ const PermisosConfig = () => {
 
   return (
     <div className="permisos-container">
-      <button onClick={() => navigate('/admin/config')} className="btn-volver">⬅ Volver a Configuración</button>
       <h2>Gestión de Permisos</h2>
 
       <div className="acciones-permisos">

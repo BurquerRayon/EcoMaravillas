@@ -48,7 +48,6 @@ const HorarioReservasConfig = () => {
 
   return (
     <div className="horario-container">
-      <button className="btn-volver" onClick={() => navigate('/admin/config')}>⬅ Volver a Configuración</button>
       <h2>Configuración de Horario de Reservas</h2>
       <form className="horario-form" onSubmit={handleSubmit}>
         <div className="hora-grupo">
