@@ -43,11 +43,32 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
-      <h4 className="logo"><Link to="/" className="logo-link">EcoMaravillas</Link></h4>
+      <h4 className="logo">
+        <Link
+          to={
+            !user
+              ? '/'
+              : user.rol === 'cliente'
+              ? '/home/client'
+              : user.rol === 'empleado'
+              ? '/home/employee'
+              : user.rol === 'admin'
+              ? '/home/admin'
+              : '/'
+          }
+          className="logo-link"
+        >
+          EcoMaravillas
+        </Link>
+      </h4>
 
       <ul className="nav-links">
-        <li><Link to="/login">Login</Link></li>
-        <li><Link to="/registro">Registro</Link></li>
+        {!user && (
+          <>
+            <li><Link to="/login">Login</Link></li>
+            <li><Link to="/registro">Registro</Link></li>
+          </>
+        )}
 
         {user && (
         <li className="dropdown" ref={menuRef}>

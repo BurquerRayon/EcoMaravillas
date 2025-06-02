@@ -1,0 +1,72 @@
+/* Config.css - Estilos adicionales */
+
+.ajustes-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.config-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.dashboard-button {
+  background-color: #3498db;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.dashboard-button:hover {
+  background-color: #2980b9;
+}
+
+.ajuste-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.ajuste-card {
+  background-color: #f8f9fa;
+  padding: 25px;
+  border-radius: 8px;
+  text-align: center;
+  text-decoration: none;
+  color: #2c3e50;
+  font-weight: 800;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+}
+
+.ajuste-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  background-color: #e3f2fd;
+  border-color: #bbdefb;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .config-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .dashboard-button {
+    width: 100%;
+    text-align: center;
+  }
+}

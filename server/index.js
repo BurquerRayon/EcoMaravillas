@@ -33,7 +33,7 @@ app.get('/api/test-db', async (req, res) => {
 });
 
 // ✅ Rutas principales
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/roles', rolesRoutes);
 app.use('/api/atracciones', atraccionesRoutes);
 app.use('/api/permisos', permisosRoutes);

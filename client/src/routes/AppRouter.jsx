@@ -8,7 +8,7 @@ import Login from '../pages/Login';
 import Reportes from '../pages/Empleados/Reports';
 import Dashboard from '../pages/Admin/Dashboard';
 import GestionReservas from '../pages/Empleados/GestionReservas';
-import GestionUsuarios from '../pages/Empleados/GestionUsuarios';
+import GestionUsuarios from '../pages/Admin/GestionUsuarios';
 import Config from '../pages/Admin/Config';
 import Registro from '../pages/Cliente/Register';
 import NotFound from '../pages/NotFound';
