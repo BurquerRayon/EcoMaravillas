@@ -1,36 +1,91 @@
-.reserve-button {
-    margin-top: 2rem;
-    background-color: #2e7d32;
-    color: white;
-    border: none;
-    padding: 0.75rem 2rem;
-    font-size: 1.1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .reserve-button:hover {
-    background-color: #1b5e20;
-  }
-
-.welcome-message {
-  background-color: #e8f5e9;
-  padding: 1rem;
-  border-radius: 8px;
-  margin: 1rem 0;
-  text-align: center;
-  border-left: 4px solid #2e7d32;
+.cliente-home-container {
+max-width: 1200px;
+margin: 0 auto;
+padding: 2rem 1rem;
+font-family: 'Segoe UI', sans-serif;
+color: #333;
 }
 
-.welcome-message p {
-  margin: 0;
-  font-size: 1.1rem;
-  color: #1b5e20;
-  font-weight: 500;
+.cliente-home-header {
+text-align: center;
+margin-bottom: 2rem;
 }
 
-.home-container h1 {
-  color: #2e7d32;
-  margin-bottom: 0.5rem;
+.cliente-home-header h1 {
+font-size: 2rem;
+color: #228B22;
+}
+
+.cliente-home-header p {
+font-size: 1.1rem;
+color: #555;
+}
+
+.cliente-home-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+gap: 1.5rem;
+margin-bottom: 2rem;
+}
+
+.cliente-card {
+background-color: #f5fdf5;
+border: 1px solid #c6e6c6;
+border-radius: 12px;
+padding: 1.5rem;
+text-align: center;
+cursor: pointer;
+transition: transform 0.2s ease, box-shadow 0.2s ease;
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.cliente-card:hover {
+transform: translateY(-4px);
+box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.icono-card {
+font-size: 2.5rem;
+color: #228B22;
+margin-bottom: 0.5rem;
+}
+
+.cliente-card h3 {
+font-size: 1.2rem;
+margin-bottom: 0.5rem;
+}
+
+.cliente-card p {
+font-size: 0.95rem;
+color: #555;
+}
+
+.cliente-info-extra {
+background-color: #f9f9f9;
+border-radius: 12px;
+padding: 1.5rem;
+margin-bottom: 2rem;
+}
+
+.cliente-info-extra h2 {
+color: #228B22;
+margin-bottom: 1rem;
+}
+
+.cliente-info-extra ul {
+list-style: disc inside;
+padding-left: 1rem;
+}
+
+.cliente-info-extra li {
+margin-bottom: 0.75rem;
+color: #444;
+}
+
+.cliente-footer {
+text-align: center;
+font-size: 0.9rem;
+color: #666;
+padding-top: 1rem;
+border-top: 1px solid #ddd;
 }

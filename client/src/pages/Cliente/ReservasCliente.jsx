@@ -5,12 +5,14 @@ import '../../styles/ReservaCliente.css';
 const ReservaCliente = () => {
   const [atracciones, setAtracciones] = useState([]);
   const [detalles, setDetalles] = useState([
-    { id_atraccion: '', cantidad: 1, fecha: '', hora: '', minuto: '', tarifa_unitaria: 0, subtotal: 0 }
+    { id_atraccion: '', cantidad: 1, fecha: '', hora: '09', minuto: '00', tarifa_unitaria: 0, subtotal: 0 }
   ]);
   const [total, setTotal] = useState(0);
   const [mensaje, setMensaje] = useState('');
   const [historial, setHistorial] = useState([]);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const [paginaActual, setPaginaActual] = useState(1);
+  const elementosPorPagina = 10;
 
   const [filtroFecha, setFiltroFecha] = useState('');
   const [filtroNombre, setFiltroNombre] = useState('');
@@ -51,6 +53,8 @@ const ReservaCliente = () => {
         setHoras(horasValidas);
       } catch (err) {
         console.error('Error al cargar el horario válido:', err);
+        // Valores por defecto si falla la carga
+        setHoras(['09', '10', '11', '12', '13', '14', '15', '16', '17']);
       }
     };
     cargarHorarioValido();
@@ -73,7 +77,15 @@ const ReservaCliente = () => {
   };
 
   const agregarDetalle = () => {
-    setDetalles([...detalles, { id_atraccion: '', cantidad: 1, fecha: '', hora: '', minuto: '', tarifa_unitaria: 0, subtotal: 0 }]);
+    setDetalles([...detalles, { 
+      id_atraccion: '', 
+      cantidad: 1, 
+      fecha: '', 
+      hora: horas[0] || '09', 
+      minuto: '00', 
+      tarifa_unitaria: 0, 
+      subtotal: 0 
+    }]);
   };
 
   const eliminarDetalle = (index) => {
@@ -81,28 +93,67 @@ const ReservaCliente = () => {
     setDetalles(nuevaLista);
   };
 
+  const validarDetalles = () => {
+    return detalles.every(detalle => {
+      return (
+        detalle.id_atraccion && 
+        detalle.cantidad > 0 && 
+        detalle.fecha && 
+        detalle.hora && 
+        detalle.minuto
+      );
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const id_turista = user?.id_turista;
 
-    const detallesConHora = detalles.map(d => ({
-      ...d,
-      hora: `${d.hora}:${d.minuto}`
-    }));
+    if (!validarDetalles()) {
+      setMensaje('❌ Por favor complete todos los campos correctamente');
+      return;
+    }
+
+    const detallesParaEnviar = detalles.map(d => {
+      // Asegurar que todos los campos tengan valores válidos
+      const horaValida = d.hora?.padStart(2, '0') || '09';
+      const minutoValido = d.minuto?.padStart(2, '0') || '00';
+      
+      return {
+        id_atraccion: d.id_atraccion,
+        cantidad: d.cantidad,
+        tarifa_unitaria: d.tarifa_unitaria,
+        fecha: d.fecha,
+        hora: `${horaValida}:${minutoValido}`,
+        subtotal: d.subtotal
+      };
+    });
+
+    console.log("Enviando reserva con detalles:", detallesParaEnviar);
 
     try {
-      await axios.post('http://localhost:3001/api/reservas', {
+      const response = await axios.post('http://localhost:3001/api/reservas', {
         id_turista,
-        detalles: detallesConHora
+        detalles: detallesParaEnviar
       });
 
+      console.log("Respuesta del servidor:", response.data);
+
       setMensaje('✅ Reserva creada correctamente');
-      setDetalles([{ id_atraccion: '', cantidad: 1, fecha: '', hora: '', minuto: '', tarifa_unitaria: 0, subtotal: 0 }]);
+      setDetalles([{ 
+        id_atraccion: '', 
+        cantidad: 1, 
+        fecha: '', 
+        hora: horas[0] || '09', 
+        minuto: '00', 
+        tarifa_unitaria: 0, 
+        subtotal: 0 
+      }]);
       cargarHistorial();
       setMostrarFormulario(false);
     } catch (err) {
-      console.error('Error al guardar reserva:', err);
-      setMensaje('❌ Error al guardar la reserva');
+      console.error('Error al guardar reserva:', err.response?.data || err.message);
+      setMensaje(`❌ Error al guardar la reserva: ${err.response?.data?.message || err.message}`);
     }
   };
 
@@ -119,15 +170,21 @@ const ReservaCliente = () => {
     if (user?.id_turista) cargarHistorial();
   }, [user]);
 
-  const formatearHora = (horaStr) => {
-    if (!horaStr) return '';
-    const [hour, minute] = horaStr.split(':');
-    const h = parseInt(hour, 10);
-    const m = minute.padStart(2, '0');
-    const ampm = h >= 12 ? 'PM' : 'AM';
-    const hour12 = h % 12 || 12;
-    return `${hour12}:${m} ${ampm}`;
-  };
+const formatearHora = (horaObj) => {
+  if (!horaObj) return '';
+
+  try {
+    const date = new Date(horaObj);
+    const hours = date.getUTCHours();  // NO getHours() — usamos UTC para evitar desfase
+    const minutes = date.getUTCMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const hour12 = hours % 12 || 12;
+    return `${hour12}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+  } catch (err) {
+    console.error('Error al formatear hora:', err);
+    return horaObj;
+  }
+};
 
   const reservasFiltradas = historial.filter((reserva) => {
     const coincideFecha = !filtroFecha || reserva.fecha?.startsWith(filtroFecha);
@@ -136,8 +193,22 @@ const ReservaCliente = () => {
     return coincideFecha && coincideNombre && coincideEstado;
   });
 
+  const reservasPaginadas = reservasFiltradas.slice(
+    (paginaActual - 1) * elementosPorPagina,
+    paginaActual * elementosPorPagina
+  );
+
+  const totalPaginas = Math.ceil(reservasFiltradas.length / elementosPorPagina);
+
+  useEffect(() => {
+  if (historial.length > 0) {
+    console.log('🕒 Historial recibido:', historial.map(r => r.hora));
+  }
+}, [historial]);
+
+
   return (
-    <div className="dashboard-container">
+<div className="dashboard-container">
       <section className="panel-botones">
         <button type="button" className="btn-toggle-form" onClick={() => setMostrarFormulario(!mostrarFormulario)}>
           {mostrarFormulario ? '➖ Ocultar Formulario' : '➕ Crear Nueva Reserva'}
@@ -178,7 +249,19 @@ const ReservaCliente = () => {
                 <input
                   type="date"
                   value={detalle.fecha}
-                  onChange={(e) => handleDetalleChange(index, 'fecha', e.target.value)}
+                  onChange={(e) => {
+                    const selectedDate = new Date(e.target.value);
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0); // Comparar solo fecha
+
+                    if (selectedDate.getDay() === 0) {
+                      alert('⚠️ No se permiten reservas los lunes.');
+                      return;
+                    }
+
+                    handleDetalleChange(index, 'fecha', e.target.value);
+                  }}
+                  min={new Date().toISOString().split('T')[0]}
                   required
                 />
 
@@ -264,10 +347,10 @@ const ReservaCliente = () => {
             </tr>
           </thead>
           <tbody>
-            {reservasFiltradas.length === 0 ? (
+            {reservasPaginadas.length === 0 ? (
               <tr><td colSpan="6">No hay reservas registradas.</td></tr>
             ) : (
-              reservasFiltradas.map((reserva, idx) => (
+              reservasPaginadas.map((reserva, idx) => (
                 <tr key={idx}>
                   <td>{reserva.fecha?.split('T')[0]}</td>
                   <td>{formatearHora(reserva.hora)}</td>
@@ -280,9 +363,18 @@ const ReservaCliente = () => {
             )}
           </tbody>
         </table>
+        {totalPaginas > 1 && (
+          <div className="paginacion">
+            <button disabled={paginaActual === 1} onClick={() => setPaginaActual(paginaActual - 1)}>Anterior</button>
+            <span>Página {paginaActual} de {totalPaginas}</span>
+            <button disabled={paginaActual === totalPaginas} onClick={() => setPaginaActual(paginaActual + 1)}>Siguiente</button>
+          </div>
+        )}
       </section>
     </div>
   );
 };
 
 export default ReservaCliente;
+
+

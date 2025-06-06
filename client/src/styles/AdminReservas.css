@@ -1,0 +1,70 @@
+.admin-reservas-container {
+max-width: 1200px;
+margin: 0 auto;
+padding: 2rem 1rem;
+font-family: 'Segoe UI', sans-serif;
+background-color: #ffffff;
+border-radius: 12px;
+box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.reservas-header {
+text-align: center;
+margin-bottom: 1.5rem;
+}
+
+.reservas-header h2 {
+color: #228B22;
+font-size: 1.8rem;
+}
+
+.filtros-reservas-admin {
+display: flex;
+gap: 1rem;
+justify-content: center;
+flex-wrap: wrap;
+margin-bottom: 1.5rem;
+}
+
+.filtros-reservas-admin input,
+.filtros-reservas-admin select {
+padding: 8px 12px;
+border-radius: 6px;
+border: 1px solid #ccc;
+font-size: 1rem;
+}
+
+.tabla-reservas-admin {
+width: 100%;
+border-collapse: collapse;
+background-color: #f9f9f9;
+border-radius: 8px;
+overflow: hidden;
+}
+
+.tabla-reservas-admin th,
+.tabla-reservas-admin td {
+padding: 12px;
+border-bottom: 1px solid #ddd;
+text-align: center;
+}
+
+.tabla-reservas-admin th {
+background-color: #228B22;
+color: white;
+}
+
+.tabla-reservas-admin tbody tr:hover {
+background-color: #f1fdf1;
+}
+
+@media (max-width: 768px) {
+.tabla-reservas-admin {
+font-size: 0.9rem;
+}
+
+.filtros-reservas-admin {
+flex-direction: column;
+align-items: center;
+}
+}

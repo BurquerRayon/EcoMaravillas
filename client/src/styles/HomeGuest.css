@@ -1,114 +1,53 @@
-/* HomeGuest.css */
+.hero, .info-section, .benefits-section, .carousel-section, .cta-section {
+padding: 3rem 2rem;
+text-align: center;
+}
 
-.home-guest-container {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #1e1e1e;
-    background-color: #f4f9f6;
-    padding: 0;
-    margin: 0;
-  }
-  
-  /* Hero / Encabezado */
-  .hero {
-    background: linear-gradient(to right, #34a853, #81c784);
-    color: white;
-    padding: 4rem 2rem;
-    text-align: center;
-  }
+.home-buttons {
+display: flex;
+justify-content: center;
+gap: 1rem;
+margin-top: 1rem;
+flex-wrap: wrap;
+}
 
-  .hero h1 {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-  }
-  
-    /* Hero / Botones formato del texto*/
-  .hero p {
-    font-size: 1.25rem;
-    margin-bottom: 2rem;
-  }
-  
-    /* Hero / Botones distancia */
-  .home-buttons {
-    display: flex;
-    gap: 1.5rem;
-    justify-content: center;
-    margin-top: 2rem;
-    flex-wrap: wrap;
-  }
-  
-    /* Hero / Botones */
-  .map-button, .gallery-button {
-    padding: 1rem 2rem;
-    font-size: 1rem;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
-    transition: transform 0.2s ease, background-color 0.3s ease;
-    color: white;
-  }
-  
-  .map-button {
-    background-color: #0288d1; /* azul */
-  }
-  
-  .gallery-button {
-    background-color: #8e24aa; /* violeta */
-  }
-  
-  .map-button:hover {
-    background-color: #0277bd;
-    transform: scale(1.05);
-  }
-  
-  .gallery-button:hover {
-    background-color: #7b1fa2;
-    transform: scale(1.05);
-  }
-  
-  /* Sección "Acerca de" */
-  .about {
-    background-color: #e3fcea; /* Color suave: puedes cambiarlo por otro pastel */
-    padding: 30px;
-    margin: 20px auto;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    width: 90%;
-    max-width: 800px;
-    text-align: center;
-    transition: all 0.3s ease;
-  }
-  
-  .about h2 {
-    color: #2a4d69;
-    font-size: 24px;
-    margin-bottom: 10px;
-  }
-  
-  .about p {
-    color: #444;
-    font-size: 16px;
-    line-height: 1.5;
-  }
+.map-button, .gallery-button, .cta-button {
+padding: 0.75rem 1.5rem;
+font-size: 1rem;
+border: none;
+border-radius: 0.75rem;
+background-color: #2e8b57;
+color: white;
+cursor: pointer;
+display: flex;
+align-items: center;
+gap: 0.5rem;
+box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+transition: background 0.3s;
+}
 
-  /* Pie de página */
-  footer {
-    text-align: center;
-    padding: 2rem;
-    background-color: #e0e0e0;
-    margin-top: 2rem;
-    font-size: 0.9rem;
-    
-  }
-  
-  /* Hero2 / carrusel prototipo */
-  .hero2 {
-    background: linear-gradient(to right, #34a853, #81c784);
-    color: white;
-    padding: 2rem 2rem;
-    text-align: center;
-  }
+.map-button:hover, .gallery-button:hover, .cta-button:hover {
+background-color: #256d46;
+}
 
-  .hero2 h1 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-  }
+.benefits-grid {
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+gap: 2rem;
+margin-top: 2rem;
+}
+
+.benefit-card {
+background: #f9f9f9;
+padding: 2rem;
+border-radius: 1.25rem;
+max-width: 280px;
+box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.icon {
+font-size: 2.5rem;
+color: #2e8b57;
+margin-bottom: 1rem;
+}

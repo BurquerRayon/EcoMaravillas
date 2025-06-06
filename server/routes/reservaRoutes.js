@@ -37,6 +37,17 @@ router.post('/', async (req, res) => {
       const { id_atraccion, cantidad, tarifa_unitaria, fecha, hora } = detalle;
       const subtotal = cantidad * tarifa_unitaria;
 
+      console.log('Insertando detalle:', {
+  id_reserva,
+  id_atraccion,
+  cantidad,
+  tarifa_unitaria,
+  fecha,
+  hora,
+  subtotal
+});
+
+
       await pool.request()
         .input('id_reserva', id_reserva)
         .input('id_atraccion', id_atraccion)
@@ -70,21 +81,21 @@ router.get('/turista/:id_turista', async (req, res) => {
 
     const result = await pool.request()
       .input('id_turista', id_turista)
-      .query(`
-        SELECT 
-          R.id_reserva,
-          D.fecha,
-          D.hora,
-          A.nombre AS nombre_atraccion,
-          D.cantidad,
-          D.subtotal,
-          R.estado
-        FROM Reservas R
-        JOIN Reserva_Detalles D ON R.id_reserva = D.id_reserva
-        JOIN Atraccion A ON D.id_atraccion = A.id_atraccion
-        WHERE R.id_turista = @id_turista
-        ORDER BY D.fecha DESC, D.hora ASC
-      `);
+.query(`
+  SELECT 
+    R.id_reserva,
+    D.fecha,
+    D.hora,
+    A.nombre AS nombre_atraccion,
+    D.cantidad,
+    D.subtotal,
+    R.estado
+  FROM Reservas R
+  JOIN Reserva_Detalles D ON R.id_reserva = D.id_reserva
+  JOIN Atraccion A ON D.id_atraccion = A.id_atraccion
+  WHERE R.id_turista = @id_turista
+  ORDER BY D.fecha DESC, D.hora ASC
+`);
 
     res.json(result.recordset);
   } catch (err) {

@@ -12,6 +12,7 @@ const reportTypesRoutes = require('./routes/reportesTipoRoutes');
 const nacionalidadesRoutes = require('./routes/nacionalidadesRoutes');
 const reservasRoutes = require('./routes/reservaRoutes');
 const configRoutes = require('./routes/configRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 // ✅ Conexión SQL Server
 const { poolConnect, pool } = require('./db/connection');
@@ -44,6 +45,7 @@ app.use('/api/reportes', reportTypesRoutes);
 app.use('/api/nacionalidades', nacionalidadesRoutes);
 app.use('/api/reservas', reservasRoutes);
 app.use('/api/config', configRoutes);
+app.use('/api/admin', adminRoutes);
 
 // ✅ Inicio del servidor
 const PORT = 3001;
