@@ -10,34 +10,129 @@ const Galeria = () => {
   const [filtroHabitat, setFiltroHabitat] = useState("");
   const [especieSeleccionada, setEspecieSeleccionada] = useState(null);
   const navigate = useNavigate();
+  const [tarjetaExpandida, setTarjetaExpandida] = useState(null); //estado para mostrar caracteristica//
 
   const imagenes = [
+    //IMAGENES DE FAUNA//
     {
       nombre: "Cigua cara amarilla",
-      especie: "Cigua cara amarilla",
+      especie: "tiaris olivacea",
       habitat: "Área Exterior",
       caracteristica:
         "Especie residente. Es común verla posada en las cercas de alambres de púas y en ramitas secas amontonadas. El nido es una pequeña copa o globular ubicado cerca del suelo. Pone 3 huevos manchados.",
       src: "/assets/img/Fauna/Cigua.jpg",
+      tipo: "Fauna",
+      todas: "todas",
     },
+
     {
       nombre: "Pajaro Bob",
-      especie: "Pajaro Bob",
+      especie: "Surothera longirostris",
       habitat: "Área Exterior",
+      caracteristica: " ",
       src: "/assets/img/Fauna/Bob.jpg",
+      tipo: "Fauna",
+      todas: "todas",
     },
     {
       nombre: "Lechuza cara ceniza",
       especie: "Tyto glaucops",
       habitat: "Cueva",
       habitat: "Área Exterior",
-      src: "/assets/img/Fauna/Tyto.jpg",
+      caracteristica: " ",
+      src: "/assets/img/Fauna/Tyto.jpeg",
+      tipo: "Fauna",
+      todas: "todas",
     },
+
+    {
+      nombre: " Gallito prieto ",
+      especie: "Loxigilla violacea ",
+      habitat: "Área Exterior",
+      caracteristica: " ",
+      src: "/assets/img/Fauna/Loxi.jpeg",
+      tipo: "Fauna",
+      todas: "todas",
+    },
+
+    {
+      nombre: "Cuatro ojos ",
+      especie: "Phaenicophilus palmarum",
+      habitat: "Área Exterior",
+      caracteristica: "",
+      src: "/assets/img/Fauna/palmarun.jpeg",
+      tipo: "Fauna",
+      todas: "todas",
+    },
+
+    {
+      nombre: "Marpesia eleuchea ",
+      especie: "Nymphalidae",
+      habitat: "Área Exterior",
+      caracteristica: "",
+      src: "/assets/img/Fauna/Marpesia.jpeg",
+      tipo: "Fauna",
+      todas: "todas",
+    },
+
+    {
+      nombre: "Mariposa cola de golondrina de borde dorado",
+      especie: "Battus polydamas",
+      habitat: "Área Exterior",
+      caracteristica: "",
+      src: "/assets/img/Fauna/Polydamas.jpg",
+      tipo: "Fauna",
+      todas: "todas",
+    },
+
+    {
+      nombre: "",
+      especie: "",
+      habitat: "",
+      caracteristica: "",
+      src: "/assets/img/Fauna/Lechuza.jpg",
+      tipo: "Fauna",
+      todas: "todas",
+    },
+
+    {
+      nombre: "",
+      especie: "",
+      habitat: "",
+      caracteristica: "",
+      src: "/assets/img/Fauna/Lechuza.jpg",
+      tipo: "Fauna",
+      todas: "todas",
+    },
+
+    {
+      nombre: "",
+      especie: "",
+      habitat: "",
+      caracteristica: "",
+      src: "/assets/img/Fauna/Lechuza.jpg",
+      tipo: "Fauna",
+      todas: "todas",
+    },
+
+    {
+      nombre: "",
+      especie: "",
+      habitat: "",
+      caracteristica: "",
+      src: "/assets/img/Fauna/Lechuza.jpg",
+      tipo: "Fauna",
+      todas: "todas",
+    },
+
     // Agrega más imágenes si lo deseas...
   ];
 
   const resultados = imagenes.filter((img) => {
-    const especieMatch = !filtroEspecie || img.especie === filtroEspecie;
+    const especieMatch =
+      filtroEspecie === "" ||
+      filtroEspecie === "Todas" ||
+      img.tipo === filtroEspecie;
     const habitatMatch = !filtroHabitat || img.habitat === filtroHabitat;
     return especieMatch && habitatMatch;
   });
@@ -59,15 +154,14 @@ const Galeria = () => {
 
           <div className="filters-section">
             <div className="filter-group">
-              <label htmlFor="filter-especie">Filtrar por especie</label>
+              <label htmlFor="filter-tipo">Filtrar por especie</label>
               <select
-                id="filter-especie"
+                id="filter-tipo"
                 onChange={(e) => setFiltroEspecie(e.target.value)}
               >
-                <option value="">Todas las especies</option>
-                <option value="Cigua cara amarilla">Cigua cara amarilla</option>
-                <option value="Pajaro Bob">Pajaro Bob</option>
-                <option value="Lechuza cara ceniza">Lechuza cara ceniza</option>
+                <option value="Todas">Todas las especies</option>
+                <option value="Fauna">Fauna</option>
+                <option value="Flora">Flora</option>
               </select>
             </div>
 
@@ -96,6 +190,7 @@ const Galeria = () => {
                   <div
                     className="result-card"
                     key={idx}
+                    /*onClick={() => setEspecieSeleccionada(img)} */
                     onClick={() => setEspecieSeleccionada(img)}
                     style={{ cursor: "pointer" }}
                   >
@@ -111,6 +206,11 @@ const Galeria = () => {
                     <p>
                       <strong>Hábitat:</strong> {img.habitat}
                     </p>
+                    {img.caracteristica && (
+                      <p>
+                        <strong>Características:</strong> {img.caracteristica}
+                      </p>
+                    )}
                   </div>
                 ))
               ) : (
@@ -141,6 +241,12 @@ const Galeria = () => {
               <p>
                 <strong>Hábitat:</strong> {especieSeleccionada.habitat}
               </p>
+              {especieSeleccionada.caracteristica && (
+                <p>
+                  <strong>Características:</strong>{" "}
+                  {especieSeleccionada.caracteristica}
+                </p>
+              )}
             </div>
           )}
         </div>

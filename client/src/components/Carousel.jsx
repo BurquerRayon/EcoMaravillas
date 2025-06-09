@@ -1,12 +1,30 @@
 import React, { useState } from "react";
 import "../styles/Carrusel.css"; // Asegúrate de que este CSS exista
 
-const images = [
+/*const images = [
   "/assets/img/Flora/e1.jpeg",
   "/assets/img/Flora/e2.jpeg",
   "/assets/img/Flora/e3.jpeg",
   // Agrega más rutas según tus imágenes
-]; //a
+]; //a */
+
+const images = [
+  {
+    src: "/assets/img/Flora/e1.jpeg",
+    nombre: "Flor 1",
+    caracteristica: "Flor silvestre encontrada en zonas húmedas.",
+  },
+  {
+    src: "/assets/img/Flora/e2.jpeg",
+    nombre: "Flor 2",
+    caracteristica: "Flor común en áreas montañosas.",
+  },
+  {
+    src: "/assets/img/Flora/e3.jpeg",
+    nombre: "Flor 3",
+    caracteristica: "Flor de colores intensos, polinizada por abejas.",
+  },
+];
 
 //SE AGREGO MAS CODIGOS PARA LAS CARACTERISTICAS E IMAGENES//
 const Carrusel = () => {
