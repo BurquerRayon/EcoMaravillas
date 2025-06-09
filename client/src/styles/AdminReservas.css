@@ -1,70 +1,84 @@
 .admin-reservas-container {
-max-width: 1200px;
-margin: 0 auto;
-padding: 2rem 1rem;
-font-family: 'Segoe UI', sans-serif;
-background-color: #ffffff;
-border-radius: 12px;
-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  background-color: #f4f4f4;
+  font-family: sans-serif;
 }
 
-.reservas-header {
-text-align: center;
-margin-bottom: 1.5rem;
+h2 {
+  margin-bottom: 1rem;
 }
 
-.reservas-header h2 {
-color: #228B22;
-font-size: 1.8rem;
+.filtros {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
-.filtros-reservas-admin {
-display: flex;
-gap: 1rem;
-justify-content: center;
-flex-wrap: wrap;
-margin-bottom: 1.5rem;
+.tabla-admin-reservas {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
 }
 
-.filtros-reservas-admin input,
-.filtros-reservas-admin select {
-padding: 8px 12px;
-border-radius: 6px;
-border: 1px solid #ccc;
-font-size: 1rem;
+.tabla-admin-reservas th,
+.tabla-admin-reservas td {
+  border: 1px solid #ddd;
+  padding: 0.75rem;
+  text-align: center;
 }
 
-.tabla-reservas-admin {
-width: 100%;
-border-collapse: collapse;
-background-color: #f9f9f9;
-border-radius: 8px;
-overflow: hidden;
+.tabla-admin-reservas th {
+  background-color: #007bff;
+  color: white;
 }
 
-.tabla-reservas-admin th,
-.tabla-reservas-admin td {
-padding: 12px;
-border-bottom: 1px solid #ddd;
-text-align: center;
+button {
+  margin: 0 5px;
+  padding: 5px 10px;
+  cursor: pointer;
 }
 
-.tabla-reservas-admin th {
-background-color: #228B22;
-color: white;
+button:hover {
+  opacity: 0.9;
 }
 
-.tabla-reservas-admin tbody tr:hover {
-background-color: #f1fdf1;
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  background-color: #ffffff;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
 }
 
-@media (max-width: 768px) {
-.tabla-reservas-admin {
-font-size: 0.9rem;
+.filtro-grupo {
+  display: flex;
+  flex-direction: column;
 }
 
-.filtros-reservas-admin {
-flex-direction: column;
-align-items: center;
+.filtro-grupo label {
+  font-weight: bold;
+  margin-bottom: 5px;
 }
+
+.filtro-grupo input,
+.filtro-grupo select {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+.btn-exportar {
+  margin: 18px 5px;
+  font-size: 0.9rem;
+  padding: 8px 12px;
+  background-color: #2c3e50;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.btn-exportar:hover {
+  background-color: #34495e;
 }

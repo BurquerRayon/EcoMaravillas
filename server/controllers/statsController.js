@@ -8,7 +8,6 @@ const obtenerEstadisticas = async (req, res) => {
     const reservas = await pool.request().query('SELECT COUNT(*) AS total FROM Reservas');
     const atracciones = await pool.request().query('SELECT COUNT(*) AS total FROM Atraccion');
 
-    // Consulta de ingresos totales (versión corregida)
     const ingresosTotales = await pool.request().query(`
       SELECT SUM(r.total_pago_estimado) AS ingresos_totales
       FROM reservas r
@@ -16,29 +15,47 @@ const obtenerEstadisticas = async (req, res) => {
       WHERE r.estado != 'cancelada'
     `);
 
+    // ➤ Ingresos por mes y atracción (para ReportesAdmin)
+    const ingresosPorMes = await pool.request().query(`
+      SET LANGUAGE Spanish;
+SELECT 
+        DATENAME(MONTH, rd.fecha) AS mes,
+        MONTH(rd.fecha) AS mes_numero,
+        YEAR(rd.fecha) AS anio,
+        a.nombre AS atraccion,
+        SUM(r.total_pago_estimado) AS ingresos_mes
+      FROM reservas r
+      JOIN Reserva_Detalles rd ON r.id_reserva = rd.id_reserva
+      JOIN Atraccion a ON rd.id_atraccion = a.id_atraccion
+      WHERE r.estado != 'cancelada'
+      GROUP BY DATENAME(MONTH, rd.fecha), MONTH(rd.fecha), YEAR(rd.fecha), a.nombre
+      ORDER BY YEAR(rd.fecha), MONTH(rd.fecha)
+    `);
 
-    // Cambia la consulta SQL para obtener el nombre del mes
-const ingresosPorMes = await pool.request().query(`
-  SET LANGUAGE Spanish;
-  SELECT 
-    DATENAME(MONTH, rd.fecha) + ' ' + CAST(YEAR(rd.fecha) AS VARCHAR) AS mes,
-    MONTH(rd.fecha) AS mes_numero,
-    YEAR(rd.fecha) AS anio,
-    SUM(r.total_pago_estimado) AS ingresos_mes
-  FROM reservas r
-  JOIN Reserva_Detalles rd ON r.id_reserva = rd.id_reserva
-  WHERE r.estado != 'cancelada'
-  GROUP BY DATENAME(MONTH, rd.fecha), MONTH(rd.fecha), YEAR(rd.fecha)
-  ORDER BY YEAR(rd.fecha) DESC, MONTH(rd.fecha) DESC
-`);
+    // ➤ Ingresos totales por mes (para HomeAdmin)
+    const ingresosPorMesTotales = await pool.request().query(`
+      SET LANGUAGE Spanish;
+      SELECT 
+        DATENAME(MONTH, rd.fecha) + ' ' + CAST(YEAR(rd.fecha) AS VARCHAR) AS mes,
+        MONTH(rd.fecha) AS mes_numero,
+        YEAR(rd.fecha) AS anio,
+        SUM(r.total_pago_estimado) AS ingresos_mes
+      FROM reservas r
+      JOIN Reserva_Detalles rd ON r.id_reserva = rd.id_reserva
+      WHERE r.estado != 'cancelada'
+      GROUP BY DATENAME(MONTH, rd.fecha), MONTH(rd.fecha), YEAR(rd.fecha)
+      ORDER BY YEAR(rd.fecha), MONTH(rd.fecha)
+    `);
 
     res.json({
       usuarios: usuarios.recordset[0].total,
       reservas: reservas.recordset[0].total,
       atracciones: atracciones.recordset[0].total,
       ingresos: ingresosTotales.recordset[0].ingresos_totales || 0,
-      ingresosPorMes: ingresosPorMes.recordset,
+      ingresosPorMesTotales: ingresosPorMesTotales.recordset,
+      ingresosPorMes: ingresosPorMes.recordset
     });
+
   } catch (err) {
     console.error('Error al obtener estadísticas:', err);
     res.status(500).json({ mensaje: 'Error del servidor' });

@@ -13,7 +13,7 @@ return (
 <p>Explora, reserva y disfruta de la experiencia EcoMaravillas.</p>
 </header>
   <section className="cliente-home-grid">
-    <div className="cliente-card" onClick={() => window.location.href = '/reservas'}>
+    <div className="cliente-card" onClick={() => window.location.href = '/client/reservas'}>
       <FaCalendarAlt className="icono-card" />
       <h3>Reservar atracción</h3>
       <p>Agenda tu próxima visita a nuestras rutas ecológicas.</p>
@@ -31,9 +31,9 @@ return (
       <p>Observa la fauna y flora destacada de la reserva.</p>
     </div>
 
-    <div className="cliente-card" onClick={() => window.location.href = '/perfil'}>
+    <div className="cliente-card" onClick={() => window.location.href = '/client/config'}>
       <FaUserEdit className="icono-card" />
-      <h3>Editar Perfil</h3>
+      <h3>Ajustes del Perfil</h3>
       <p>Actualiza tu información personal y preferencias.</p>
     </div>
   </section>

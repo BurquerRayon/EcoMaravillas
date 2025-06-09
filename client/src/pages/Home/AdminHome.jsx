@@ -5,14 +5,7 @@ import axios from 'axios';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const AdminDashboard = () => {
   const [estadisticas, setEstadisticas] = useState({
@@ -20,7 +13,7 @@ const AdminDashboard = () => {
     reservas: 0,
     ingresos: 0,
     atracciones: 0,
-    ingresosPorMes: [],
+    ingresosPorMesTotales: [],
   });
 
   useEffect(() => {
@@ -32,7 +25,7 @@ const AdminDashboard = () => {
   // Función para ordenar los meses cronológicamente
   const sortMonths = (data) => {
     if (!data || data.length === 0) return [];
-    
+
     const monthOrder = [
       'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
       'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
@@ -41,21 +34,19 @@ const AdminDashboard = () => {
     return [...data].sort((a, b) => {
       const [monthA, yearA] = a.mes.split(' ');
       const [monthB, yearB] = b.mes.split(' ');
-      
       if (yearA !== yearB) return parseInt(yearB) - parseInt(yearA);
       return monthOrder.indexOf(monthB.toLowerCase()) - monthOrder.indexOf(monthA.toLowerCase());
     });
   };
 
-  // Prepara los datos para la gráfica
-  const sortedData = sortMonths(estadisticas.ingresosPorMes);
+  const sortedData = sortMonths(estadisticas.ingresosPorMesTotales);
 
   const chartData = {
-    labels: sortedData.map(item => item.mes) || [],
+    labels: sortedData.map(item => item.mes),
     datasets: [
       {
         label: 'Ingresos ($)',
-        data: sortedData.map(item => item.ingresos_mes) || [],
+        data: sortedData.map(item => item.ingresos_mes),
         backgroundColor: 'rgba(46, 139, 87, 0.6)',
         borderColor: 'rgba(46, 139, 87, 1)',
         borderWidth: 1,
@@ -71,7 +62,7 @@ const AdminDashboard = () => {
       },
       title: {
         display: true,
-        text: 'Ingresos Mensuales',
+        text: 'Ingresos Mensuales (Totales)',
         font: {
           size: 16
         }
@@ -136,7 +127,6 @@ const AdminDashboard = () => {
         </div>
       </section>
 
-      {/* Lista alternativa ordenada */}
       <div className="ingresos-lista-container">
         <h3>Detalle por Mes</h3>
         <ul className="ingresos-lista">
@@ -152,13 +142,13 @@ const AdminDashboard = () => {
         <h2>Accesos Rápidos</h2>
         <div className="acciones-grid">
           <Link to="/admin/config" className="card acceso">⚙️ Configuración</Link>
-          <Link to="/admin/ajustes/Reservas" className="card acceso">📋 Reservas</Link>
+          <Link to="/admin/Reservas" className="card acceso">📋 Reservas</Link>
           <Link to="/admin/usuarios" className="card acceso">👥 Usuarios</Link>
           <Link to="/admin/reportes" className="card acceso">📊 Reportes</Link>
         </div>
       </section>
     </div>
   );
-};  
+};
 
 export default AdminDashboard;

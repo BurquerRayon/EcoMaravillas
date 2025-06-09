@@ -1,0 +1,73 @@
+.form-ajuste-cliente {
+background-color: #ffffff;
+border-radius: 12px;
+padding: 2rem;
+box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+max-width: 600px;
+margin: 1.5rem auto;
+font-family: 'Segoe UI', sans-serif;
+}
+
+.form-ajuste-cliente h3 {
+color: #228B22;
+text-align: center;
+margin-bottom: 1.5rem;
+}
+
+.form-ajuste-cliente form {
+display: flex;
+flex-direction: column;
+gap: 1rem;
+}
+
+.form-ajuste-cliente label {
+font-weight: bold;
+color: #495057;
+}
+
+.form-ajuste-cliente input {
+padding: 10px;
+border-radius: 8px;
+border: 1px solid #ccc;
+font-size: 1rem;
+outline: none;
+transition: border-color 0.3s;
+}
+
+.form-ajuste-cliente input:focus {
+border-color: #228B22;
+box-shadow: 0 0 0 2px rgba(34, 139, 34, 0.2);
+}
+
+.form-ajuste-cliente button {
+background-color: #0066cc;
+color: white;
+padding: 12px;
+border: none;
+border-radius: 8px;
+font-weight: bold;
+cursor: pointer;
+transition: background-color 0.3s;
+}
+
+.form-ajuste-cliente button:hover {
+background-color: #004a99;
+}
+
+.mensaje-alerta {
+margin-top: 1rem;
+text-align: center;
+padding: 0.75rem;
+border-radius: 8px;
+font-weight: bold;
+}
+
+.mensaje-alerta:empty {
+display: none;
+}
+
+.mensaje-alerta {
+background-color: #e6f6e6;
+color: #2d6a2d;
+border: 1px solid #b7dfb7;
+}

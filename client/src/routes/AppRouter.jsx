@@ -1,23 +1,29 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from '../context/AuthContext'; 
+//Homes
 import Home from '../pages/Home/Home';
 import HomeClient from '../pages/Home/HomeClient';
 import HomeEmployee from '../pages/Home/HomeEmployee';
+import AdminHome from '../pages/Home/AdminHome';
+//basics
 import Login from '../pages/Login';
-import Reportes from '../pages/Empleados/Reports';
-import Dashboard from '../pages/Admin/Dashboard';
-import GestionReservas from '../pages/Empleados/GestionReservas';
-import GestionUsuarios from '../pages/Admin/GestionUsuarios';
-import Config from '../pages/Admin/Config';
 import Registro from '../pages/Cliente/Register';
-import NotFound from '../pages/NotFound';
 import Navbar from '../components/Navbar';
 import Mapa from '../pages/Cliente/Map';
 import Galeria from '../pages/Cliente/Gallery';
 import Nosotros from '../pages/About';
-import ReservasCliente from '../pages/Cliente/ReservasCliente';
-import AdminHome from '../pages/Home/AdminHome';
+import NotFound from '../pages/NotFound';
+//Empleados
+import ReportesE from '../pages/Empleados/Reports';
+import GestionReservasE from '../pages/Empleados/GestionReservas';
+//admins
+import ReportesA from '../pages/Admin/ReportsAdmin';
+import Dashboard from '../pages/Admin/Dashboard';
+import GestionReservasAdmin  from '../pages/Admin/AdminReservas';
+import GestionUsuarios from '../pages/Admin/GestionUsuarios';
+import ConfigA from '../pages/Admin/Config';
+//admins Config
 import AtraccionesConfig  from '../pages/Admin/Config/Atracciones';
 import MonedasConfig  from '../pages/Admin/Config/Monedas';
 import NacionalidadesConfig  from '../pages/Admin/Config/Nacionalidades';
@@ -25,7 +31,11 @@ import PermisosConfig  from '../pages/Admin/Config/Permisos';
 import RolesConfig  from '../pages/Admin/Config/Roles';
 import ReportesConfig  from '../pages/Admin/Config/TiposDeReportes';
 import ConfigHoras  from '../pages/Admin/Config/HorarioReservasConfig';
-import GestionReservasAdmin  from '../pages/Admin/AdminReservas';
+
+// Cliente
+import ReservasCliente from '../pages/Cliente/ReservasCliente';
+import ConfigC from '../pages/Cliente/Config';
+import DatosPC from '../pages/Cliente/Config/DatosPersonales';
 
 const AppRouter = () => {
   return (
@@ -38,13 +48,16 @@ const AppRouter = () => {
         <Route path="/registro" element={<Registro />} />
         
         {/* Rutas de Empleados */}
-        <Route path="/admin/reservas" element={<GestionReservas />} />
-        <Route path="/admin/usuarios" element={<GestionUsuarios />} />
-        <Route path="/reportes" element={<Reportes />} />
+        <Route path="/Employee/reportes" element={<ReportesE />} />
+        <Route path="/Employee/reservas" element={<GestionReservasE />} />
         
         {/* Rutas de administrador */}
-        <Route path="/admin/config" element={<Config />} />
+        <Route path="/admin/config" element={<ConfigA />} />
         <Route path="/admin/dashboard" element={<Dashboard />} />
+        <Route path="/admin/Reservas" element={<GestionReservasAdmin />} />
+        <Route path="/admin/reportes" element={<ReportesA />} />
+        <Route path="/admin/usuarios" element={<GestionUsuarios />} />
+       {/* Rutas de COnfig-administrador */}
         <Route path="/admin/ajustes/roles" element={<RolesConfig />} />
         <Route path="/admin/ajustes/permisos" element={<PermisosConfig />} />
         <Route path="/admin/ajustes/atracciones" element={<AtraccionesConfig />} />
@@ -52,7 +65,6 @@ const AppRouter = () => {
         <Route path="/admin/ajustes/reportes" element={<ReportesConfig />} />
         <Route path="/admin/ajustes/nacionalidades" element={<NacionalidadesConfig />} />
         <Route path="/admin/ajustes/configuracionhoras" element={<ConfigHoras />} />
-        <Route path="/admin/ajustes/Reservas" element={<GestionReservasAdmin />} />
 
         {/* Rutas de Paginas Home */}
         <Route path="/home/client" element={<HomeClient />} />
@@ -63,9 +75,12 @@ const AppRouter = () => {
         <Route path="/about" element={<Nosotros/>} />
 
         {/* Rutas de Paginas de Reservas */}
-        <Route path="/reservas" element={<ReservasCliente />} />
+        <Route path="/client/reservas" element={<ReservasCliente />} />
+        <Route path="/perfil" element={<DatosPC />} />
+        <Route path="/client/config" element={<ConfigC />} />
         <Route path="/map" element={<Mapa />} />
         <Route path="/gallery" element={<Galeria />} />
+
 
         {/* Ruta para errores 404 */}
         <Route path="*" element={<NotFound />} />
