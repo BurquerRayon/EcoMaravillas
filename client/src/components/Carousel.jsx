@@ -1,13 +1,32 @@
-import React, { useState } from 'react';
-import '../styles/Carrusel.css'; // Asegúrate de que este CSS exista
+import React, { useState } from "react";
+import "../styles/Carrusel.css"; // Asegúrate de que este CSS exista
+
+/*const images = [
+  "/assets/img/Flora/e1.jpeg",
+  "/assets/img/Flora/e2.jpeg",
+  "/assets/img/Flora/e3.jpeg",
+  // Agrega más rutas según tus imágenes
+]; //a */
 
 const images = [
-  '/assets/img/e1.jpeg',
-  '/assets/img/e2.jpeg',
-  '/assets/img/e3.jpeg',
-  // Agrega más rutas según tus imágenes
+  {
+    src: "/assets/img/Flora/e1.jpeg",
+    nombre: "Flor 1",
+    caracteristica: "Flor silvestre encontrada en zonas húmedas.",
+  },
+  {
+    src: "/assets/img/Flora/e2.jpeg",
+    nombre: "Flor 2",
+    caracteristica: "Flor común en áreas montañosas.",
+  },
+  {
+    src: "/assets/img/Flora/e3.jpeg",
+    nombre: "Flor 3",
+    caracteristica: "Flor de colores intensos, polinizada por abejas.",
+  },
 ];
 
+//SE AGREGO MAS CODIGOS PARA LAS CARACTERISTICAS E IMAGENES//
 const Carrusel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -23,21 +42,27 @@ const Carrusel = () => {
     );
   };
 
+  const imagenActual = images[currentIndex];
+
   return (
     <div className="carousel-container">
-      <button className="nav-btn left" onClick={handlePrev}>
-        ◀
-      </button>
+      <button className="nav-btn left" onClick={handlePrev}></button>
 
       <img
-        src={images[currentIndex]}
-        alt={`Slide ${currentIndex + 1}`}
+        src={imagenActual.src}
+        alt={imagenActual.nombre}
         className="carousel-image"
       />
 
-      <button className="nav-btn right" onClick={handleNext}>
-        ▶
-      </button>
+      <button className="nav-btn right" onClick={handleNext}></button>
+
+      {/* Características visibles solo cuando hay una imagen seleccionada */}
+      <div className="caracteristica-box">
+        <h2>{imagenActual.nombre}</h2>
+        <p>
+          <strong>Características:</strong> {imagenActual.caracteristica}
+        </p>
+      </div>
     </div>
   );
 };
