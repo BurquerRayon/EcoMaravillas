@@ -1,65 +1,110 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../../styles/ReservaCliente.css';
 
 const ReservaCliente = () => {
   const [atracciones, setAtracciones] = useState([]);
-  const [detalles, setDetalles] = useState([
-    { id_atraccion: '', cantidad: 1, fecha: '', hora: '09', minuto: '00', tarifa_unitaria: 0, subtotal: 0 }
-  ]);
-  const [total, setTotal] = useState(0);
+  const [detalles, setDetalles] = useState([]);
   const [mensaje, setMensaje] = useState('');
+  const [horarios, setHorarios] = useState([]);
   const [historial, setHistorial] = useState([]);
+  const [historialFiltrado, setHistorialFiltrado] = useState([]);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
-  const [paginaActual, setPaginaActual] = useState(1);
-  const elementosPorPagina = 10;
-
+  const [bloquearReservaDuplicada, setBloquearReservaDuplicada] = useState(false);
+  const [reservaEditando, setReservaEditando] = useState(null);
+  const [modoEdicion, setModoEdicion] = useState(false);
+  
+  // Estados para filtros y paginación
   const [filtroFecha, setFiltroFecha] = useState('');
   const [filtroNombre, setFiltroNombre] = useState('');
   const [filtroEstado, setFiltroEstado] = useState('');
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
-  const [horas, setHoras] = useState([]);
-  const [minutos] = useState(['00', '10', '20', '30', '40', '50']);
+  const [paginaActual, setPaginaActual] = useState(1);
+  const elementosPorPagina = 10;
 
   const user = JSON.parse(localStorage.getItem('user'));
+  const id_turista = user?.id_turista;
 
+  // Función para formatear hora
+  const formatearHora = (horaObj) => {
+    if (!horaObj) return '';
+
+    try {
+      const date = new Date(horaObj);
+      const hours = date.getUTCHours();
+      const minutes = date.getUTCMinutes();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const hour12 = hours % 12 || 12;
+      return `${hour12}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+    } catch (err) {
+      console.error('Error al formatear hora:', err);
+      return horaObj;
+    }
+  };
+
+  // Generar bloques horarios
+  const generarBloquesHorario = (inicio, fin) => {
+    const bloques = [];
+    let [h, m] = inicio.split(':').map(Number);
+    const [hFin] = fin.split(':').map(Number);
+
+    while (h < hFin || (h === hFin && m === 0)) {
+      bloques.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
+      m += 30;
+      if (m >= 60) {
+        h += 1;
+        m = 0;
+      }
+    }
+    return bloques;
+  };
+
+  // Verificar reservas duplicadas
+  const existeReservaDuplicada = (nuevoDetalle, indexActual = -1) => {
+    return detalles.some((detalle, index) => 
+      index !== indexActual &&
+      detalle.id_atraccion &&
+      detalle.id_atraccion === nuevoDetalle.id_atraccion &&
+      detalle.fecha &&
+      detalle.fecha === nuevoDetalle.fecha &&
+      detalle.hora &&
+      detalle.hora === nuevoDetalle.hora
+    );
+  };
+
+  // Cargar datos iniciales
   useEffect(() => {
     axios.get('http://localhost:3001/api/atracciones')
       .then(res => setAtracciones(res.data))
       .catch(err => console.error('Error al cargar atracciones:', err));
-  }, []);
 
-  useEffect(() => {
-    const nuevoTotal = detalles.reduce((acc, item) => acc + item.subtotal, 0);
-    setTotal(nuevoTotal);
-  }, [detalles]);
-
-  const generarHoras = (inicio, fin) => {
-    const hInicio = parseInt(inicio.split(':')[0]);
-    const hFin = parseInt(fin.split(':')[0]);
-    const lista = [];
-    for (let h = hInicio; h <= hFin; h++) {
-      lista.push(h.toString().padStart(2, '0'));
-    }
-    return lista;
-  };
-
-  useEffect(() => {
-    const cargarHorarioValido = async () => {
-      try {
-        const res = await axios.get('http://localhost:3001/api/config/horario-reservas?_ts=' + new Date().getTime());
+    axios.get('http://localhost:3001/api/config/horario-reservas')
+      .then(res => {
         const { hora_inicio, hora_fin } = res.data;
-        const horasValidas = generarHoras(hora_inicio, hora_fin);
-        setHoras(horasValidas);
-      } catch (err) {
-        console.error('Error al cargar el horario válido:', err);
-        // Valores por defecto si falla la carga
-        setHoras(['09', '10', '11', '12', '13', '14', '15', '16', '17']);
-      }
-    };
-    cargarHorarioValido();
-  }, []);
+        setHorarios(generarBloquesHorario(hora_inicio, hora_fin));
+      })
+      .catch(() => setHorarios(generarBloquesHorario('09:00', '17:00')));
 
+    if (id_turista) cargarHistorial();
+  }, [id_turista]);
+
+  // Aplicar filtros al historial
+  useEffect(() => {
+    if (historial.length > 0) {
+      const filtrado = historial.filter((reserva) => {
+        const coincideFecha = !filtroFecha || reserva.fecha?.split('T')[0] === filtroFecha;
+        const coincideNombre = !filtroNombre || 
+          reserva.nombre_atraccion?.toLowerCase().includes(filtroNombre.toLowerCase());
+        const coincideEstado = !filtroEstado || 
+          reserva.estado?.toLowerCase() === filtroEstado.toLowerCase();
+        return coincideFecha && coincideNombre && coincideEstado;
+      });
+      setHistorialFiltrado(filtrado);
+      setPaginaActual(1);
+    }
+  }, [historial, filtroFecha, filtroNombre, filtroEstado]);
+
+  // Manejar cambios en los detalles
   const handleDetalleChange = (index, field, value) => {
     const nuevaLista = [...detalles];
     nuevaLista[index][field] = value;
@@ -69,6 +114,21 @@ const ReservaCliente = () => {
       if (atraccion) nuevaLista[index].tarifa_unitaria = atraccion.precio;
     }
 
+    // Verificar duplicados después de cambios relevantes
+    if (field === 'id_atraccion' || field === 'fecha' || field === 'hora') {
+      const detalleModificado = { ...nuevaLista[index] };
+      const esDuplicado = existeReservaDuplicada(detalleModificado, index);
+      
+      if (esDuplicado) {
+        setMensaje('⚠️ Ya tienes una reserva para esta atracción en la misma fecha y hora');
+        setBloquearReservaDuplicada(true);
+      } else {
+        setBloquearReservaDuplicada(false);
+        setMensaje('');
+      }
+    }
+
+    // Calcular subtotal
     const cantidad = parseInt(nuevaLista[index].cantidad) || 0;
     const tarifa = parseFloat(nuevaLista[index].tarifa_unitaria) || 0;
     nuevaLista[index].subtotal = cantidad * tarifa;
@@ -76,250 +136,311 @@ const ReservaCliente = () => {
     setDetalles(nuevaLista);
   };
 
-  const agregarDetalle = () => {
-    setDetalles([...detalles, { 
-      id_atraccion: '', 
-      cantidad: 1, 
-      fecha: '', 
-      hora: horas[0] || '09', 
-      minuto: '00', 
-      tarifa_unitaria: 0, 
-      subtotal: 0 
-    }]);
-  };
+  // Función para manejar cambio de fecha con validación de lunes
+  const handleFechaChange = (e, index) => {
+    const selectedDate = new Date(e.target.value);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-  const eliminarDetalle = (index) => {
-    const nuevaLista = detalles.filter((_, i) => i !== index);
-    setDetalles(nuevaLista);
-  };
-
-  const validarDetalles = () => {
-    return detalles.every(detalle => {
-      return (
-        detalle.id_atraccion && 
-        detalle.cantidad > 0 && 
-        detalle.fecha && 
-        detalle.hora && 
-        detalle.minuto
-      );
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const id_turista = user?.id_turista;
-
-    if (!validarDetalles()) {
-      setMensaje('❌ Por favor complete todos los campos correctamente');
+    // Validar que no sea lunes (1 = Lunes)
+    if (selectedDate.getDay() === 0) {
+      setMensaje('⚠️ No se permiten reservas los lunes. Por favor seleccione otro día.');
+      
+      // Resetear el valor del input de fecha
+      const nuevaLista = [...detalles];
+      nuevaLista[index].fecha = '';
+      setDetalles(nuevaLista);
+      
       return;
     }
 
-    const detallesParaEnviar = detalles.map(d => {
-      // Asegurar que todos los campos tengan valores válidos
-      const horaValida = d.hora?.padStart(2, '0') || '09';
-      const minutoValido = d.minuto?.padStart(2, '0') || '00';
-      
-      return {
-        id_atraccion: d.id_atraccion,
-        cantidad: d.cantidad,
-        tarifa_unitaria: d.tarifa_unitaria,
-        fecha: d.fecha,
-        hora: `${horaValida}:${minutoValido}`,
-        subtotal: d.subtotal
-      };
-    });
-
-    console.log("Enviando reserva con detalles:", detallesParaEnviar);
-
-    try {
-      const response = await axios.post('http://localhost:3001/api/reservas', {
-        id_turista,
-        detalles: detallesParaEnviar
-      });
-
-      console.log("Respuesta del servidor:", response.data);
-
-      setMensaje('✅ Reserva creada correctamente');
-      setDetalles([{ 
-        id_atraccion: '', 
-        cantidad: 1, 
-        fecha: '', 
-        hora: horas[0] || '09', 
-        minuto: '00', 
-        tarifa_unitaria: 0, 
-        subtotal: 0 
-      }]);
-      cargarHistorial();
-      setMostrarFormulario(false);
-    } catch (err) {
-      console.error('Error al guardar reserva:', err.response?.data || err.message);
-      setMensaje(`❌ Error al guardar la reserva: ${err.response?.data?.message || err.message}`);
+    // Validar que la fecha no sea en el pasado
+    if (selectedDate < today) {
+      setMensaje('⚠️ No puedes reservar para fechas pasadas');
+      return;
     }
+
+    handleDetalleChange(index, 'fecha', e.target.value);
   };
 
-  const cargarHistorial = async () => {
-    try {
-      const res = await axios.get(`http://localhost:3001/api/reservas/turista/${user.id_turista}`);
-      setHistorial(res.data);
-    } catch (err) {
-      console.error('Error al obtener reservas:', err);
-    }
+  // Agregar nuevo detalle
+  const agregarDetalle = () => {
+    const nuevoDetalle = {
+      id_atraccion: '',
+      cantidad: 1,
+      fecha: '',
+      hora: horarios[0] || '09:00',
+      tarifa_unitaria: 0,
+      subtotal: 0
+    };
+
+    setDetalles(prev => [...prev, nuevoDetalle]);
+    setBloquearReservaDuplicada(false);
+    setMensaje('');
   };
 
-  useEffect(() => {
-    if (user?.id_turista) cargarHistorial();
-  }, [user]);
+  // Eliminar detalle
+  const eliminarDetalle = (index) => {
+    const nueva = detalles.filter((_, i) => i !== index);
+    setDetalles(nueva);
+    
+    // Verificar si quedan duplicados después de eliminar
+    const hayDuplicados = nueva.some((detalle, idx) => 
+      existeReservaDuplicada(detalle, idx)
+    );
+    
+    setBloquearReservaDuplicada(hayDuplicados);
+    if (!hayDuplicados) setMensaje('');
+  };
 
-const formatearHora = (horaObj) => {
-  if (!horaObj) return '';
+  // Cancelar creación de nueva reserva
+  const cancelarCreacion = () => {
+    setDetalles([]);
+    setMostrarFormulario(false);
+    setMensaje('');
+    setBloquearReservaDuplicada(false);
+  };
 
+  // Cancelar edición de reserva
+  const cancelarEdicion = () => {
+    setDetalles([]);
+    setReservaEditando(null);
+    setModoEdicion(false);
+    setMostrarFormulario(false);
+    setMensaje('');
+    setBloquearReservaDuplicada(false);
+  };
+
+  // Cargar detalles de reserva para edición
+// Función para cargar reserva para edición (versión mejorada)
+const cargarReservaParaEdicion = async (id_reserva) => {
   try {
-    const date = new Date(horaObj);
-    const hours = date.getUTCHours();  // NO getHours() — usamos UTC para evitar desfase
-    const minutes = date.getUTCMinutes();
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    const hour12 = hours % 12 || 12;
-    return `${hour12}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+    // Verificar que tenemos un ID de reserva válido
+    if (!id_reserva) {
+      setMensaje('❌ No se proporcionó un ID de reserva válido');
+      return;
+    }
+
+    // Mostrar mensaje de carga
+    setMensaje('Cargando reserva...');
+
+    // 1. Obtener información básica de la reserva
+    const response = await axios.get(`http://localhost:3001/api/reservas/${id_reserva}`);
+    const reserva = response.data;
+    
+    // Verificar si la respuesta es válida
+    if (!reserva) {
+      setMensaje('❌ No se encontró la reserva solicitada');
+      return;
+    }
+
+    // Verificar si se puede editar
+    if (reserva.estado === 'confirmado' && reserva.ediciones >= 1) {
+      setMensaje('❌ Solo puedes editar una vez las reservas confirmadas');
+      return;
+    }
+    
+    if (reserva.estado === 'pendiente' && reserva.ediciones >= 2) {
+      setMensaje('❌ Solo puedes editar máximo 2 veces las reservas pendientes');
+      return;
+    }
+    
+    if (reserva.estado === 'cancelado') {
+      setMensaje('❌ No se pueden editar reservas canceladas');
+      return;
+    }
+
+    // 2. Obtener los detalles de la reserva
+    const detallesReserva = await axios.get(`http://localhost:3001/api/reservas/${id_reserva}/detalles`);
+    
+    // Verificar que hay detalles
+    if (!detallesReserva.data || detallesReserva.data.length === 0) {
+      setMensaje('❌ La reserva no tiene detalles asociados');
+      return;
+    }
+
+    // Formatear los detalles para el estado
+    const detallesFormateados = detallesReserva.data.map(d => ({
+      id_atraccion: d.id_atraccion,
+      cantidad: d.cantidad,
+      fecha: d.fecha.split('T')[0], // Asegurar formato de fecha correcto
+      hora: d.hora,
+      tarifa_unitaria: d.tarifa_unitaria,
+      subtotal: d.subtotal
+    }));
+    
+    // Actualizar el estado
+    setDetalles(detallesFormateados);
+    setReservaEditando(id_reserva);
+    setModoEdicion(true);
+    setMostrarFormulario(true);
+    setMensaje(`Editando reserva #${id_reserva}`);
+    
   } catch (err) {
-    console.error('Error al formatear hora:', err);
-    return horaObj;
+    console.error('Error completo al cargar reserva para edición:', err);
+    
+    let errorMsg = '❌ Error al cargar la reserva para edición';
+    
+    if (err.response) {
+      // El servidor respondió con un código de estado fuera del rango 2xx
+      errorMsg += `: ${err.response.data.message || err.response.statusText}`;
+      console.error('Detalles del error:', err.response.data);
+    } else if (err.request) {
+      // La solicitud fue hecha pero no se recibió respuesta
+      errorMsg += ': No se recibió respuesta del servidor';
+      console.error('No hay respuesta:', err.request);
+    } else {
+      // Algo pasó al configurar la solicitud
+      errorMsg += `: ${err.message}`;
+    }
+    
+    setMensaje(errorMsg);
   }
 };
 
-  const reservasFiltradas = historial.filter((reserva) => {
-    const coincideFecha = !filtroFecha || reserva.fecha?.startsWith(filtroFecha);
-    const coincideNombre = !filtroNombre || reserva.nombre_atraccion?.toLowerCase().includes(filtroNombre.toLowerCase());
-    const coincideEstado = !filtroEstado || reserva.estado?.toLowerCase() === filtroEstado;
-    return coincideFecha && coincideNombre && coincideEstado;
-  });
+  // Cancelar una reserva existente
+  const cancelarReserva = async (id_reserva) => {
+    if (!window.confirm('¿Estás seguro de que deseas cancelar esta reserva?')) {
+      return;
+    }
 
-  const reservasPaginadas = reservasFiltradas.slice(
+    try {
+      const response = await axios.put(`http://localhost:3001/api/reservas/cancelar/${id_reserva}`);
+      setMensaje(response.data.message || '✅ Reserva cancelada');
+      cargarHistorial();
+    } catch (err) {
+      const msg = err.response?.data?.message || '❌ Error al cancelar la reserva';
+      setMensaje(msg);
+      console.error('Error al cancelar reserva:', msg);
+    }
+  };
+
+  // Enviar reserva (creación o edición)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (bloquearReservaDuplicada) {
+      setMensaje('❌ Corrige las reservas duplicadas antes de continuar');
+      return;
+    }
+
+    if (!id_turista) {
+      setMensaje('❌ No se encontró el ID del usuario');
+      return;
+    }
+
+    // Validar que no haya fechas en lunes
+    const hayLunes = detalles.some(d => {
+      if (!d.fecha) return false;
+      const dia = new Date(d.fecha).getDay();
+      return dia === 0; // 1 = Lunes
+    });
+
+    if (hayLunes) {
+      setMensaje('❌ No se permiten reservas los lunes');
+      return;
+    }
+
+    const esValido = detalles.every(d =>
+      d.id_atraccion && d.cantidad > 0 && d.fecha && d.hora
+    );
+
+    if (!esValido) {
+      setMensaje('❌ Complete todos los campos correctamente');
+      return;
+    }
+
+    try {
+      if (modoEdicion && reservaEditando) {
+        // Lógica para editar reserva
+        const response = await axios.put(`http://localhost:3001/api/reservas/editar/${reservaEditando}`, {
+          id_turista,
+          detalles
+        });
+
+        setMensaje(response.data.message || '✅ Reserva actualizada');
+        setDetalles([]);
+        setReservaEditando(null);
+        setModoEdicion(false);
+        cargarHistorial();
+        setMostrarFormulario(false);
+      } else {
+        // Lógica para crear nueva reserva
+        const response = await axios.post('http://localhost:3001/api/reservas/crear', {
+          id_turista,
+          detalles
+        });
+
+        setMensaje(response.data.message || '✅ Reserva creada');
+        setDetalles([]);
+        cargarHistorial();
+        setMostrarFormulario(false);
+      }
+    } catch (err) {
+      const msg = err.response?.data?.message || '❌ Error al procesar la reserva';
+      setMensaje(msg);
+      console.error('Error en reserva:', msg);
+    }
+  };
+
+  // Cargar historial de reservas
+  const cargarHistorial = async () => {
+    try {
+      const res = await axios.get(`http://localhost:3001/api/reservas/turista/${id_turista}`);
+      setHistorial(res.data);
+    } catch (err) {
+      console.error('Error al cargar historial:', err);
+    }
+  };
+
+  // Calcular total
+  const total = detalles.reduce((sum, d) => sum + d.subtotal, 0);
+
+  // Calcular paginación
+  const totalPaginas = Math.ceil(historialFiltrado.length / elementosPorPagina);
+  const historialPaginado = historialFiltrado.slice(
     (paginaActual - 1) * elementosPorPagina,
     paginaActual * elementosPorPagina
   );
 
-  const totalPaginas = Math.ceil(reservasFiltradas.length / elementosPorPagina);
-
-  useEffect(() => {
-  if (historial.length > 0) {
-    console.log('🕒 Historial recibido:', historial.map(r => r.hora));
-  }
-}, [historial]);
-
-
   return (
-<div className="dashboard-container">
-      <section className="panel-botones">
-        <button type="button" className="btn-toggle-form" onClick={() => setMostrarFormulario(!mostrarFormulario)}>
+    <div className="dashboard-container">
+      <h2>Reservas</h2>
+
+      <div className="panel-botones">
+        <button onClick={() => {
+          setMostrarFormulario(!mostrarFormulario);
+          if (mostrarFormulario) {
+            cancelarCreacion();
+            cancelarEdicion();
+          }
+        }}>
           {mostrarFormulario ? '➖ Ocultar Formulario' : '➕ Crear Nueva Reserva'}
         </button>
-
-        <button type="button" className="btn-toggle-form" onClick={() => setMostrarFiltros(!mostrarFiltros)}>
+        
+        <button onClick={() => setMostrarFiltros(!mostrarFiltros)}>
           {mostrarFiltros ? '➖ Ocultar Búsqueda' : '🔍 Buscar Reservas'}
         </button>
-      </section>
-
-      {mostrarFormulario && (
-        <section className="reserva-form">
-          <h2>Crear Nueva Reserva</h2>
-          <form onSubmit={handleSubmit}>
-            {detalles.map((detalle, index) => (
-              <div key={index} className="reserva-linea">
-                <select
-                  value={detalle.id_atraccion}
-                  onChange={(e) => handleDetalleChange(index, 'id_atraccion', e.target.value)}
-                  required
-                >
-                  <option value="">Selecciona una atracción</option>
-                  {atracciones.map((a) => (
-                    <option key={a.id_atraccion} value={a.id_atraccion}>
-                      {a.nombre} - ${a.precio}
-                    </option>
-                  ))}
-                </select>
-
-                <input
-                  type="number"
-                  min="1"
-                  value={detalle.cantidad}
-                  onChange={(e) => handleDetalleChange(index, 'cantidad', e.target.value)}
-                  required
-                />
-
-                <input
-                  type="date"
-                  value={detalle.fecha}
-                  onChange={(e) => {
-                    const selectedDate = new Date(e.target.value);
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0); // Comparar solo fecha
-
-                    if (selectedDate.getDay() === 0) {
-                      alert('⚠️ No se permiten reservas los lunes.');
-                      return;
-                    }
-
-                    handleDetalleChange(index, 'fecha', e.target.value);
-                  }}
-                  min={new Date().toISOString().split('T')[0]}
-                  required
-                />
-
-                <div className="hora-selectores">
-                  <label>Hora:</label>
-                  <select
-                    value={detalle.hora}
-                    onChange={(e) => handleDetalleChange(index, 'hora', e.target.value)}
-                    required
-                  >
-                    <option value="">HH</option>
-                    {horas.map((h) => (
-                      <option key={h} value={h}>{h}</option>
-                    ))}
-                  </select>
-                  <span>:</span>
-                  <select
-                    value={detalle.minuto}
-                    onChange={(e) => handleDetalleChange(index, 'minuto', e.target.value)}
-                    required
-                  >
-                    <option value="">MM</option>
-                    {minutos.map((m) => (
-                      <option key={m} value={m}>{m}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <span>Subtotal: ${detalle.subtotal.toFixed(2)}</span>
-                {detalles.length > 1 && (
-                  <button type="button" onClick={() => eliminarDetalle(index)}>Eliminar</button>
-                )}
-              </div>
-            ))}
-
-            <button type="button" onClick={agregarDetalle}>+ Agregar atracción</button>
-            <h3>Total estimado: ${total.toFixed(2)}</h3>
-            <button type="submit">Reservar</button>
-          </form>
-          {mensaje && <p className="mensaje">{mensaje}</p>}
-        </section>
-      )}
+      </div>
 
       {mostrarFiltros && (
-        <section className="filtros-reserva">
-          <h3>Buscar Reservas</h3>
+        <div className="filtros-reserva">
+          <h3>Filtrar Reservas</h3>
           <div className="filtros-grid">
             <input
               type="date"
               value={filtroFecha}
               onChange={(e) => setFiltroFecha(e.target.value)}
+              placeholder="Filtrar por fecha"
             />
+            
             <input
               type="text"
-              placeholder="Nombre de atracción"
               value={filtroNombre}
               onChange={(e) => setFiltroNombre(e.target.value)}
+              placeholder="Filtrar por atracción"
             />
+            
             <select
               value={filtroEstado}
               onChange={(e) => setFiltroEstado(e.target.value)}
@@ -330,51 +451,212 @@ const formatearHora = (horaObj) => {
               <option value="cancelado">Cancelado</option>
             </select>
           </div>
-        </section>
+        </div>
       )}
 
-      <section className="historial">
-        <h2>Mis Reservas</h2>
-        <table className="tabla-reservas">
-          <thead>
-            <tr>
-              <th>Fecha</th>
-              <th>Hora</th>
-              <th>Atracción</th>
-              <th>Cantidad</th>
-              <th>Subtotal</th>
-              <th>Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-            {reservasPaginadas.length === 0 ? (
-              <tr><td colSpan="6">No hay reservas registradas.</td></tr>
-            ) : (
-              reservasPaginadas.map((reserva, idx) => (
-                <tr key={idx}>
-                  <td>{reserva.fecha?.split('T')[0]}</td>
-                  <td>{formatearHora(reserva.hora)}</td>
-                  <td>{reserva.nombre_atraccion}</td>
-                  <td>{reserva.cantidad}</td>
-                  <td>${reserva.subtotal?.toFixed(2)}</td>
-                  <td>{reserva.estado}</td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-        {totalPaginas > 1 && (
-          <div className="paginacion">
-            <button disabled={paginaActual === 1} onClick={() => setPaginaActual(paginaActual - 1)}>Anterior</button>
-            <span>Página {paginaActual} de {totalPaginas}</span>
-            <button disabled={paginaActual === totalPaginas} onClick={() => setPaginaActual(paginaActual + 1)}>Siguiente</button>
+      {mostrarFormulario && (
+        <form onSubmit={handleSubmit} className="reserva-form">
+          <p className="info-dias">
+            <strong>Horario de reservas:</strong> Martes a Domingo<br />
+            <span className="cerrado-lunes">❌ Los lunes el parque permanece cerrado</span>
+          </p>
+          
+          {modoEdicion && (
+            <div className="modo-edicion-info">
+              <strong>Editando reserva #{reservaEditando}</strong>
+              <button type="button" onClick={cancelarEdicion} className="boton-cancelar">
+                Cancelar Edición
+              </button>
+            </div>
+          )}
+          
+          {detalles.map((detalle, idx) => {
+            const esDuplicado = existeReservaDuplicada(detalle, idx);
+            const esFechaInvalida = detalle.fecha && new Date(detalle.fecha).getDay() === 0;
+            
+            return (
+              <div key={idx} className={`reserva-linea ${esDuplicado || esFechaInvalida ? 'error-duplicado' : ''}`}>
+                <select
+                  value={detalle.id_atraccion}
+                  onChange={(e) => handleDetalleChange(idx, 'id_atraccion', e.target.value)}
+                  required
+                >
+                  <option value="">Seleccione una atracción</option>
+                  {atracciones.map(a => (
+                    <option key={a.id_atraccion} value={a.id_atraccion}>
+                      {a.nombre} - ${a.precio}
+                    </option>
+                  ))}
+                </select>
+
+                <input
+                  type="number"
+                  min="1"
+                  value={detalle.cantidad}
+                  onChange={(e) => handleDetalleChange(idx, 'cantidad', e.target.value)}
+                  required
+                />
+
+                <input
+                  type="date"
+                  value={detalle.fecha}
+                  onChange={(e) => handleFechaChange(e, idx)}
+                  onFocus={(e) => {
+                    // Bloqueo de lunes en el selector nativo
+                    const input = e.target;
+                    input.addEventListener('input', function() {
+                      const day = new Date(this.value).getDay();
+                      if (day === 0) {
+                        this.value = '';
+                        setMensaje('⚠️ No se permiten reservas los lunes');
+                      }
+                    });
+                  }}
+                  className={esFechaInvalida ? 'fecha-invalida' : ''}
+                  min={new Date().toISOString().split('T')[0]}
+                  required
+                />
+
+                <select
+                  value={detalle.hora}
+                  onChange={(e) => handleDetalleChange(idx, 'hora', e.target.value)}
+                  required
+                >
+                  <option value="">Hora</option>
+                  {horarios.map(h => (
+                    <option key={h} value={h}>{h}</option>
+                  ))}
+                </select>
+
+                <span>Subtotal: ${detalle.subtotal.toFixed(2)}</span>
+
+                {detalles.length > 1 && (
+                  <button type="button" onClick={() => eliminarDetalle(idx)}>🗑</button>
+                )}
+              </div>
+            );
+          })}
+
+          <div className="acciones-formulario">
+            <button type="button" onClick={agregarDetalle}>+ Agregar</button>
+            <h4>Total: ${total.toFixed(2)}</h4>
+            
+            <div className="botones-accion">
+              {!modoEdicion && (
+                <button 
+                  type="button" 
+                  onClick={cancelarCreacion}
+                  className="boton-cancelar"
+                >
+                  Cancelar Reserva
+                </button>
+              )}
+              
+              <button 
+                type="submit" 
+                disabled={bloquearReservaDuplicada || detalles.some(d => 
+                  d.fecha && new Date(d.fecha).getDay() === 0
+                )}
+              >
+                {modoEdicion ? 'Actualizar Reserva' : 'Confirmar Reserva'}
+              </button>
+            </div>
           </div>
-        )}
-      </section>
+          
+        </form>
+      )}
+
+      <h3>Historial de reservas</h3>
+          {mensaje && (
+            <p className={`mensaje ${mensaje.includes('✅') ? 'exito' : 'error'}`}>
+              {mensaje}
+            </p>
+          )}
+
+      <table className="tabla-reservas">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Atracción</th>
+            <th>Cantidad</th>
+            <th>Subtotal</th>
+            <th>Estado</th>
+            <th>Ediciones</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {historialFiltrado.length === 0 ? (
+            <tr><td colSpan="9">No hay reservas que coincidan con los filtros.</td></tr>
+          ) : (
+            historialFiltrado.map((r, idx) => (
+              <tr key={idx}>
+                <td>{r.fecha?.split('T')[0]}</td>
+                <td>{formatearHora(r.hora)}</td>
+                <td>{r.nombre_atraccion}</td>
+                <td>{r.cantidad}</td>
+                <td>${r.subtotal?.toFixed(2)}</td>
+                <td>{r.estado}</td>
+                <td>{r.ediciones}</td>
+                <td className="acciones-reserva">
+                  {r.estado !== 'cancelado' && (
+                    <>
+                      <button 
+                        onClick={() => cargarReservaParaEdicion(r.id_reserva)}
+                        disabled={
+                          (r.estado === 'confirmado' && r.ediciones >= 1) ||
+                          (r.estado === 'pendiente' && r.ediciones >= 2)
+                        }
+                        title={
+                          (r.estado === 'confirmado' && r.ediciones >= 1) ? 
+                          'Solo puedes editar 1 vez las reservas confirmadas' :
+                          (r.estado === 'pendiente' && r.ediciones >= 2) ?
+                          'Solo puedes editar máximo 2 veces las reservas pendientes' :
+                          'Editar reserva'
+                        }
+                      >
+                        ✏️
+                      </button>
+                      
+                      {r.estado !== 'confirmado' && (
+                        <button 
+                          onClick={() => cancelarReserva(r.id_reserva)}
+                          title="Cancelar reserva"
+                        >
+                          ❌
+                        </button>
+                      )}
+                    </>
+                  )}
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+
+      {totalPaginas > 1 && (
+        <div className="paginacion">
+          <button 
+            disabled={paginaActual === 1} 
+            onClick={() => setPaginaActual(paginaActual - 1)}
+          >
+            Anterior
+          </button>
+          
+          <span>Página {paginaActual} de {totalPaginas}</span>
+          
+          <button 
+            disabled={paginaActual === totalPaginas} 
+            onClick={() => setPaginaActual(paginaActual + 1)}
+          >
+            Siguiente
+          </button>
+        </div>
+      )}
     </div>
   );
 };
 
 export default ReservaCliente;
-
-

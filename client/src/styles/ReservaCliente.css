@@ -1,3 +1,4 @@
+/* Estilos base y contenedores */
 .dashboard-container {
   padding: 2rem;
   max-width: 1200px;
@@ -5,12 +6,14 @@
   font-family: 'Segoe UI', sans-serif;
 }
 
+/* Tipografía */
 h2, h3 {
   color: #2c3e50;
   margin-bottom: 1rem;
 }
 
-.reserva-form, .historial {
+/* Formulario de reserva */
+.reserva-form {
   background: #fff;
   padding: 1.5rem;
   border-radius: 10px;
@@ -24,6 +27,9 @@ h2, h3 {
   gap: 10px;
   align-items: center;
   margin-bottom: 1rem;
+  padding: 12px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
 }
 
 .reserva-linea input,
@@ -32,11 +38,51 @@ h2, h3 {
   border-radius: 6px;
   border: 1px solid #ccc;
   min-width: 130px;
+  font-size: 14px;
 }
 
 .reserva-linea span {
   font-weight: bold;
   color: #333;
+  min-width: 100px;
+}
+
+/* Selectores de hora */
+.hora-selectores {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hora-selectores label {
+  font-weight: 500;
+  color: #555;
+}
+
+.hora-selectores select {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+/* Botones */
+button {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-toggle-form {
+  margin-right: 1rem;
+  padding: 0.6rem 1rem;
+  background-color: #28a745;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+}
+
+.btn-toggle-form:hover {
+  background-color: #218838;
 }
 
 .reserva-form button {
@@ -45,7 +91,6 @@ h2, h3 {
   border: none;
   padding: 10px 16px;
   border-radius: 6px;
-  cursor: pointer;
   margin-top: 1rem;
 }
 
@@ -53,48 +98,38 @@ h2, h3 {
   background-color: #218838;
 }
 
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Tabla de reservas */
 .tabla-reservas {
   width: 100%;
   border-collapse: collapse;
   margin-top: 1rem;
+  font-size: 14px;
 }
 
-.tabla-reservas th, .tabla-reservas td {
-  border: 1px solid #ddd;
+.tabla-reservas th, 
+.tabla-reservas td {
+  border: 1px solid #dddddd;
   padding: 10px;
   text-align: center;
 }
 
 .tabla-reservas th {
-  background-color: #f4f4f4;
+  background-color: #9fe2f5;
+  font-weight: 600;
 }
 
-.mensaje {
-  margin-top: 10px;
-  color: #2e7d32;
-  font-weight: bold;
-}
-
-.btn-toggle-form {
-  margin: 1rem 0;
-  padding: 0.5rem 1rem;
-  background-color: #228b22;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.btn-toggle-form:hover {
-  background-color: #1a731a;
-}
-
+/* Filtros */
 .filtros-reserva {
   margin-bottom: 1.5rem;
-  background: #f4f4f4;
+  background: #f8f9fa;
   padding: 1rem;
   border-radius: 8px;
+  border-left: 4px solid #6c757d;
 }
 
 .filtros-grid {
@@ -105,41 +140,13 @@ h2, h3 {
 
 .filtros-grid input,
 .filtros-grid select {
-  padding: 8px;
+  padding: 8px 12px;
   border-radius: 4px;
-  border: 1px solid #ccc;
+  border: 1px solid #ced4da;
+  min-width: 180px;
 }
 
-
-.btn-toggle-form {
-  margin-right: 1rem;
-  padding: 0.6rem 1rem;
-  background-color: #28a745;
-  color: white;
-  font-weight: bold;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
-}
-
-.btn-toggle-form:hover {
-  background-color: #218838;
-}
-
-.hora-selectores {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-top: 6px;
-}
-.hora-selectores label {
-  margin-right: 4px;
-  font-weight: 500;
-}
-.hora-selectores select {
-  padding: 4px 8px;
-}
+/* Paginación */
 .paginacion {
   display: flex;
   justify-content: center;
@@ -152,11 +159,9 @@ h2, h3 {
   background-color: #007bff;
   color: white;
   border: none;
-  padding: 8px 14px;
+  padding: 8px 16px;
   border-radius: 6px;
   font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
 }
 
 .paginacion button:hover:not(:disabled) {
@@ -165,10 +170,128 @@ h2, h3 {
 
 .paginacion button:disabled {
   background-color: #ccc;
-  cursor: not-allowed;
 }
 
 .paginacion span {
   font-weight: 500;
   color: #333;
+}
+
+/* Mensajes y estados */
+.mensaje {
+  padding: 12px;
+  border-radius: 4px;
+  margin: 12px 0;
+  text-align: center;
+  font-weight: 500;
+}
+
+.mensaje.exito {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.mensaje.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.info-dias {
+  background-color: #e2f3ff;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  color: #0c5460;
+  border-left: 4px solid #17a2b8;
+  text-align: center;
+}
+
+.cerrado-lunes {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+/* Validaciones y errores */
+.error-duplicado {
+  border: 2px solid #dc3545;
+  background-color: #f8d7da;
+}
+
+.fecha-invalida {
+  border-color: #dc3545 !important;
+  background-color: #fff3f3;
+}
+
+input[type="date"]:invalid {
+  border-color: #dc3545;
+}
+
+/* Animaciones */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
+
+.shake-animation {
+  animation: shake 0.5s;
+}
+
+/* Acciones del formulario */
+.acciones-formulario {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+/* Agregar a tu ReservaCliente.css */
+.modo-edicion-info {
+  background-color: #e7f5ff;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  border-left: 4px solid #4dabf7;
+}
+
+.modo-edicion-info p {
+  margin: 5px 0;
+  color: #1864ab;
+  font-size: 14px;
+}
+
+.btn-cancelar {
+  background-color: #ff6b6b !important;
+  margin-left: 10px;
+}
+
+.btn-cancelar:hover {
+  background-color: #fa5252 !important;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: #adb5bd !important;
+}
+
+.tabla-reservas td button {
+  padding: 6px 12px;
+  background-color: #4dabf7;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.tabla-reservas td button:hover:not(:disabled) {
+  background-color: #339af0;
+}
+
+.tabla-reservas td button:disabled {
+  background-color: #adb5bd !important;
 }

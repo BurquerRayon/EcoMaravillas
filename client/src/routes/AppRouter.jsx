@@ -14,6 +14,7 @@ import Mapa from '../pages/Cliente/Map';
 import Galeria from '../pages/Cliente/Gallery';
 import Nosotros from '../pages/About';
 import NotFound from '../pages/NotFound';
+import Verify from '../pages/Verify';
 //Empleados
 import ReportesE from '../pages/Empleados/Reports';
 import GestionReservasE from '../pages/Empleados/GestionReservas';
@@ -80,7 +81,7 @@ const AppRouter = () => {
         <Route path="/client/config" element={<ConfigC />} />
         <Route path="/map" element={<Mapa />} />
         <Route path="/gallery" element={<Galeria />} />
-
+        <Route path="/verify" element={<Verify />} />
 
         {/* Ruta para errores 404 */}
         <Route path="*" element={<NotFound />} />

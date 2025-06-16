@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 
@@ -47,7 +49,6 @@ app.use('/api/nacionalidades', nacionalidadesRoutes);
 app.use('/api/reservas', reservasRoutes);
 app.use('/api/config', configRoutes);
 app.use('/api/admin', adminRoutes);
-
 
 // ✅ Inicio del servidor
 const PORT = 3001;

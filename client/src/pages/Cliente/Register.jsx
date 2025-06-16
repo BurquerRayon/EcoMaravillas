@@ -1,10 +1,8 @@
-// src/pages/Register.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../../styles/Register.css';
 import Footer from '../../components/Footer';
-import '../../styles/Footer.css';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -26,46 +24,40 @@ const Register = () => {
     e.preventDefault();
 
     if (formData.contrasena !== formData.confirmar) {
-      setMensaje('❌ Las contraseñas no coinciden');
-      return;
+      return setMensaje('❌ Las contraseñas no coinciden');
     }
 
     try {
       const res = await axios.post('http://localhost:3001/api/auth/register', {
-      nombre: formData.nombre,
-      correo: formData.correo,
-      contrasena: formData.contrasena
-    });
+        nombre: formData.nombre,
+        correo: formData.correo,
+        contrasena: formData.contrasena
+      });
 
-setMensaje(`✅ ${res.data.message || 'Registro exitoso. Redirigiendo...'}`);
-
-
-      setMensaje('✅ Registro exitoso. Redirigiendo...');
-      setTimeout(() => {
-        navigate('/login');
-      }, 1500);
+      setMensaje(res.data.message || '✅ Registro exitoso. Revisa tu correo.');
+      setTimeout(() => navigate('/login'), 3000);
 
     } catch (err) {
+      console.error(err);
       setMensaje(err.response?.data?.message || '❌ Error al registrar');
     }
   };
 
-return (
+  return (
     <div className="page-wrapper">
       <main className="content">
-    <div className="form-container">
-      <h2>Registro</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="text" id="nombre" placeholder="Nombre" onChange={handleChange} required />
-        <input type="email" id="correo" placeholder="Correo electrónico" onChange={handleChange} required />
-        <input type="password" id="contrasena" placeholder="Contraseña" onChange={handleChange} required />
-        <input type="password" id="confirmar" placeholder="Confirmar contraseña" onChange={handleChange} required />
-        <button type="submit">Registrarse</button>
-      </form>
-      <p>{mensaje}</p>
-    </div>
+        <div className="form-container">
+          <h2>Registro</h2>
+          <form onSubmit={handleSubmit}>
+            <input type="text" id="nombre" placeholder="Nombre" onChange={handleChange} required />
+            <input type="email" id="correo" placeholder="Correo electrónico" onChange={handleChange} required />
+            <input type="password" id="contrasena" placeholder="Contraseña" onChange={handleChange} required />
+            <input type="password" id="confirmar" placeholder="Confirmar contraseña" onChange={handleChange} required />
+            <button type="submit">Registrarse</button>
+          </form>
+          <p>{mensaje}</p>
+        </div>
       </main>
-
       <Footer />
     </div>
   );

@@ -73,15 +73,22 @@ const GestionUsuarios = () => {
   const eliminarUsuario = async (id) => {
     if (window.confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
       try {
-        await axios.delete(`http://localhost:3001/api/auth/usuarios/${id}`);
-        setMensaje('🗑️ Usuario eliminado');
+        const res = await axios.delete(`http://localhost:3001/api/auth/usuarios/${id}`);
+        setMensaje(res.data.message || '🗑️ Usuario eliminado');
         cargarUsuarios();
       } catch (err) {
-        console.error('❌ Error al eliminar usuario:', err);
-        setMensaje('❌ No se pudo eliminar el usuario');
+        console.error('❌ Error al eliminar usuario:', err.response?.data || err.message);
+        setMensaje(err.response?.data?.message || '❌ No se pudo eliminar el usuario');
       }
     }
   };
+
+  useEffect(() => {
+  if (mensaje) {
+    const timer = setTimeout(() => setMensaje(''), 5000);
+    return () => clearTimeout(timer);
+  }
+}, [mensaje]);
 
   // ====================
   // Filtro de búsqueda
