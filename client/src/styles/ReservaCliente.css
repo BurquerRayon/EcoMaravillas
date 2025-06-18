@@ -295,3 +295,52 @@ button:disabled {
 .tabla-reservas td button:disabled {
   background-color: #adb5bd !important;
 }
+
+/* Paginación mejorada */
+.paginacion {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 25px 0;
+}
+
+.paginacion button {
+  padding: 8px 12px;
+  min-width: 40px;
+  border: 1px solid #2e8b57;
+  background-color: white;
+  color: #2e8b57;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.paginacion button:hover:not(:disabled) {
+  background-color: #2e8b57;
+  color: white;
+}
+
+.paginacion button.active {
+  background-color: #2e8b57;
+  color: white;
+}
+
+.paginacion button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: #ccc;
+  color: #ccc;
+}
+
+.paginacion button:disabled:hover {
+  background-color: white;
+  color: #ccc;
+}
+
+.info-paginacion {
+  margin-left: 15px;
+  font-size: 0.9em;
+  color: #555;
+}

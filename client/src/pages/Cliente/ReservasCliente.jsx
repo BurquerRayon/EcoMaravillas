@@ -43,21 +43,24 @@ const ReservaCliente = () => {
   };
 
   // Generar bloques horarios
-  const generarBloquesHorario = (inicio, fin) => {
-    const bloques = [];
-    let [h, m] = inicio.split(':').map(Number);
-    const [hFin] = fin.split(':').map(Number);
+const generarBloquesHorario = (inicio, fin) => {
+  const bloques = [];
+  let [h, m] = inicio.split(':').map(Number);
+  const [hFin] = fin.split(':').map(Number);
 
-    while (h < hFin || (h === hFin && m === 0)) {
+  while (h < hFin || (h === hFin && m === 0)) {
+    // No incluir el bloque de 17:00
+    if (!(h === 17 && m === 0)) {
       bloques.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
-      m += 30;
-      if (m >= 60) {
-        h += 1;
-        m = 0;
-      }
     }
-    return bloques;
-  };
+    m += 30;
+    if (m >= 60) {
+      h += 1;
+      m = 0;
+    }
+  }
+  return bloques;
+};
 
   // Verificar reservas duplicadas
   const existeReservaDuplicada = (nuevoDetalle, indexActual = -1) => {
@@ -520,11 +523,10 @@ const cargarReservaParaEdicion = async (id_reserva) => {
                 <select
                   value={detalle.hora}
                   onChange={(e) => handleDetalleChange(idx, 'hora', e.target.value)}
-                  required
-                >
-                  <option value="">Hora</option>
+                  required>
+                    
                   {horarios.map(h => (
-                    <option key={h} value={h}>{h}</option>
+                    <option key={h} value={h}>{h.replace('Hora ', '')}</option>
                   ))}
                 </select>
 
@@ -637,24 +639,67 @@ const cargarReservaParaEdicion = async (id_reserva) => {
       </table>
 
       {totalPaginas > 1 && (
-        <div className="paginacion">
-          <button 
-            disabled={paginaActual === 1} 
-            onClick={() => setPaginaActual(paginaActual - 1)}
-          >
-            Anterior
-          </button>
-          
-          <span>Página {paginaActual} de {totalPaginas}</span>
-          
-          <button 
-            disabled={paginaActual === totalPaginas} 
-            onClick={() => setPaginaActual(paginaActual + 1)}
-          >
-            Siguiente
-          </button>
-        </div>
-      )}
+  <div className="paginacion">
+    <button 
+      disabled={paginaActual === 1} 
+      onClick={() => setPaginaActual(1)}
+      title="Primera página"
+    >
+      «
+    </button>
+    
+    <button 
+      disabled={paginaActual === 1} 
+      onClick={() => setPaginaActual(paginaActual - 1)}
+      title="Página anterior"
+    >
+      ‹
+    </button>
+    
+    {Array.from({ length: Math.min(5, totalPaginas) }, (_, i) => {
+      let pagina;
+      if (totalPaginas <= 5) {
+        pagina = i + 1;
+      } else if (paginaActual <= 3) {
+        pagina = i + 1;
+      } else if (paginaActual >= totalPaginas - 2) {
+        pagina = totalPaginas - 4 + i;
+      } else {
+        pagina = paginaActual - 2 + i;
+      }
+      
+      return (
+        <button
+          key={i}
+          onClick={() => setPaginaActual(pagina)}
+          className={paginaActual === pagina ? 'active' : ''}
+        >
+          {pagina}
+        </button>
+      );
+    })}
+    
+    <button 
+      disabled={paginaActual === totalPaginas} 
+      onClick={() => setPaginaActual(paginaActual + 1)}
+      title="Página siguiente"
+    >
+      ›
+    </button>
+    
+    <button 
+      disabled={paginaActual === totalPaginas} 
+      onClick={() => setPaginaActual(totalPaginas)}
+      title="Última página"
+    >
+      »
+    </button>
+    
+    <span className="info-paginacion">
+      Página {paginaActual} de {totalPaginas}
+    </span>
+  </div>
+)}
     </div>
   );
 };

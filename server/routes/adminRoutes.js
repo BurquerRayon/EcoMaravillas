@@ -135,7 +135,6 @@ router.put('/usuarios/:id', async (req, res) => {
 // ============================
 // Eliminar usuario
 // ============================
-// Eliminar usuario y todas sus relaciones dependientes
 router.delete('/usuarios/:id', async (req, res) => {
   const id_usuario = parseInt(req.params.id);
 

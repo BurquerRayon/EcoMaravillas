@@ -165,7 +165,6 @@ router.post('/crear', async (req, res) => {
 // ============================
 // Actualizar una reserva existente
 // ============================
-
 router.put('/editar/:id_reserva', async (req, res) => {
   const { id_reserva } = req.params;
   const { id_turista, detalles } = req.body;
@@ -450,28 +449,57 @@ router.get('/:id_reserva', async (req, res) => {
 // =============================================
 router.get('/turista/:id_turista', async (req, res) => {
   const { id_turista } = req.params;
+  const { completo, fechaDesde, fechaHasta, estado, atraccion } = req.query;
 
   try {
     await poolConnect;
 
-    const result = await pool.request()
-      .input('id_turista', id_turista)
-.query(`
-  SELECT 
-    R.id_reserva,
-    D.fecha,
-    D.hora,
-    A.nombre AS nombre_atraccion,
-    D.cantidad,
-    D.subtotal,
-    R.estado,
-    R.ediciones
-  FROM Reservas R
-  JOIN Reserva_Detalles D ON R.id_reserva = D.id_reserva
-  JOIN Atraccion A ON D.id_atraccion = A.id_atraccion
-  WHERE R.id_turista = @id_turista
-  ORDER BY D.fecha DESC, D.hora ASC
-`);
+    let query = `
+      SELECT 
+        R.id_reserva,
+        D.fecha,
+        D.hora,
+        A.nombre AS nombre_atraccion,
+        D.cantidad,
+        D.subtotal,
+        R.estado,
+        R.ediciones
+      FROM Reservas R
+      JOIN Reserva_Detalles D ON R.id_reserva = D.id_reserva
+      JOIN Atraccion A ON D.id_atraccion = A.id_atraccion
+      WHERE R.id_turista = @id_turista
+    `;
+
+    // Si no es completo, filtrar solo activas
+    if (completo !== 'true') {
+      query += ` AND R.estado IN ('pendiente', 'confirmado')`;
+    }
+
+    // Aplicar filtros adicionales
+    if (fechaDesde) {
+      query += ` AND D.fecha >= @fechaDesde`;
+    }
+    if (fechaHasta) {
+      query += ` AND D.fecha <= @fechaHasta`;
+    }
+    if (estado) {
+      query += ` AND R.estado = @estado`;
+    }
+    if (atraccion) {
+      query += ` AND A.nombre LIKE '%' + @atraccion + '%'`;
+    }
+
+    query += ` ORDER BY D.fecha DESC, D.hora ASC`;
+
+    const request = pool.request()
+      .input('id_turista', id_turista);
+
+    if (fechaDesde) request.input('fechaDesde', fechaDesde);
+    if (fechaHasta) request.input('fechaHasta', fechaHasta);
+    if (estado) request.input('estado', estado);
+    if (atraccion) request.input('atraccion', atraccion);
+
+    const result = await request.query(query);
 
     res.json(result.recordset);
   } catch (err) {

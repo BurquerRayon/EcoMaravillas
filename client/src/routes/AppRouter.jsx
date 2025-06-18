@@ -37,6 +37,7 @@ import ConfigHoras  from '../pages/Admin/Config/HorarioReservasConfig';
 import ReservasCliente from '../pages/Cliente/ReservasCliente';
 import ConfigC from '../pages/Cliente/Config';
 import DatosPC from '../pages/Cliente/Config/DatosPersonales';
+import HistorialReservas from '../pages/Cliente/HistorialReservas';
 
 const AppRouter = () => {
   return (
@@ -77,6 +78,7 @@ const AppRouter = () => {
 
         {/* Rutas de Paginas de Reservas */}
         <Route path="/client/reservas" element={<ReservasCliente />} />
+        <Route path="/client/historial" element={<HistorialReservas />} />
         <Route path="/perfil" element={<DatosPC />} />
         <Route path="/client/config" element={<ConfigC />} />
         <Route path="/map" element={<Mapa />} />

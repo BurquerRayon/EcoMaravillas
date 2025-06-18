@@ -4,7 +4,6 @@ const express = require('express');
 const cors = require('cors');
 
 // ✅ Rutas
-const authRoutes = require('./routes/authRoutes');
 const rolesRoutes = require('./routes/rolesRoutes');
 const atraccionesRoutes = require('./routes/atraccionesRoutes');
 const permisosRoutes = require('./routes/permisosRoutes');
