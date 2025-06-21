@@ -56,7 +56,7 @@ const Galeria = () => {
       habitat: ["Cueva", "Área Exterior"],
       caracteristica:
         "Las lechuzas son aves nocturnas y se alimentan de pequeñas ratones y Murciélagos. Esta ave es perseguida por falsas creencias de que es de mal agüero. Es una especie protegida con veda permanent. Anida en cuevas, huecos de árboles, edificios abandonados y en otros lugares oscuros. Pone de 2 a 8 huevos blancos. ",
-      src: "/assets/img/Fauna/tytoalba.jpeg",
+      src: "/assets/img/Fauna/Tyto.jpeg",
       tipo: "Fauna",
       todas: "todas",
     },
@@ -566,13 +566,266 @@ const Galeria = () => {
       especie: "Guaicum officinale L.Zygophyllaceae",
       habitat: "Area Exterior",
       caracteristica:
-        "Arbol de hasta 10 m. de altura, con hojas de 3 a 9 cm., compuestas de 4 a 6 foliolos u hojuelas de 1.5 cm., redondeadas. Flores de petalos azules abovados, de 12 mm. Frutos de 15 a 20 mm., de color anaranjado o amarillo.",
+        "Árbol de hasta 10 m. de altura, con hojas de 3 a 9 cm, compuestas de 4 a 6 foliolos u hojuelas de 1.5 cm, redondeadas. Flores de pétalos azules abovados, de 12 mm. Frutos de 15 a 20 mm, de color anaranjado o amarillo. La madera, pesada y fuerte, es una de las más duras del mundo, con propiedades lubricantes. Es usada en trabajos especiales en buques, rodillas, poleas y tornos. Por sus propiedades medicinales se conoce desde hace varios siglos como Lignum vitae (Leño de la vida). De su resina se extrae el guayacol. La resina y la corteza se aprovechan para combatir numerosas enfermedades, entre ellas algunas de transmisión sexual. Es melífera. Crece en zonas pedregosas y secas, principalmente en areas costeras. Nativa de América tropical. Es el árbol nacional de Bahamas.",
       src: "/assets/img/Flora/Guayacan.jpg",
       tipo: "Flora",
       todas: "todas",
     },
 
     {
+      nombre: "Carga agua",
+      especie: "Erythoroxylum brevipes DC. Erythroxylaceae",
+      habitat: "Area Exterior",
+      caracteristica:
+        "Arbusto de hasta 5 m. de altura muy ramoso. Con hojas abovadas a oblongo-abovadas o elípticas, subcoriaceas, cactáceas o membranosas, obtusas, redondeadas o emarginadas en el ápice y estrechadas en la base; pálidas en el envés y el nervio de color rojizo o blancuzco. Sus flores son de pétalos color blanco y su fruto es una drupa elipsoidea de color rojo, de 5 a 9 mm. En la provincia La Altagracia usan sus ramas para hacer escobas. Nativa de Las Antillas, Bahamas, Yucatán y América Central.",
+      src: "/assets/img/Flora/Brevipes.jpeg",
+      tipo: "Flora",
+      todas: "todas",
+    },
+
+    {
+      nombre: "Joboban Cabo de hacha",
+      especie: "Meliaceae trichilia hirta L.",
+      habitat: "Area Exterior",
+      caracteristica:
+        "Árbol de hasta 10 m. De altura, con hojas compuestas de 9 a 21 folíolos lanceolados, lanceolado oblongos, agudos o acuminados, y flores de color verde a amarillento. Su fruto es una cápsula globosa. La madera es de color castaño-rojizo, es resistente y se usa para fabricar magos(cabos), postes, ebanistería y leña. Es melífera. Sus hojas se usan para madurar aguacates y se consideran insecticidas, usadas para ahuyentar las pulgas. Es medicina popular se usa como emenagogo y para resfriados, pero se dice que puede ser abortiva.",
+      src: "/assets/img/Flora/Joboban.jpeg",
+      tipo: "Flora",
+      todas: "todas",
+    },
+
+    {
+      nombre: "Maya Cimarrona",
+      especie: "Bromelia plumieri",
+      habitat: "Area Exterior",
+      caracteristica:
+        "Herbácea con hojas de hasta 2 m. de largo, espinosas en los bordes, agrupadas en forma de roseta. Inflorescencia corta y ancha, oculta en la roseta de hojas, con flor de 6 a 9 cm. El fruto es una baya de aproximadamente 8 cm. Especie ornamental. Nativa de América tropical.",
+      src: "/assets/img/Flora/bromelia.jpeg",
+      tipo: "Flora",
+      todas: "todas",
+    },
+
+    {
+      nombre: "Trejo",
+      especie: "Adelia ricinella L. Euphorbiacaeae",
+      habitat: "Area Exterior",
+      caracteristica:
+        "Árbol de hasta 7 m. de altura, con hojas de forma oblonga a obovada, redondas a agudas, de 1 a 7.5 cm. Tiene flores estimanadas y flores pistiladas. El fruto es una cápsula trilobata de 6 a 8 mm. Es común en zonas secas y semisecas. Nativa de las Antillas.",
+      src: "/assets/img/Flora/Adelia.jpg",
+      tipo: "Flora",
+      todas: "todas",
+    },
+
+    {
+      nombre: "Guano",
+      especie: "Coccothrinax barbadensis ",
+      habitat: "Area Exterior",
+      caracteristica:
+        "Palma con el tronco solitario de hasta 12 m. de altura y de 5 a 18 cm. de diámetro. Con hojas en forma de abanico, redondeadas. Inflorescencia curva hacia abajo, con 3 a 10 ramas primarias. El fruto es globoso, color púrpura, casi negro al madurar. Sus hojas son usadas para artesanía en la elaboración de escobas, macutos, sogas, etc. Nativa de las Antillas Menores, Puerto Rico y la República Dominicana.",
+      src: "/assets/img/Flora/coccothrinax.jpg",
+      tipo: "Flora",
+      todas: "todas",
+    },
+
+    {
+      nombre: "Uña de gato",
+      especie: "Pisonia aculeata L. Nyctaginaceae",
+      habitat: "Area Exterior",
+      caracteristica:
+        "Arbusto sarmentoso semi trepador, con espinas encorvadas, por lo que se le denomina una de gato. Los frutos tienen una sustancia pegajosa en la cual suelen pegarse las plumas de las aves. De ahí su nombre común de pega pollo. Sus hojas son elíptico-ovales, muy variables, de 2.5 a 15 cm. y agudas. Sus flores de color amarillento y el fruto de 9 a 12 mm. Es melífera. La corteza y las hojas se usan contra la artritis. Nativa de los trópicos y sub-trópicos de América tropical.",
+      src: "/assets/img/Flora/Pisonia.jpg",
+      tipo: "Flora",
+      todas: "todas",
+    },
+
+    {
+      nombre: "Escobon de vara",
+      especie: "Eugenia ligustrina(Sw.) Wild. Myrtaceae",
+      habitat: "Area Exterior",
+      caracteristica:
+        "Arbusto de hasta 4 m. de hojas oblongas a estrechadas. Flores de pétalos color blanco, de 8 a 12 mm. Su fruto es globoso, de color rojo-negruzco cuando está maduro, de unos 8 mm. y comestible. Las hojas se utilizan para 'la buena'. Usada como ornamental. Nativa de las Antillas y de Suramérica tropical.",
+      src: "/assets/img/Flora/Axillaris.jpg",
+      tipo: "Flora",
+      todas: "todas",
+    },
+
+    {
+      nombre: "guázara",
+      especie: "Eugenia glabrata(Sw.) DC. Myrtaceae",
+      habitat: "Area Exterior",
+      caracteristica:
+        "Arbusto de hasta 10 m. de altura. De hojas elípticas a elíptico-oblongas o aovadas, de 3.5 a 8 cm, acuminadas. Los pétalos son de color blanco. El fruto es una baya oblonga, de 10 a 13 mm, que se usa para fabricar un licor. Su madera es resistente y se usa para postes, en empalizadas, en construcciones rurales y como leña. Nativa de las Antillas Mayores.",
+      src: "/assets/img/Flora/Eugeniaglabrata.jpg",
+      tipo: "Flora",
+      todas: "todas",
+    },
+
+    {
+      nombre: "cabo de chivo, escobillo",
+      especie: "Myrciaria floribunda (West.) Berg. Mytaceae",
+      habitat: "Area Exterior",
+      caracteristica:
+        "Arbusto que en su madurez puede alcanzar hasta 10 m. de altura, con ramitas muy delgadas y hojas lanceoladas, aovado-lanceoladas a oblongo-lanceoladas, de 4 a 7 cm., largo-acuminadas. Flores sentadas, en grupos pequeños. Frutos sub-globosos, color rojo o amarillo aromáticos, de 8 a 10 mm. Con los frutos de esta especie se elabora el famoso 'guavaberry', bebida típica de San Pedro de Macorís. La madera es dura y compacta, de color rojo pardo, muy usada para postes y varas; y en construcciones rurales. Es excelente como leña. Nativa de América tropical.",
+      src: "/assets/img/Flora/Eugenia.jpg",
+      tipo: "Flora",
+      todas: "todas",
+    },
+
+    {
+      nombre: "Higo Cimarron",
+      especie: "Ficus citrofilia. P. Mill. Moraceae",
+      habitat: "Area Exterior",
+      caracteristica:
+        "Árbol de hasta 15 m. de altura, de hojas aovadas o aovado-acorazonadas, de 4 a 9 cm, . Algo escabrosas (ásperas). A veces se usa como seto vivo. Su corteza Se ha usado como fibra para hacer cuerdas. El fruto sirve de alimento a algunas aves. Nativas de América tropical.",
+      src: "/assets/img/Flora/Ficus.jpeg",
+      tipo: "Flora",
+      todas: "todas",
+    },
+
+    {
+      nombre: "Palo amargo, Almendra de lavar",
+      especie: "Trichilia pallida Sw. Meliaceae",
+      habitat: "Area Exterior",
+      caracteristica:
+        "Árbol de hasta 8 m. De hojas compuestas con 3 a 7 folíolos u hojuelas, oblongo-elipticas, oblanceoladas a obovadas, el folíolo terminal usualmente más grande. Las flores son de color blanco y el fruto es una cápsula ovoidea de 1 a 1.5 cm. La madera es color blanco, dura y pesada. Se usa en construcciones rurales. La planta tiene una sustancia que hace espuma y que se emplea para lavar ropa. Nativa de las Antillas Mayores, excepto Jamaica.",
+      src: "/assets/img/Flora/Pallida.jpg",
+      tipo: "Flora",
+      todas: "todas",
+    },
+
+    {
+      nombre: "Vera, Guayacancillo ",
+      especie: "Guaiacum sanctum L. Zygophyllaceae",
+      habitat: "Area Exterior",
+      caracteristica:
+        "Árbol de hasta 10 m. de altura y tronco de hasta 30 cm. de grosor. De hojas compuestas por 4 a 12 folíolos u hojuelas, oblongas y obovadas. Pétalos azules o purpúreos, anchamente abovados, de 7 a 12 mm., redondeados. El fruto es una cápsula obovoidea, de color amarillo o anaranjado, de 1.5 cm. La madera, dura y resistente, es usada para construcciones rurales, tornería, ebanistería, y como leña y carbón. Es melífera. Tiene potencial ornamental. Crece en terrenos rocosos y secos, usualmente en zonas costeras. Nativa de la América continental tropical, las Antillas Mayores, excepto Jamaica, y de las Bahamas.",
+      src: "/assets/img/Flora/Sanctum.jpg",
+      tipo: "Flora",
+      todas: "todas",
+    },
+
+    {
+      nombre: "Pega Palo, Abrazapalo ",
+      especie: "Macfadyena unguis-catis(L.) A.Gentry Bignoniaceae",
+      habitat: "Area Exterior",
+      caracteristica:
+        "Trepadora de 10 a 15 m. De hojas terminadas en zarcillos. Cáliz verdoso y flores color amarillo muy vistoso. Fruto en silicua. Se usa en medicina popular. Es melífera. Nativa de las Antillas y de América tropical continental.",
+      src: "/assets/img/Flora/Abrazapalo.jpg",
+      tipo: "Flora",
+      todas: "todas",
+    },
+
+    {
+      nombre: "Bayahonda, Cambron, Aroma ",
+      especie: "Acacia macracantha H.& B. Mimosaceae",
+      habitat: "Area Exterior",
+      caracteristica:
+        "Árbol de 6 a 7 m. de altura, que usualmente tiene espinas en el tronco y las ramas. Sus hojas son bi-compuestas con muchos pares de pinas y de folíolos y hojuelas. Flores de color amarillo en cabezuelas. Su fruto es una legumbre aplastada de 7 a 12 mm. de ancho. Su madera es dura y resistente y se usa para postes de empalizadas y en construcciones rurales, también como leña y carbón. La corteza se usa en la medicina popular para la gripe. Nativa de América tropical.",
+      src: "/assets/img/Flora/Acacia.jpg",
+      tipo: "Flora",
+      todas: "todas",
+    },
+
+    {
+      nombre: "Quiebrahacha, Palo de hierro ",
+      especie: "Krugiodendron ferreum (Vahl) Urb. Rhamnaceae",
+      habitat: "Area Exterior",
+      caracteristica:
+        "Árbol que en su madurez puede alcanzar hasta 10 m. de altura. De hojas ovales a aovadas, de 2 a 7 cm., obtusas o emarginadas. Flores verde-amarillentas. El fruto es una drupa globosa, de color negro al madurar, de 5 a 8 mm. La madera es de color pardo, veteada, muy dura, pesada y resistente. Se usa para postes de empalizadas, traviesas, pilotes para construcciones dentro del agua, leña y carbón. Nativa de las Antillas y América Central.",
+      src: "/assets/img/Flora/Ferreum.jpg",
+      tipo: "Flora",
+      todas: "todas",
+    },
+
+    {
+      nombre: "Escobón",
+      especie: "Eugenia foetida. pers. Myrtaceae",
+      habitat: "Area Exterior",
+      caracteristica:
+        "Arbusto de hasta 8 m. de altura, con hojas de formas muy variables y pétalos color blanco. El fruto, una baya oval de color negro cuando madura, es consumido por las aves. Es melífera. Tiene uso mágico-religioso, para 'mejorar la suerte'. Nativa de las Antillas y la Florida.",
+      src: "/assets/img/Flora/EugeniaFoe.jpg",
+      tipo: "Flora",
+      todas: "todas",
+    },
+
+    {
+      nombre: "Guazuma, Guácima",
+      especie: "Guazuma tomentosa H.B.K. Sterculiaceae",
+      habitat: "Area Exterior",
+      caracteristica:
+        "Árbol de hasta 15 m. de altura, de corteza color gris pardo, usualmente con hendiduras. Con hojas oblongas a anchamente aovadas, de 3 a 15 cm, agudas a largamente acuminadas, redondeadas a acorazonadas en la base, aserradas, estrelladas y tomentosas, (de pelos cortos y densos). Flores de color amarillo y fruto leñoso, comestible, ligeramente dulce, globoso u oval, de 2 a 3 cm. con numerosas semillas. Es buen forraje para el ganado. La corteza se usa en medicina popular para combatir diferentes dolencias. En algunos lugares se usa como seto vivo y como leña. Nativa de las Antillas y de América tropical continental.",
+      src: "/assets/img/Flora/Guazuma.jpg",
+      tipo: "Flora",
+      todas: "todas",
+    },
+
+    {
+      nombre: "Cafe cimarron ",
+      especie: "Psychotria pubescens Sw. Rubiaceae",
+      habitat: "Area Exterior",
+      caracteristica:
+        "Arbusto de 3 mts, y a veces mas grande, con hojas elipticas a lanceo-oblongas, de 7 a 15 cm, acuminadas, pubescentes. Inflorescencia terminal con pocas flores, de corola color amarillo. El fruto es una drupa subglobosa de color negro, de 3 a 4 mm. que consumen las aves. Nativa de las Antillas.",
+      src: "/assets/img/Flora/pubescens.jpg",
+      tipo: "Flora",
+      todas: "todas",
+    },
+
+    {
+      nombre: "Copeyejo, Copeyito",
+      especie: "Clusia minor L. Clusiaceae",
+      habitat: "Area Exterior",
+      caracteristica:
+        "Arbusto semitrepador de hasta 8 m, usualmente epifito en su etapa juvenil. Sus hojas son abovadas, obtusas o redondeadas, de 5 a 10 cm, muy coriáceas (duras y quebradizas). Flores con pétalos de color blanco o rosado. Su fruto es sub-globoso u ovoideo, de 1.5 a 2 cm. La madera es blanda, de color amarillo, veteada de rojizo claro. Tiene potencial ornamental. Nativa de las Antillas, excepto Jamaica, y de América continental tropical.",
+      src: "/assets/img/Flora/Minor.jpeg",
+      tipo: "Flora",
+      todas: "todas",
+    },
+
+    {
+      nombre: "Macarabomba, Cabori",
+      especie: "Casearia aculeata Jacq. Flacourtiaceae",
+      habitat: "Area Exterior",
+      caracteristica:
+        "Arbusto de hasta 4 m. de altura, que en sus ramas tiene a menudo espinas. De hojas elípticas, aovado-elípticas o lanceo-aovadas, de 4 a 7 cm, agudas a acuminadas, sub-enteras o aserrado-dentadas. Su fruto tiene formas globosa u ovoidea, de 6 a 8 mm. Su madera se utiliza para postes de empalizadas, y como leña y carbón. Muchas personas tienen la creencia de que la avispa nace de esta planta, lo que le ha dado uno de sus nombres comunes. Nativa de América tropical.",
+      src: "/assets/img/Flora/jacq.jpg",
+      tipo: "Flora",
+      todas: "todas",
+    },
+
+    {
+      nombre: "Cayuco",
+      especie: "Pilosocereus polygonus (Lam.) Byles & Rowles Cactaceae",
+      habitat: "Area Exterior",
+      caracteristica:
+        "Planta carnosa que puede alcanzar más de 6 m. de altura, en forma columnar, ramificada con 5 a 13 costillas, con grupos de espinas llamadas areolas y lana gris cuando jóvenes. Las espinas miden de 1 a 1.5 cm, de color amarillo a gris. Sus flores son color blanco y su fruto globoso tiene numerosas semillas. Abunda en el bosque seco, en zonas cársticas y rocas calizas. Nativa de la Española y Cuba.",
+      src: "/assets/img/Flora/pilo.jpg",
+      tipo: "Flora",
+      todas: "todas",
+    },
+
+    {
+      nombre: "Caimito de perro",
+      especie: "Chrysophyllum oliviforme L. Sapotaceae",
+      habitat: "Area Exterior",
+      caracteristica:
+        "Árbol de hasta 10 m. de altura, de hojas elípticas u oblongas, brillosas, el envés densamente ferrugíneo o tomentoso, de color marrón y corola de color verde amarillento. Su fruto es una drupa elipsoide, comestible, jugosa. Crece en bosques húmedos y de transición. La decocción de las hojas se usa en la medicina popular contra inflamaciones. Su madera es de color pardo rojizo y se emplea para postes de empalizadas, y como leña y carbón. Es melífera. Nativa de las Antillas Mayores, Bahamas y Sur de los Estados Unidos.",
+      src: "/assets/img/Flora/Chry.jpg",
+      tipo: "Flora",
+      todas: "todas",
+    },
+
+    {
+      nombre: "Limoncillo, Arrayan ",
+      especie: "Calyptranthes pallens (Poir.) Griseb. Myrtaceae",
+      habitat: "Area Exterior",
+      caracteristica:
+        "Árbol dde hasta 10 m. de altura. De hojas elípticas a oblongo-elípticas, acuminadas, y flores de color amarillento. Su fruto, sub-globoso y oval, es algo insípido y lo comen algunos animales. La madera se usa para postes de empalizadas, en construcciones rurales y como leña.",
+      src: "/assets/img/Flora/caly.jpg",
+      tipo: "Flora",
+      todas: "todas",
+    },
+
+    /*{
       nombre: "",
       especie: "",
       habitat: "",
@@ -590,37 +843,7 @@ const Galeria = () => {
       src: "",
       tipo: "Flora",
       todas: "todas",
-    },
-
-    {
-      nombre: "",
-      especie: "",
-      habitat: "",
-      caracteristica: "",
-      src: "",
-      tipo: "Flora",
-      todas: "todas",
-    },
-
-    {
-      nombre: "",
-      especie: "",
-      habitat: "",
-      caracteristica: "",
-      src: "",
-      tipo: "Flora",
-      todas: "todas",
-    },
-
-    {
-      nombre: "",
-      especie: "",
-      habitat: "",
-      caracteristica: "",
-      src: "",
-      tipo: "Flora",
-      todas: "todas",
-    },
+    },  */
 
     // Agrega más imágenes si lo deseas...
   ];
@@ -753,25 +976,27 @@ const Galeria = () => {
               >
                 X
               </button>
-              <img
-                src={especieSeleccionada.src}
-                alt={especieSeleccionada.nombre}
-                className="imagen-detalle"
-              />
-              <h2>{especieSeleccionada.nombre}</h2>
-              <p>
-                <strong>Nombre científico:</strong>{" "}
-                {especieSeleccionada.especie}
-              </p>
-              <p>
-                <strong>Hábitat:</strong> {especieSeleccionada.habitat}
-              </p>
-              {especieSeleccionada.caracteristica && (
+              <div className="detalle-contenido">
+                <img
+                  src={especieSeleccionada.src}
+                  alt={especieSeleccionada.nombre}
+                  className="imagen-detalle"
+                />
+                <h2>{especieSeleccionada.nombre}</h2>
                 <p>
-                  <strong>Características:</strong>{" "}
-                  {especieSeleccionada.caracteristica}
+                  <strong>Nombre científico:</strong>{" "}
+                  {especieSeleccionada.especie}
                 </p>
-              )}
+                <p>
+                  <strong>Hábitat:</strong> {especieSeleccionada.habitat}
+                </p>
+                {especieSeleccionada.caracteristica && (
+                  <div className="caracteristica-scroll">
+                    <strong>Características:</strong>
+                    <p>{especieSeleccionada.caracteristica}</p>
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>
