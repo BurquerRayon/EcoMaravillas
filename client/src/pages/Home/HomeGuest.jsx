@@ -124,7 +124,7 @@ const HomeGuest = () => {
             className="destacado-button"
             onClick={() => window.location.href = '/login'}
           >
-            Iniciar Sesión <FaSignInAlt className="icono-destacado" />
+            Iniciar Sesión / Reservar <FaSignInAlt className="icono-destacado" />
           </button>
             </div>
           </div>
@@ -138,9 +138,6 @@ const HomeGuest = () => {
         <section className="cta-section">
           <h2>¿Listo para vivir la experiencia?</h2>
           <p>Reserva tu próxima aventura ecológica en solo unos clics.</p>
-          <button className="cta-button" onClick={() => window.location.href = '/registro'}>
-            Crear Cuenta / Reservar
-          </button>
         </section>
       </main>
       <Footer />

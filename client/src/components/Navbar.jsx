@@ -79,6 +79,7 @@ const Navbar = () => {
             <ul className="dropdown-content">
               {user.rol === 'cliente' && (
                 <>
+                  <li><Link to="/home/client">Inicio</Link></li>
                   <li><Link to="/client/historial">Mis Reservas</Link></li>
                   <li><Link to="/client/reservas">Crear Nueva Reserva</Link></li>
                   <li><Link to="/client/config">Ajustes</Link></li>

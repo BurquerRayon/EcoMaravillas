@@ -3,6 +3,9 @@ const express = require('express');
 const router = express.Router();
 const { pool, poolConnect } = require('../db/connection');
 
+const multer = require('multer');
+const path = require('path');
+
 // Obtener datos personales del cliente por ID de usuario
 router.get('/:id_usuario/datos-personales', async (req, res) => {
 const { id_usuario } = req.params;
@@ -76,6 +79,47 @@ res.json({ message: '✅ Datos personales actualizados correctamente' });
 console.error('Error al actualizar datos personales:', err);
 res.status(500).json({ message: 'Error interno al actualizar los datos personales' });
 }
+});
+
+
+
+//----------------------------
+
+
+// Configuración de multer para almacenamiento de archivos
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/documentos/'); // Asegúrate de crear esta carpeta
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ storage: storage });
+
+// Obtener información bancaria
+router.get('/:id_usuario/cuenta-bancaria', async (req, res) => {
+  // Implementación similar a las otras rutas
+});
+
+// Guardar/actualizar información bancaria
+router.post('/:id_usuario/cuenta-bancaria', async (req, res) => {
+  // Implementación
+});
+
+// Obtener documentos
+router.get('/:id_usuario/documentos', async (req, res) => {
+  // Implementación
+});
+
+// Guardar/actualizar documentos
+router.post('/:id_usuario/documentos', upload.fields([
+  { name: 'foto_frontal', maxCount: 1 },
+  { name: 'foto_reverso', maxCount: 1 }
+]), async (req, res) => {
+  // Implementación con manejo de archivos
 });
 
 module.exports = router;

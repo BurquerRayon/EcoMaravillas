@@ -402,6 +402,39 @@ router.get('/:id_reserva/detalles', async (req, res) => {
   }
 });
 
+//======================================================================
+// Obtener todas las reservas con detalles y nombre del cliente
+//======================================================================
+router.get('/admin', async (req, res) => {
+  try {
+    await poolConnect;
+
+    const result = await pool.request().query(`
+      SELECT 
+        R.id_reserva,
+        P.nombre + ' ' + P.apellido AS nombre_cliente,
+        D.fecha,
+        D.hora,
+        A.nombre AS nombre_atraccion,
+        D.cantidad,
+        D.subtotal,
+        R.estado
+      FROM Reservas R
+      JOIN Reserva_Detalles D ON R.id_reserva = D.id_reserva
+      JOIN Atraccion A ON D.id_atraccion = A.id_atraccion
+      JOIN Turista T ON R.id_turista = T.id_turista
+      JOIN Usuario U ON T.id_usuario = U.id_usuario
+      JOIN Persona P ON U.id_persona = P.id_persona
+      ORDER BY D.fecha DESC, D.hora ASC
+    `);
+
+    res.json(result.recordset);
+  } catch (err) {
+    console.error('Error al obtener reservas (admin):', err);
+    res.status(500).json({ message: 'Error al obtener las reservas del sistema' });
+  }
+});
+
 // Ruta para obtener información básica de una reserva
 router.get('/:id_reserva', async (req, res) => {
   const { id_reserva } = req.params;
@@ -433,23 +466,13 @@ router.get('/:id_reserva', async (req, res) => {
   }
 });
 
-
-
-
-
-
-
-
-
-
-
-
 // =============================================
 // Obtener historial de reservas por id_turista
 // =============================================
+// Modificar la ruta GET /turista/:id_turista
 router.get('/turista/:id_turista', async (req, res) => {
   const { id_turista } = req.params;
-  const { completo, fechaDesde, fechaHasta, estado, atraccion } = req.query;
+  const { completo, fechaDesde, fechaHasta, estado, id_atraccion, atraccion } = req.query;
 
   try {
     await poolConnect;
@@ -485,7 +508,10 @@ router.get('/turista/:id_turista', async (req, res) => {
     if (estado) {
       query += ` AND R.estado = @estado`;
     }
-    if (atraccion) {
+    // Priorizar el filtro por ID si está presente
+    if (id_atraccion) {
+      query += ` AND D.id_atraccion = @id_atraccion`;
+    } else if (atraccion) {
       query += ` AND A.nombre LIKE '%' + @atraccion + '%'`;
     }
 
@@ -497,7 +523,8 @@ router.get('/turista/:id_turista', async (req, res) => {
     if (fechaDesde) request.input('fechaDesde', fechaDesde);
     if (fechaHasta) request.input('fechaHasta', fechaHasta);
     if (estado) request.input('estado', estado);
-    if (atraccion) request.input('atraccion', atraccion);
+    if (id_atraccion) request.input('id_atraccion', id_atraccion);
+    if (atraccion && !id_atraccion) request.input('atraccion', atraccion);
 
     const result = await request.query(query);
 
@@ -505,39 +532,6 @@ router.get('/turista/:id_turista', async (req, res) => {
   } catch (err) {
     console.error('Error al obtener reservas del turista:', err);
     res.status(500).json({ message: 'Error al obtener historial de reservas' });
-  }
-});
-
-//======================================================================
-// Obtener todas las reservas con detalles y nombre del cliente
-//======================================================================
-router.get('/admin', async (req, res) => {
-  try {
-    await poolConnect;
-
-    const result = await pool.request().query(`
-      SELECT 
-        R.id_reserva,
-        P.nombre + ' ' + P.apellido AS nombre_cliente,
-        D.fecha,
-        D.hora,
-        A.nombre AS nombre_atraccion,
-        D.cantidad,
-        D.subtotal,
-        R.estado
-      FROM Reservas R
-      JOIN Reserva_Detalles D ON R.id_reserva = D.id_reserva
-      JOIN Atraccion A ON D.id_atraccion = A.id_atraccion
-      JOIN Turista T ON R.id_turista = T.id_turista
-      JOIN Usuario U ON T.id_usuario = U.id_usuario
-      JOIN Persona P ON U.id_persona = P.id_persona
-      ORDER BY D.fecha DESC, D.hora ASC
-    `);
-
-    res.json(result.recordset);
-  } catch (err) {
-    console.error('Error al obtener reservas (admin):', err);
-    res.status(500).json({ message: 'Error al obtener las reservas del sistema' });
   }
 });
 

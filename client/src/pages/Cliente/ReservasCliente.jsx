@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import '../../styles/ReservaCliente.css';
 
 const ReservaCliente = () => {
@@ -24,43 +25,46 @@ const ReservaCliente = () => {
 
   const user = JSON.parse(localStorage.getItem('user'));
   const id_turista = user?.id_turista;
+  const navigate = useNavigate();
 
   // Función para formatear hora
   const formatearHora = (horaObj) => {
     if (!horaObj) return '';
+    
+    if (typeof horaObj === 'string' && horaObj.match(/^\d{2}:\d{2}$/)) {
+      return horaObj;
+    }
 
     try {
       const date = new Date(horaObj);
       const hours = date.getUTCHours();
       const minutes = date.getUTCMinutes();
-      const ampm = hours >= 12 ? 'PM' : 'AM';
-      const hour12 = hours % 12 || 12;
-      return `${hour12}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+      return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
     } catch (err) {
       console.error('Error al formatear hora:', err);
       return horaObj;
     }
   };
 
-  // Generar bloques horarios
-const generarBloquesHorario = (inicio, fin) => {
-  const bloques = [];
-  let [h, m] = inicio.split(':').map(Number);
-  const [hFin] = fin.split(':').map(Number);
+  // Generar bloques horarios (sin las 17:00)
+  const generarBloquesHorario = (inicio, fin) => {
+    const bloques = [];
+    let [h, m] = inicio.split(':').map(Number);
+    const [hFin] = fin.split(':').map(Number);
 
-  while (h < hFin || (h === hFin && m === 0)) {
-    // No incluir el bloque de 17:00
-    if (!(h === 17 && m === 0)) {
-      bloques.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
+    while (h < hFin || (h === hFin && m === 0)) {
+      // Excluir el bloque de 17:00
+      if (!(h === 17 && m === 0)) {
+        bloques.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
+      }
+      m += 30;
+      if (m >= 60) {
+        h += 1;
+        m = 0;
+      }
     }
-    m += 30;
-    if (m >= 60) {
-      h += 1;
-      m = 0;
-    }
-  }
-  return bloques;
-};
+    return bloques;
+  };
 
   // Verificar reservas duplicadas
   const existeReservaDuplicada = (nuevoDetalle, indexActual = -1) => {
@@ -117,7 +121,7 @@ const generarBloquesHorario = (inicio, fin) => {
       if (atraccion) nuevaLista[index].tarifa_unitaria = atraccion.precio;
     }
 
-    // Verificar duplicados después de cambios relevantes
+    // Verificar duplicados
     if (field === 'id_atraccion' || field === 'fecha' || field === 'hora') {
       const detalleModificado = { ...nuevaLista[index] };
       const esDuplicado = existeReservaDuplicada(detalleModificado, index);
@@ -139,17 +143,16 @@ const generarBloquesHorario = (inicio, fin) => {
     setDetalles(nuevaLista);
   };
 
-  // Función para manejar cambio de fecha con validación de lunes
+  // Manejar cambio de fecha con validación
   const handleFechaChange = (e, index) => {
     const selectedDate = new Date(e.target.value);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Validar que no sea lunes (1 = Lunes)
-    if (selectedDate.getDay() === 0) {
+    // Validar que no sea lunes (0 = Domingo, 1 = Lunes)
+    if (selectedDate.getDay() === 1) {
       setMensaje('⚠️ No se permiten reservas los lunes. Por favor seleccione otro día.');
       
-      // Resetear el valor del input de fecha
       const nuevaLista = [...detalles];
       nuevaLista[index].fecha = '';
       setDetalles(nuevaLista);
@@ -187,7 +190,6 @@ const generarBloquesHorario = (inicio, fin) => {
     const nueva = detalles.filter((_, i) => i !== index);
     setDetalles(nueva);
     
-    // Verificar si quedan duplicados después de eliminar
     const hayDuplicados = nueva.some((detalle, idx) => 
       existeReservaDuplicada(detalle, idx)
     );
@@ -196,16 +198,8 @@ const generarBloquesHorario = (inicio, fin) => {
     if (!hayDuplicados) setMensaje('');
   };
 
-  // Cancelar creación de nueva reserva
-  const cancelarCreacion = () => {
-    setDetalles([]);
-    setMostrarFormulario(false);
-    setMensaje('');
-    setBloquearReservaDuplicada(false);
-  };
-
-  // Cancelar edición de reserva
-  const cancelarEdicion = () => {
+  // Cancelar creación/edición
+  const cancelarProceso = () => {
     setDetalles([]);
     setReservaEditando(null);
     setModoEdicion(false);
@@ -214,94 +208,73 @@ const generarBloquesHorario = (inicio, fin) => {
     setBloquearReservaDuplicada(false);
   };
 
-  // Cargar detalles de reserva para edición
-// Función para cargar reserva para edición (versión mejorada)
-const cargarReservaParaEdicion = async (id_reserva) => {
-  try {
-    // Verificar que tenemos un ID de reserva válido
-    if (!id_reserva) {
-      setMensaje('❌ No se proporcionó un ID de reserva válido');
-      return;
-    }
+  // Cargar reserva para edición
+  const cargarReservaParaEdicion = async (id_reserva) => {
+    try {
+      if (!id_reserva) {
+        setMensaje('❌ No se proporcionó un ID de reserva válido');
+        return;
+      }
 
-    // Mostrar mensaje de carga
-    setMensaje('Cargando reserva...');
+      setMensaje('Cargando reserva...');
 
-    // 1. Obtener información básica de la reserva
-    const response = await axios.get(`http://localhost:3001/api/reservas/${id_reserva}`);
-    const reserva = response.data;
-    
-    // Verificar si la respuesta es válida
-    if (!reserva) {
-      setMensaje('❌ No se encontró la reserva solicitada');
-      return;
-    }
+      // Obtener información básica de la reserva
+      const response = await axios.get(`http://localhost:3001/api/reservas/${id_reserva}`);
+      const reserva = response.data;
+      
+      if (!reserva) {
+        setMensaje('❌ No se encontró la reserva solicitada');
+        return;
+      }
 
-    // Verificar si se puede editar
-    if (reserva.estado === 'confirmado' && reserva.ediciones >= 1) {
-      setMensaje('❌ Solo puedes editar una vez las reservas confirmadas');
-      return;
-    }
-    
-    if (reserva.estado === 'pendiente' && reserva.ediciones >= 2) {
-      setMensaje('❌ Solo puedes editar máximo 2 veces las reservas pendientes');
-      return;
-    }
-    
-    if (reserva.estado === 'cancelado') {
-      setMensaje('❌ No se pueden editar reservas canceladas');
-      return;
-    }
+      // Verificar si se puede editar
+      if (reserva.estado === 'confirmado' && reserva.ediciones >= 1) {
+        setMensaje('❌ Solo puedes editar una vez las reservas confirmadas');
+        return;
+      }
+      
+      if (reserva.estado === 'pendiente' && reserva.ediciones >= 2) {
+        setMensaje('❌ Solo puedes editar máximo 2 veces las reservas pendientes');
+        return;
+      }
+      
+      if (reserva.estado === 'cancelado') {
+        setMensaje('❌ No se pueden editar reservas canceladas');
+        return;
+      }
 
-    // 2. Obtener los detalles de la reserva
-    const detallesReserva = await axios.get(`http://localhost:3001/api/reservas/${id_reserva}/detalles`);
-    
-    // Verificar que hay detalles
-    if (!detallesReserva.data || detallesReserva.data.length === 0) {
-      setMensaje('❌ La reserva no tiene detalles asociados');
-      return;
-    }
+      // Obtener los detalles de la reserva
+      const detallesReserva = await axios.get(`http://localhost:3001/api/reservas/${id_reserva}/detalles`);
+      
+      if (!detallesReserva.data || detallesReserva.data.length === 0) {
+        setMensaje('❌ La reserva no tiene detalles asociados');
+        return;
+      }
 
-    // Formatear los detalles para el estado
-    const detallesFormateados = detallesReserva.data.map(d => ({
-      id_atraccion: d.id_atraccion,
-      cantidad: d.cantidad,
-      fecha: d.fecha.split('T')[0], // Asegurar formato de fecha correcto
-      hora: d.hora,
-      tarifa_unitaria: d.tarifa_unitaria,
-      subtotal: d.subtotal
-    }));
-    
-    // Actualizar el estado
-    setDetalles(detallesFormateados);
-    setReservaEditando(id_reserva);
-    setModoEdicion(true);
-    setMostrarFormulario(true);
-    setMensaje(`Editando reserva #${id_reserva}`);
-    
-  } catch (err) {
-    console.error('Error completo al cargar reserva para edición:', err);
-    
-    let errorMsg = '❌ Error al cargar la reserva para edición';
-    
-    if (err.response) {
-      // El servidor respondió con un código de estado fuera del rango 2xx
-      errorMsg += `: ${err.response.data.message || err.response.statusText}`;
-      console.error('Detalles del error:', err.response.data);
-    } else if (err.request) {
-      // La solicitud fue hecha pero no se recibió respuesta
-      errorMsg += ': No se recibió respuesta del servidor';
-      console.error('No hay respuesta:', err.request);
-    } else {
-      // Algo pasó al configurar la solicitud
-      errorMsg += `: ${err.message}`;
+      // Formatear los detalles
+      const detallesFormateados = detallesReserva.data.map(d => ({
+        id_atraccion: d.id_atraccion,
+        cantidad: d.cantidad,
+        fecha: d.fecha.split('T')[0],
+        hora: formatearHora(d.hora),
+        tarifa_unitaria: d.tarifa_unitaria,
+        subtotal: d.subtotal
+      }));
+      
+      // Actualizar estado
+      setDetalles(detallesFormateados);
+      setReservaEditando(id_reserva);
+      setModoEdicion(true);
+      setMostrarFormulario(true);
+      setMensaje(`Editando reserva #${id_reserva}`);
+      
+    } catch (err) {
+      console.error('Error al cargar reserva para edición:', err);
+      setMensaje('❌ Error al cargar la reserva para edición');
     }
-    
-    setMensaje(errorMsg);
-  }
-};
+  };
 
-  // Cancelar una reserva existente
+  // Cancelar reserva existente
   const cancelarReserva = async (id_reserva) => {
     if (!window.confirm('¿Estás seguro de que deseas cancelar esta reserva?')) {
       return;
@@ -336,7 +309,7 @@ const cargarReservaParaEdicion = async (id_reserva) => {
     const hayLunes = detalles.some(d => {
       if (!d.fecha) return false;
       const dia = new Date(d.fecha).getDay();
-      return dia === 0; // 1 = Lunes
+      return dia === 1; // 1 = Lunes
     });
 
     if (hayLunes) {
@@ -355,29 +328,25 @@ const cargarReservaParaEdicion = async (id_reserva) => {
 
     try {
       if (modoEdicion && reservaEditando) {
-        // Lógica para editar reserva
-        const response = await axios.put(`http://localhost:3001/api/reservas/editar/${reservaEditando}`, {
-          id_turista,
-          detalles
-        });
+        // Editar reserva existente
+        const response = await axios.put(
+          `http://localhost:3001/api/reservas/editar/${reservaEditando}`, 
+          { id_turista, detalles }
+        );
 
         setMensaje(response.data.message || '✅ Reserva actualizada');
-        setDetalles([]);
-        setReservaEditando(null);
-        setModoEdicion(false);
+        cancelarProceso();
         cargarHistorial();
-        setMostrarFormulario(false);
       } else {
-        // Lógica para crear nueva reserva
-        const response = await axios.post('http://localhost:3001/api/reservas/crear', {
-          id_turista,
-          detalles
-        });
+        // Crear nueva reserva
+        const response = await axios.post(
+          'http://localhost:3001/api/reservas/crear', 
+          { id_turista, detalles }
+        );
 
         setMensaje(response.data.message || '✅ Reserva creada');
-        setDetalles([]);
+        cancelarProceso();
         cargarHistorial();
-        setMostrarFormulario(false);
       }
     } catch (err) {
       const msg = err.response?.data?.message || '❌ Error al procesar la reserva';
@@ -399,30 +368,69 @@ const cargarReservaParaEdicion = async (id_reserva) => {
   // Calcular total
   const total = detalles.reduce((sum, d) => sum + d.subtotal, 0);
 
-  // Calcular paginación
+  // Paginación mejorada
   const totalPaginas = Math.ceil(historialFiltrado.length / elementosPorPagina);
-  const historialPaginado = historialFiltrado.slice(
-    (paginaActual - 1) * elementosPorPagina,
-    paginaActual * elementosPorPagina
-  );
+  const indiceInicio = (paginaActual - 1) * elementosPorPagina;
+  const indiceFin = paginaActual * elementosPorPagina;
+  const historialPaginado = historialFiltrado.slice(indiceInicio, indiceFin);
+
+  const cambiarPagina = (nuevaPagina) => {
+    if (nuevaPagina < 1 || nuevaPagina > totalPaginas) return;
+    setPaginaActual(nuevaPagina);
+  };
+
+  const renderizarNumerosPagina = () => {
+    const paginas = [];
+    const paginasAMostrar = 5;
+    let inicio = Math.max(1, paginaActual - Math.floor(paginasAMostrar / 2));
+    let fin = Math.min(totalPaginas, inicio + paginasAMostrar - 1);
+
+    if (fin - inicio + 1 < paginasAMostrar) {
+      inicio = Math.max(1, fin - paginasAMostrar + 1);
+    }
+
+    for (let i = inicio; i <= fin; i++) {
+      paginas.push(
+        <button
+          key={i}
+          onClick={() => cambiarPagina(i)}
+          className={`paginacion-numero ${paginaActual === i ? 'active' : ''}`}
+        >
+          {i}
+        </button>
+      );
+    }
+
+    return paginas;
+  };
 
   return (
     <div className="dashboard-container">
       <h2>Reservas</h2>
 
       <div className="panel-botones">
-        <button onClick={() => {
-          setMostrarFormulario(!mostrarFormulario);
-          if (mostrarFormulario) {
-            cancelarCreacion();
-            cancelarEdicion();
-          }
-        }}>
+        <button 
+          onClick={() => {
+            setMostrarFormulario(!mostrarFormulario);
+            if (mostrarFormulario) cancelarProceso();
+          }}
+          className="btn-toggle-form"
+        >
           {mostrarFormulario ? '➖ Ocultar Formulario' : '➕ Crear Nueva Reserva'}
         </button>
         
-        <button onClick={() => setMostrarFiltros(!mostrarFiltros)}>
+        <button 
+          onClick={() => setMostrarFiltros(!mostrarFiltros)}
+          className="btn-toggle-form"
+        >
           {mostrarFiltros ? '➖ Ocultar Búsqueda' : '🔍 Buscar Reservas'}
+        </button>
+
+        <button 
+          onClick={() => navigate('/client/historial')}
+          className="btn-toggle-form"
+        >
+          📋 Ver Historial Completo
         </button>
       </div>
 
@@ -467,7 +475,11 @@ const cargarReservaParaEdicion = async (id_reserva) => {
           {modoEdicion && (
             <div className="modo-edicion-info">
               <strong>Editando reserva #{reservaEditando}</strong>
-              <button type="button" onClick={cancelarEdicion} className="boton-cancelar">
+              <button 
+                type="button" 
+                onClick={cancelarProceso}
+                className="boton-cancelar"
+              >
                 Cancelar Edición
               </button>
             </div>
@@ -475,10 +487,13 @@ const cargarReservaParaEdicion = async (id_reserva) => {
           
           {detalles.map((detalle, idx) => {
             const esDuplicado = existeReservaDuplicada(detalle, idx);
-            const esFechaInvalida = detalle.fecha && new Date(detalle.fecha).getDay() === 0;
+            const esFechaInvalida = detalle.fecha && new Date(detalle.fecha).getDay() === 1;
             
             return (
-              <div key={idx} className={`reserva-linea ${esDuplicado || esFechaInvalida ? 'error-duplicado' : ''}`}>
+              <div 
+                key={idx} 
+                className={`reserva-linea ${esDuplicado || esFechaInvalida ? 'error-duplicado' : ''}`}
+              >
                 <select
                   value={detalle.id_atraccion}
                   onChange={(e) => handleDetalleChange(idx, 'id_atraccion', e.target.value)}
@@ -504,17 +519,6 @@ const cargarReservaParaEdicion = async (id_reserva) => {
                   type="date"
                   value={detalle.fecha}
                   onChange={(e) => handleFechaChange(e, idx)}
-                  onFocus={(e) => {
-                    // Bloqueo de lunes en el selector nativo
-                    const input = e.target;
-                    input.addEventListener('input', function() {
-                      const day = new Date(this.value).getDay();
-                      if (day === 0) {
-                        this.value = '';
-                        setMensaje('⚠️ No se permiten reservas los lunes');
-                      }
-                    });
-                  }}
                   className={esFechaInvalida ? 'fecha-invalida' : ''}
                   min={new Date().toISOString().split('T')[0]}
                   required
@@ -523,57 +527,63 @@ const cargarReservaParaEdicion = async (id_reserva) => {
                 <select
                   value={detalle.hora}
                   onChange={(e) => handleDetalleChange(idx, 'hora', e.target.value)}
-                  required>
-                    
+                  required
+                >
                   {horarios.map(h => (
-                    <option key={h} value={h}>{h.replace('Hora ', '')}</option>
+                    <option key={h} value={h}>{h}</option>
                   ))}
                 </select>
 
                 <span>Subtotal: ${detalle.subtotal.toFixed(2)}</span>
 
                 {detalles.length > 1 && (
-                  <button type="button" onClick={() => eliminarDetalle(idx)}>🗑</button>
+                  <button 
+                    type="button" 
+                    onClick={() => eliminarDetalle(idx)}
+                    className="btn-eliminar"
+                  >
+                    🗑
+                  </button>
                 )}
               </div>
             );
           })}
 
           <div className="acciones-formulario">
-            <button type="button" onClick={agregarDetalle}>+ Agregar</button>
+            <button type="button" onClick={agregarDetalle} className="btn-agregar">
+              + Agregar Atracción
+            </button>
             <h4>Total: ${total.toFixed(2)}</h4>
             
             <div className="botones-accion">
-              {!modoEdicion && (
-                <button 
-                  type="button" 
-                  onClick={cancelarCreacion}
-                  className="boton-cancelar"
-                >
-                  Cancelar Reserva
-                </button>
-              )}
+              <button 
+                type="button" 
+                onClick={cancelarProceso}
+                className="boton-cancelar"
+              >
+                Cancelar
+              </button>
               
               <button 
                 type="submit" 
                 disabled={bloquearReservaDuplicada || detalles.some(d => 
-                  d.fecha && new Date(d.fecha).getDay() === 0
+                  d.fecha && new Date(d.fecha).getDay() === 1
                 )}
+                className="btn-confirmar"
               >
                 {modoEdicion ? 'Actualizar Reserva' : 'Confirmar Reserva'}
               </button>
             </div>
           </div>
-          
         </form>
       )}
 
-      <h3>Historial de reservas</h3>
-          {mensaje && (
-            <p className={`mensaje ${mensaje.includes('✅') ? 'exito' : 'error'}`}>
-              {mensaje}
-            </p>
-          )}
+      <h3>Mis Reservas Activas</h3>
+      {mensaje && (
+        <p className={`mensaje ${mensaje.includes('✅') ? 'exito' : 'error'}`}>
+          {mensaje}
+        </p>
+      )}
 
       <table className="tabla-reservas">
         <thead>
@@ -589,10 +599,10 @@ const cargarReservaParaEdicion = async (id_reserva) => {
           </tr>
         </thead>
         <tbody>
-          {historialFiltrado.length === 0 ? (
-            <tr><td colSpan="9">No hay reservas que coincidan con los filtros.</td></tr>
+          {historialPaginado.length === 0 ? (
+            <tr><td colSpan="8">No hay reservas que coincidan con los filtros.</td></tr>
           ) : (
-            historialFiltrado.map((r, idx) => (
+            historialPaginado.map((r, idx) => (
               <tr key={idx}>
                 <td>{r.fecha?.split('T')[0]}</td>
                 <td>{formatearHora(r.hora)}</td>
@@ -601,37 +611,48 @@ const cargarReservaParaEdicion = async (id_reserva) => {
                 <td>${r.subtotal?.toFixed(2)}</td>
                 <td>{r.estado}</td>
                 <td>{r.ediciones}</td>
-                <td className="acciones-reserva">
-                  {r.estado !== 'cancelado' && (
-                    <>
-                      <button 
-                        onClick={() => cargarReservaParaEdicion(r.id_reserva)}
-                        disabled={
-                          (r.estado === 'confirmado' && r.ediciones >= 1) ||
-                          (r.estado === 'pendiente' && r.ediciones >= 2)
-                        }
-                        title={
-                          (r.estado === 'confirmado' && r.ediciones >= 1) ? 
-                          'Solo puedes editar 1 vez las reservas confirmadas' :
-                          (r.estado === 'pendiente' && r.ediciones >= 2) ?
-                          'Solo puedes editar máximo 2 veces las reservas pendientes' :
-                          'Editar reserva'
-                        }
-                      >
-                        ✏️
-                      </button>
-                      
-                      {r.estado !== 'confirmado' && (
+
+                  <td className="acciones-reserva">
+                    {r.estado !== 'cancelado' && (
+                      <>
                         <button 
-                          onClick={() => cancelarReserva(r.id_reserva)}
-                          title="Cancelar reserva"
+                          onClick={() => cargarReservaParaEdicion(r.id_reserva)}
+                          disabled={
+                            (r.estado === 'confirmado' && r.ediciones >= 1) ||
+                            (r.estado === 'pendiente' && r.ediciones >= 2)
+                          }
+                          title={
+                            (r.estado === 'confirmado' && r.ediciones >= 1) ? 
+                            'Solo puedes editar 1 vez las reservas confirmadas' :
+                            (r.estado === 'pendiente' && r.ediciones >= 2) ?
+                            'Solo puedes editar máximo 2 veces las reservas pendientes' :
+                            'Editar reserva'
+                          }
                         >
-                          ❌
+                          ✏️
                         </button>
-                      )}
-                    </>
-                  )}
-                </td>
+
+                        {r.estado !== 'confirmado' && (
+                          <button 
+                            onClick={() => cancelarReserva(r.id_reserva)}
+                            title="Cancelar reserva"
+                          >
+                            ❌
+                          </button>
+                        )}
+
+                        {/* ✅ Botón pagar si está pendiente */}
+                        {r.estado === 'pendiente' && (
+                          <button 
+                            onClick={() => navigate(`/cliente/pago/${r.id_reserva}`)}
+                            title="Ir a pagar esta reserva"
+                          >
+                            💳
+                          </button>
+                        )}
+                      </>
+                    )}
+                  </td>
               </tr>
             ))
           )}
@@ -639,67 +660,44 @@ const cargarReservaParaEdicion = async (id_reserva) => {
       </table>
 
       {totalPaginas > 1 && (
-  <div className="paginacion">
-    <button 
-      disabled={paginaActual === 1} 
-      onClick={() => setPaginaActual(1)}
-      title="Primera página"
-    >
-      «
-    </button>
-    
-    <button 
-      disabled={paginaActual === 1} 
-      onClick={() => setPaginaActual(paginaActual - 1)}
-      title="Página anterior"
-    >
-      ‹
-    </button>
-    
-    {Array.from({ length: Math.min(5, totalPaginas) }, (_, i) => {
-      let pagina;
-      if (totalPaginas <= 5) {
-        pagina = i + 1;
-      } else if (paginaActual <= 3) {
-        pagina = i + 1;
-      } else if (paginaActual >= totalPaginas - 2) {
-        pagina = totalPaginas - 4 + i;
-      } else {
-        pagina = paginaActual - 2 + i;
-      }
-      
-      return (
-        <button
-          key={i}
-          onClick={() => setPaginaActual(pagina)}
-          className={paginaActual === pagina ? 'active' : ''}
-        >
-          {pagina}
-        </button>
-      );
-    })}
-    
-    <button 
-      disabled={paginaActual === totalPaginas} 
-      onClick={() => setPaginaActual(paginaActual + 1)}
-      title="Página siguiente"
-    >
-      ›
-    </button>
-    
-    <button 
-      disabled={paginaActual === totalPaginas} 
-      onClick={() => setPaginaActual(totalPaginas)}
-      title="Última página"
-    >
-      »
-    </button>
-    
-    <span className="info-paginacion">
-      Página {paginaActual} de {totalPaginas}
-    </span>
-  </div>
-)}
+        <div className="paginacion-containerNav">
+          <button 
+            onClick={() => cambiarPagina(1)} 
+            disabled={paginaActual === 1}
+            className="paginacion-control"
+          >
+            «
+          </button>
+          <button 
+            onClick={() => cambiarPagina(paginaActual - 1)} 
+            disabled={paginaActual === 1}
+            className="paginacion-control"
+          >
+            ‹
+          </button>
+          
+          {renderizarNumerosPagina()}
+          
+          <button 
+            onClick={() => cambiarPagina(paginaActual + 1)} 
+            disabled={paginaActual === totalPaginas}
+            className="paginacion-control"
+          >
+            ›
+          </button>
+          <button 
+            onClick={() => cambiarPagina(totalPaginas)} 
+            disabled={paginaActual === totalPaginas}
+            className="paginacion-control"
+          >
+            »
+          </button>
+          
+          <span className="paginacion-info">
+            Página {paginaActual} de {totalPaginas}
+          </span>
+        </div>
+      )}
     </div>
   );
 };

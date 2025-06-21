@@ -36,8 +36,13 @@ import ConfigHoras  from '../pages/Admin/Config/HorarioReservasConfig';
 // Cliente
 import ReservasCliente from '../pages/Cliente/ReservasCliente';
 import ConfigC from '../pages/Cliente/Config';
-import DatosPC from '../pages/Cliente/Config/DatosPersonales';
 import HistorialReservas from '../pages/Cliente/HistorialReservas';
+import ClientePago from '../pages/Cliente/ClientePago';
+// Cliente Config
+import DatosPC from '../pages/Cliente/Config/DatosPersonales';
+// import ContactoForm from '../pages/Cliente/Config/ContactoForm';
+import BancariaForm from '../pages/Cliente/Config/BancariaForm';
+import DocumentosForm from '../pages/Cliente/Config/DocumentosForm';
 
 const AppRouter = () => {
   return (
@@ -84,6 +89,13 @@ const AppRouter = () => {
         <Route path="/map" element={<Mapa />} />
         <Route path="/gallery" element={<Galeria />} />
         <Route path="/verify" element={<Verify />} />
+        <Route path="/cliente/pago/:id_reserva" element={<ClientePago />} />
+
+        {/* Rutas de Config Cliente */}
+        <Route path="/cliente/config/datos-personales" element={<DatosPC />} />
+        {/* <Route path="/cliente/config/contacto" element={<ContactoForm />} /> */}
+        <Route path="/cliente/config/bancaria" element={<BancariaForm />} />
+        <Route path="/cliente/config/documentos" element={<DocumentosForm />} />
 
         {/* Ruta para errores 404 */}
         <Route path="*" element={<NotFound />} />
