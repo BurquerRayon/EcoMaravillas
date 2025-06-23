@@ -1,66 +1,34 @@
-import React, { useState } from "react";
-import "../styles/Carrusel.css"; // Asegúrate de que este CSS exista
+import React, { useEffect, useState } from "react";
+import "../styles/Carrusel.css";
 
-/*const images = [
+const images = [
   "/assets/img/Flora/e1.jpeg",
   "/assets/img/Flora/e2.jpeg",
   "/assets/img/Flora/e3.jpeg",
-  // Agrega más rutas según tus imágenes
-]; //a */
-
-const images = [
-  {
-    src: "/assets/img/Flora/e1.jpeg",
-    nombre: "Flor 1",
-  },
-  {
-    src: "/assets/img/Flora/e2.jpeg",
-    nombre: "Flor 2",
-  },
-  {
-    src: "/assets/img/Flora/e3.jpeg",
-    nombre: "Flor 3",
-  },
+  "/assets/img/Flora/e4.jpeg",
+  "/assets/img/Flora/e5.jpeg",
 ];
 
-//SE AGREGO MAS CODIGOS PARA LAS CARACTERISTICAS E IMAGENES//
 const Carrusel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const handlePrev = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? images.length - 1 : prevIndex - 1
-    );
-  };
+  // Cambiar imagen cada 5 segundos
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % images.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
-  const handleNext = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === images.length - 1 ? 0 : prevIndex + 1
-    );
-  };
-
-  const imagenActual = images[currentIndex];
+  const currentImage = images[currentIndex];
 
   return (
-    <div className="carousel-container">
-      <button className="nav-btn left" onClick={handlePrev}></button>
-
-      <img
-        src={imagenActual.src}
-        alt={imagenActual.nombre}
-        className="carousel-image"
-      />
-
-      <button className="nav-btn right" onClick={handleNext}></button>
-
-      {/* Características visibles solo cuando hay una imagen seleccionada */}
-      <div className="caracteristica-box">
-        <h2>{imagenActual.nombre}</h2>
-        <p>
-          <strong>Características:</strong> {imagenActual.caracteristica}
-        </p>
-      </div>
-    </div>
+    <div
+      className="carousel-container background-carousel"
+      style={{
+        backgroundImage: `url(${currentImage})`,
+      }}
+    ></div>
   );
 };
 
