@@ -1,0 +1,64 @@
+/* Estilos generales para el contenedor del pago */
+.pago-container {
+  max-width: 600px;
+  margin: auto;
+  padding: 2rem;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.pago-container h2 {
+  font-size: 1.5rem;
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+}
+
+.pago-container p {
+  font-size: 1rem;
+  color: #555;
+}
+
+.pago-container label {
+  display: block;
+  margin: 1rem 0 0.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.pago-container select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  background-color: #fff;
+}
+
+.pago-container button {
+  padding: 12px 20px;
+  background-color: #28a745;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.pago-container button:hover {
+  background-color: #218838;
+}
+
+.pago-container button:disabled {
+  background-color: #adb5bd;
+  cursor: not-allowed;
+}
+
+/* Estilo para el texto fuerte (monto total) */
+.pago-container strong {
+  color: #2e8b57;
+  font-weight: bold;
+}
