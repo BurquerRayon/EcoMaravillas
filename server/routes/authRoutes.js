@@ -170,13 +170,14 @@ router.post('/login', async (req, res) => {
       { expiresIn: '1d' }
     );
 
+    // En la ruta de login, modifica la respuesta:
     res.json({
       success: true,
       message: 'Inicio de sesión exitoso',
       token,
       user: {
-        id: user.id_usuario,
-        id_turista: user.id_turista, // ← esta es la parte clave
+        id: user.id_usuario, // Asegúrate que esto esté como id_usuario
+        id_turista: user.id_turista,
         email: user.correo,
         nombre: user.nombre,
         rol: user.rol,
