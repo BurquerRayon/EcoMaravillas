@@ -12,17 +12,14 @@ const images = [
   {
     src: "/assets/img/Flora/e1.jpeg",
     nombre: "Flor 1",
-    caracteristica: "Flor silvestre encontrada en zonas húmedas.",
   },
   {
     src: "/assets/img/Flora/e2.jpeg",
     nombre: "Flor 2",
-    caracteristica: "Flor común en áreas montañosas.",
   },
   {
     src: "/assets/img/Flora/e3.jpeg",
     nombre: "Flor 3",
-    caracteristica: "Flor de colores intensos, polinizada por abejas.",
   },
 ];
 
