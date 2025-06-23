@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import '../styles/Login.css';
 import Footer from '../components/Footer';
+import VerifyModal from './VerifyModal'; // Nuevo componente modal
 
 const Login = () => {
   const [formData, setFormData] = useState({ 
@@ -12,6 +13,9 @@ const Login = () => {
   });
   const [mensaje, setMensaje] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
+  const [verificationToken, setVerificationToken] = useState('');
+  const [userEmail, setUserEmail] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -38,7 +42,6 @@ const Login = () => {
       if (response.data.success) {
         const { token, user: responseUser } = response.data;
         
-        // Estructura uniforme para el usuario
         const userData = {
           id_usuario: responseUser.id,
           id_turista: responseUser.id_turista,
@@ -48,12 +51,10 @@ const Login = () => {
           verificado: responseUser.verificado
         };
 
-        // Guardar en contexto y almacenamiento local
         login(userData);
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(userData));
 
-        // Redirección basada en rol
         const redirectPath = {
           admin: '/home/admin',
           empleado: '/home/employee',
@@ -64,13 +65,22 @@ const Login = () => {
       }
     } catch (err) {
       console.error('Error en login:', err);
-      const errorMessage = err.response?.data?.code === 'EMAIL_NOT_VERIFIED'
-        ? '❌ Correo no verificado. Revisa tu bandeja de entrada.'
-        : `❌ ${err.response?.data?.message || 'Error en el inicio de sesión'}`;
-      setMensaje(errorMessage);
+      
+      if (err.response?.data?.code === 'EMAIL_NOT_VERIFIED') {
+        setUserEmail(formData.correo);
+        setVerificationToken(err.response?.data?.verificationToken || '');
+        setShowVerifyModal(true);
+      } else {
+        setMensaje(`❌ ${err.response?.data?.message || 'Error en el inicio de sesión'}`);
+      }
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleVerificationSuccess = () => {
+    setShowVerifyModal(false);
+    setMensaje('✅ Correo verificado. Por favor inicia sesión nuevamente.');
   };
 
   return (
@@ -80,7 +90,7 @@ const Login = () => {
           <div className="login-box">
             <h2>Iniciar sesión</h2>
             <form onSubmit={handleSubmit}>
-              <div className="login-form-group">
+             <div className="login-form-group">
                 <label htmlFor="correo">Correo electrónico</label>
                 <input
                   type="email"
@@ -139,6 +149,15 @@ const Login = () => {
           </div>
         </div>
       </main>
+
+      {/* Modal de verificación */}
+      {showVerifyModal && (
+        <VerifyModal
+          email={userEmail}
+          onSuccess={handleVerificationSuccess}
+          onClose={() => setShowVerifyModal(false)}
+        />
+      )}
       <Footer />
     </div>
   );

@@ -70,7 +70,7 @@ router.post('/register', async (req, res) => {
       `);
 
     // Crear token de verificación
-    const token = crypto.randomBytes(32).toString('hex');
+    const token = crypto.randomBytes(8).toString('hex').slice(0, 15); // Genera un token de 15 caracteres
     await pool.request()
       .input('id_usuario', id_usuario)
       .input('token', token)
@@ -153,12 +153,24 @@ router.post('/login', async (req, res) => {
 
     const isVerified = Boolean(user.verificado);
     if (!isVerified) {
+  // Obtener el token de verificación no usado
+  const tokenResult = await pool.request()
+    .input('id_usuario', user.id_usuario)
+    .query(`
+      SELECT token FROM Verificacion 
+      WHERE id_usuario = @id_usuario AND usado = 0
+    `);
+
+  const verificationToken = tokenResult.recordset.length > 0 
+    ? tokenResult.recordset[0].token 
+    : null;
+
       return res.status(403).json({
-        success: false,
-        message: 'Debes verificar tu correo antes de iniciar sesión',
-        code: 'EMAIL_NOT_VERIFIED'
-      });
-    }
+      success: false,
+      message: 'Debes verificar tu correo antes de iniciar sesión',
+      code: 'EMAIL_NOT_VERIFIED'
+    });
+  }
 
     const token = jwt.sign(
       {
@@ -243,7 +255,71 @@ router.get('/verify', async (req, res) => {
 });
 
 
+// ===========================
+// Reenviar token de verificación
+// ===========================
+router.post('/resend-verification', async (req, res) => {
+  const { email } = req.body;
 
+  if (!email) {
+    return res.status(400).json({ message: 'Correo electrónico requerido' });
+  }
+
+  try {
+    await poolConnect;
+
+    // Buscar usuario no verificado
+    const userResult = await pool.request()
+      .input('correo', email)
+      .query(`
+        SELECT id_usuario, verificado 
+        FROM Usuario 
+        WHERE correo = @correo
+      `);
+
+    if (userResult.recordset.length === 0) {
+      return res.status(404).json({ message: 'Correo no registrado' });
+    }
+
+    const user = userResult.recordset[0];
+
+    if (user.verificado) {
+      return res.status(400).json({ message: 'El correo ya está verificado' });
+    }
+
+    // Eliminar tokens antiguos
+    await pool.request()
+      .input('id_usuario', user.id_usuario)
+      .query('DELETE FROM Verificacion WHERE id_usuario = @id_usuario');
+
+    // Crear nuevo token (15 caracteres)
+    const token = crypto.randomBytes(8).toString('hex').slice(0, 15);
+
+    // Insertar nuevo token
+    await pool.request()
+      .input('id_usuario', user.id_usuario)
+      .input('token', token)
+      .query(`
+        INSERT INTO Verificacion (id_usuario, token)
+        VALUES (@id_usuario, @token)
+      `);
+
+    // Obtener nombre del usuario para el email
+    const personaResult = await pool.request()
+      .input('id_persona', user.id_persona)
+      .query('SELECT nombre FROM Persona WHERE id_persona = @id_persona');
+
+    const nombre = personaResult.recordset[0]?.nombre || 'Usuario';
+
+    // Enviar email
+    await sendVerificationEmail(email, token, nombre);
+
+    res.json({ message: '✅ Nuevo código de verificación enviado a tu correo' });
+  } catch (err) {
+    console.error('Error al reenviar token:', err);
+    res.status(500).json({ message: '❌ Error al reenviar el código de verificación' });
+  }
+});
 
 
 
