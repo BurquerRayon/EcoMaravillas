@@ -149,8 +149,8 @@ const ReservaCliente = () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Validar que no sea lunes (0 = Domingo, 1 = Lunes)
-    if (selectedDate.getDay() === 1) {
+    // Validar que no sea puedan realizar reservas los dias lunes (0 = lunes)
+    if (selectedDate.getDay() === 0) {
       setMensaje('⚠️ No se permiten reservas los lunes. Por favor seleccione otro día.');
       
       const nuevaLista = [...detalles];
@@ -309,7 +309,7 @@ const ReservaCliente = () => {
     const hayLunes = detalles.some(d => {
       if (!d.fecha) return false;
       const dia = new Date(d.fecha).getDay();
-      return dia === 1; // 1 = Lunes
+      return dia === 0; // 0 = Lunes
     });
 
     if (hayLunes) {
@@ -487,7 +487,7 @@ const ReservaCliente = () => {
           
           {detalles.map((detalle, idx) => {
             const esDuplicado = existeReservaDuplicada(detalle, idx);
-            const esFechaInvalida = detalle.fecha && new Date(detalle.fecha).getDay() === 1;
+            const esFechaInvalida = detalle.fecha && new Date(detalle.fecha).getDay() === 0; // 0 = Lunes
             
             return (
               <div 
@@ -567,7 +567,7 @@ const ReservaCliente = () => {
               <button 
                 type="submit" 
                 disabled={bloquearReservaDuplicada || detalles.some(d => 
-                  d.fecha && new Date(d.fecha).getDay() === 1
+                  d.fecha && new Date(d.fecha).getDay() === 0 // 0 = Lunes
                 )}
                 className="btn-confirmar"
               >
