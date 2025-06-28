@@ -33,6 +33,36 @@ router.post('/crear', async (req, res) => {
         return res.status(400).json({ message: 'Datos incompletos en detalles de la reserva' });
       }
 
+// Verificar si ya existe una reserva del mismo turista para la misma atracción, fecha y hora
+      const reservaDuplicada = await pool.request()
+        .input('id_turista', id_turista)
+        .input('id_atraccion', id_atraccion)
+        .input('fecha', fecha)
+        .input('hora', hora)
+        .query(`
+          SELECT COUNT(*) as total
+          FROM Reserva_Detalles RD
+          INNER JOIN Reservas R ON RD.id_reserva = R.id_reserva
+          WHERE R.id_turista = @id_turista
+            AND RD.id_atraccion = @id_atraccion
+            AND RD.fecha = @fecha
+            AND RD.hora = @hora
+            AND R.estado IN ('pendiente', 'confirmado')
+        `);
+
+      if (reservaDuplicada.recordset[0].total > 0) {
+        const atraccionNombre = await pool.request()
+          .input('id_atraccion', id_atraccion)
+          .query('SELECT nombre FROM Atraccion WHERE id_atraccion = @id_atraccion');
+        
+        const nombreAtraccion = atraccionNombre.recordset[0]?.nombre || 'Atracción';
+        const bloqueHorario = obtenerBloqueHorario(hora);
+        
+        return res.status(400).json({
+          message: `❌ Ya tienes una reserva para "${nombreAtraccion}" el ${fecha} en el horario ${bloqueHorario}. No puedes crear reservas duplicadas.`
+        });
+      }
+
       // Obtener capacidad máxima de la atracción
       const atraccionRes = await pool.request()
         .input('id_atraccion', id_atraccion)

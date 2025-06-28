@@ -79,6 +79,35 @@ const ReservaCliente = () => {
     );
   };
 
+  // Verificar reservas duplicadas contra la base de datos
+  const verificarReservaDuplicadaEnBD = async (detalle) => {
+    if (!detalle.id_atraccion || !detalle.fecha || !detalle.hora) return false;
+    
+    try {
+      const response = await axios.get(`http://localhost:3001/api/reservas/turista/${id_turista}`, {
+        params: {
+          completo: 'true',
+          id_atraccion: detalle.id_atraccion,
+          fechaDesde: detalle.fecha,
+          fechaHasta: detalle.fecha
+        }
+      });
+      
+      // Filtrar reservas que coincidan exactamente con fecha, hora y atracción
+      // y que estén en estado pendiente o confirmado
+      const reservasExistentes = response.data.filter(reserva => 
+        reserva.fecha.split('T')[0] === detalle.fecha &&
+        formatearHora(reserva.hora) === detalle.hora &&
+        (reserva.estado === 'pendiente' || reserva.estado === 'confirmado')
+      );
+      
+      return reservasExistentes.length > 0;
+    } catch (err) {
+      console.error('Error al verificar duplicados en BD:', err);
+      return false;
+    }
+  };
+
   // Cargar datos iniciales
   useEffect(() => {
     axios.get('http://localhost:3001/api/atracciones')
