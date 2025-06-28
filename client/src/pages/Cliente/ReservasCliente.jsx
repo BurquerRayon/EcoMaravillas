@@ -465,6 +465,7 @@ const ReservaCliente = () => {
         <button 
           onClick={() => {
             setMostrarFormulario(!mostrarFormulario);
+            setMostrarFiltros(false);
             if (mostrarFormulario) cancelarProceso();
           }}
           className="btn-toggle-form"
@@ -473,7 +474,11 @@ const ReservaCliente = () => {
         </button>
 
         <button 
-          onClick={() => setMostrarFiltros(!mostrarFiltros)}
+          onClick={() => {
+            setMostrarFiltros(!mostrarFiltros);
+            setMostrarFormulario(false);
+            cancelarProceso();
+          }}
           className="btn-toggle-form"
         >
           {mostrarFiltros ? '➖ Ocultar Búsqueda' : '🔍 Buscar Reservas'}
@@ -528,19 +533,12 @@ const ReservaCliente = () => {
           {modoEdicion && (
             <div className="modo-edicion-info">
               <strong>Editando reserva #{reservaEditando}</strong>
-              <button 
-                type="button" 
-                onClick={cancelarProceso}
-                className="boton-cancelar"
-              >
-                Cancelar Edición
-              </button>
             </div>
           )}
 
           {detalles.map((detalle, idx) => {
             const esDuplicado = existeReservaDuplicada(detalle, idx);
-            const esFechaInvalida = detalle.fecha && new Date(detalle.fecha).getDay() === 0; // 0 = Lunes
+            const esFechaInvalida = detalle.fecha && new Date(detalle.fecha).getDay() === 0;
 
             return (
               <div 
@@ -554,12 +552,9 @@ const ReservaCliente = () => {
                 >
                   <option value="">Seleccione una atracción</option>
                   {atracciones
-                    .filter(a => {
-                      // Always exclude attractions already selected in other details (except current one)
-                      return !detalles.some((d, dIdx) => 
-                        dIdx !== idx && d.id_atraccion === a.id_atraccion
-                      );
-                    })
+                    .filter(a => !detalles.some((d, dIdx) => 
+                      dIdx !== idx && d.id_atraccion === a.id_atraccion
+                    ))
                     .map(a => (
                       <option key={a.id_atraccion} value={a.id_atraccion}>
                         {a.nombre} - ${a.precio}
@@ -628,7 +623,7 @@ const ReservaCliente = () => {
                 type="submit" 
                 disabled={
                   detalles.some((detalle, idx) => existeReservaDuplicada(detalle, idx)) ||
-                  detalles.some(d => d.fecha && new Date(d.fecha).getDay() === 0) // 0 = Lunes
+                  detalles.some(d => d.fecha && new Date(d.fecha).getDay() === 0)
                 }
                 className="btn-confirmar"
               >
@@ -672,48 +667,46 @@ const ReservaCliente = () => {
                 <td>${r.subtotal?.toFixed(2)}</td>
                 <td>{r.estado}</td>
                 <td>{r.ediciones}</td>
+                <td className="acciones-reserva">
+                  {r.estado !== 'cancelado' && (
+                    <>
+                      <button 
+                        onClick={() => cargarReservaParaEdicion(r.id_reserva)}
+                        disabled={
+                          (r.estado === 'confirmado' && r.ediciones >= 1) ||
+                          (r.estado === 'pendiente' && r.ediciones >= 2)
+                        }
+                        title={
+                          (r.estado === 'confirmado' && r.ediciones >= 1) ? 
+                          'Solo puedes editar 1 vez las reservas confirmadas' :
+                          (r.estado === 'pendiente' && r.ediciones >= 2) ?
+                          'Solo puedes editar máximo 2 veces las reservas pendientes' :
+                          'Editar reserva'
+                        }
+                      >
+                        ✏️
+                      </button>
 
-                  <td className="acciones-reserva">
-                    {r.estado !== 'cancelado' && (
-                      <>
+                      {r.estado !== 'confirmado' && (
                         <button 
-                          onClick={() => cargarReservaParaEdicion(r.id_reserva)}
-                          disabled={
-                            (r.estado === 'confirmado' && r.ediciones >= 1) ||
-                            (r.estado === 'pendiente' && r.ediciones >= 2)
-                          }
-                          title={
-                            (r.estado === 'confirmado' && r.ediciones >= 1) ? 
-                            'Solo puedes editar 1 vez las reservas confirmadas' :
-                            (r.estado === 'pendiente' && r.ediciones >= 2) ?
-                            'Solo puedes editar máximo 2 veces las reservas pendientes' :
-                            'Editar reserva'
-                          }
+                          onClick={() => cancelarReserva(r.id_reserva)}
+                          title="Cancelar reserva"
                         >
-                          ✏️
+                          ❌
                         </button>
+                      )}
 
-                        {r.estado !== 'confirmado' && (
-                          <button 
-                            onClick={() => cancelarReserva(r.id_reserva)}
-                            title="Cancelar reserva"
-                          >
-                            ❌
-                          </button>
-                        )}
-
-                        {/* ✅ Botón pagar si está pendiente */}
-                        {r.estado === 'pendiente' && (
-                          <button 
-                            onClick={() => navigate(`/cliente/pago/${r.id_reserva}`)}
-                            title="Ir a pagar esta reserva"
-                          >
-                            💳
-                          </button>
-                        )}
-                      </>
-                    )}
-                  </td>
+                      {r.estado === 'pendiente' && (
+                        <button 
+                          onClick={() => navigate(`/cliente/pago/${r.id_reserva}`)}
+                          title="Ir a pagar esta reserva"
+                        >
+                          💳
+                        </button>
+                      )}
+                    </>
+                  )}
+                </td>
               </tr>
             ))
           )}
