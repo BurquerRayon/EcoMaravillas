@@ -43,11 +43,188 @@ h2 {
 
 .filtros-grid input,
 .filtros-grid select {
-  padding: 8px;
+padding: 10px 12px;
   font-size: 14px;
   width: 100%;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  transition: border-color 0.3s ease;
+}
+
+.filtros-grid input:focus,
+.filtros-grid select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* Tabla de reservas mejorada */
+.tabla-reservas {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.tabla-reservas th {
+  background-color: #007bff;
+  color: white;
+  padding: 15px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.tabla-reservas td {
+  padding: 12px;
+  border-bottom: 1px solid #dee2e6;
+  font-size: 14px;
+}
+
+.tabla-reservas tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.tabla-reservas tbody tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.acciones-reserva {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.acciones-reserva button {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.acciones-reserva button:hover {
+  transform: scale(1.1);
+}
+
+.acciones-reserva button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Mensajes */
+.mensaje {
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin: 15px 0;
+  font-weight: 500;
+}
+
+.mensaje.exito {
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+}
+
+.mensaje.error {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+}
+
+/* Paginación mejorada */
+.paginacion-containerNav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  padding: 15px;
+}
+
+.paginacion-control,
+.paginacion-numero {
+  padding: 8px 12px;
+  border: 1px solid #dee2e6;
+  background-color: white;
+  color: #007bff;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.paginacion-control:hover:not(:disabled),
+.paginacion-numero:hover:not(.active) {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.paginacion-control:disabled {
+  color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.paginacion-numero.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.paginacion-info {
+  margin-left: 15px;
+  color: #6c757d;
+  font-size: 14px;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+  .reserva-linea {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .reserva-linea select,
+  .reserva-linea input,
+  .reserva-linea span {
+    justify-self: stretch;
+  }
+  
+  .filtros-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .botones-accion {
+    flex-direction: column;
+  }
+  
+  .tabla-reservas {
+    font-size: 12px;
+  }
+  
+  .tabla-reservas th,
+  .tabla-reservas td {
+    padding: 8px;
+  }
+  
+  .panel-botones {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .panel-botones button {
+    margin-right: 0;
+  }
 }
 
 /* Formulario de reserva */
@@ -89,13 +266,143 @@ h2 {
 /* Detalles del formulario de reserva */
 .reserva-linea {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr auto;
+grid-template-columns: 2fr 80px 140px 100px 120px auto;
   align-items: center;
   margin-bottom: 15px;
-  padding: 10px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  gap: 12px;
+  background-color: #f8f9fa;
+  transition: all 0.3s ease;
+}
+
+.reserva-linea:hover {
+  border-color: #007bff;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
+}
+
+.reserva-linea.error-duplicado {
+  border-color: #dc3545;
+  background-color: #f8d7da;
+}
+
+.reserva-linea select,
+.reserva-linea input {
+  padding: 8px 12px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.reserva-linea select:focus,
+.reserva-linea input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.reserva-linea input.fecha-invalida {
+  border-color: #dc3545;
+  background-color: #f8d7da;
+}
+
+.reserva-linea span {
+  font-weight: 600;
+  color: #28a745;
+  font-size: 14px;
+}
+
+.btn-eliminar {
+  padding: 8px 12px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-eliminar:hover {
+  background-color: #c82333;
+}
+
+/* Acciones del formulario */
+.acciones-formulario {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+}
+
+.acciones-formulario h4 {
+  margin: 0 0 15px 0;
+  color: #28a745;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.botones-accion {
+  display: flex;
   gap: 10px;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+
+.btn-agregar {
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-agregar:hover {
+  background-color: #218838;
+}
+
+.btn-confirmar {
+  padding: 12px 24px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-confirmar:hover:not(:disabled) {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+}
+
+.btn-confirmar:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.boton-cancelar {
+  padding: 10px 20px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.boton-cancelar:hover {
+  background-color: #545b62;
 }
 
 .reserva-linea input,
