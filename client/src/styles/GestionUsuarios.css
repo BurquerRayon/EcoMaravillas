@@ -69,11 +69,15 @@
   background-color: #2ecc71;
   color: white;
   border: none;
-  padding: 10px 15px;
+  padding: 10px 20px;
   border-radius: 4px;
   cursor: pointer;
   font-weight: 500;
   transition: background-color 0.3s;
+  width: auto;
+  justify-self: start;
+  min-width: fit-content;
+  white-space: nowrap;
 }
 
 .formulario-usuario button:hover {

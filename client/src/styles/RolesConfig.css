@@ -81,6 +81,12 @@
   font-size: 1rem;
 }
 
+.roles-form button {
+  width: auto;
+  padding: 10px 20px;
+  justify-self: start;
+}
+
 .btn-guardar {
   background-color: #0066cc;
   color: white;

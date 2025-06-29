@@ -65,6 +65,9 @@
   padding: 5px 10px;
   border-radius: 4px;
   cursor: pointer;
+  width: auto;
+  min-width: fit-content;
+  white-space: nowrap;
 }
 
 .form-ajuste-cliente {
