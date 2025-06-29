@@ -44,6 +44,13 @@ import DatosPC from '../pages/Cliente/Config/DatosPersonales';
 import BancariaForm from '../pages/Cliente/Config/BancariaForm';
 import DocumentosForm from '../pages/Cliente/Config/DocumentosForm';
 
+
+// Importa los nuevos componentes al inicio del archivo
+import ForgotPassword from '../pages/Cliente/ForgotPassword';
+import ResetPassword from '../pages/Cliente/ResetPassword';
+
+
+
 const AppRouter = () => {
   return (
     <AuthProvider> {/* Envuelve todo con AuthProvider */}
@@ -99,6 +106,10 @@ const AppRouter = () => {
 
         {/* Ruta para errores 404 */}
         <Route path="*" element={<NotFound />} />
+
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+
         </Routes>
       </Router>
     </AuthProvider>

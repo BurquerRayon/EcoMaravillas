@@ -355,3 +355,94 @@ h2, h3, h4 {
     flex-direction: column;
   }
 }
+
+/* Estilos para los botones de acciones en la tabla */
+.acciones-reserva {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.acciones-reserva button {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  font-size: 1.1rem;
+  color: white;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.acciones-reserva button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.acciones-reserva button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Estilo específico para cada tipo de botón */
+.acciones-reserva button:nth-child(1) { /* Editar */
+  background-color: #3498db;
+}
+
+.acciones-reserva button:nth-child(2) { /* Cancelar */
+  background-color: #e74c3c;
+}
+
+.acciones-reserva button:nth-child(3) { /* Pagar */
+  background-color: #2ecc71;
+}
+
+/* Efectos hover específicos */
+.acciones-reserva button:nth-child(1):hover {
+  background-color: #2980b9;
+}
+
+.acciones-reserva button:nth-child(2):hover {
+  background-color: #c0392b;
+}
+
+.acciones-reserva button:nth-child(3):hover {
+  background-color: #27ae60;
+}
+
+/* Tooltips para los botones */
+.acciones-reserva button {
+  position: relative;
+}
+
+.acciones-reserva button::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.acciones-reserva button:hover::after {
+  opacity: 1;
+  visibility: visible;
+  bottom: calc(100% + 10px);
+}

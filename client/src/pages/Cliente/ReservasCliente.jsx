@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/ReservaCliente.css';
+import ClientePago from '../Cliente/ClientePago';
 
 const ReservaCliente = () => {
   const [atracciones, setAtracciones] = useState([]);
@@ -14,6 +15,8 @@ const ReservaCliente = () => {
   const [bloquearReservaDuplicada, setBloquearReservaDuplicada] = useState(false);
   const [reservaEditando, setReservaEditando] = useState(null);
   const [modoEdicion, setModoEdicion] = useState(false);
+
+  const [reservaParaPagar, setReservaParaPagar] = useState(null);
 
   // Estados para filtros y paginación
   const [filtroFecha, setFiltroFecha] = useState('');
@@ -698,7 +701,7 @@ const ReservaCliente = () => {
 
                       {r.estado === 'pendiente' && (
                         <button 
-                          onClick={() => navigate(`/cliente/pago/${r.id_reserva}`)}
+                          onClick={() => setReservaParaPagar(r)}
                           title="Ir a pagar esta reserva"
                         >
                           💳
@@ -751,6 +754,12 @@ const ReservaCliente = () => {
             Página {paginaActual} de {totalPaginas}
           </span>
         </div>
+      )}
+      {reservaParaPagar && (
+        <ClientePago 
+          reserva={reservaParaPagar} 
+          onCerrar={() => setReservaParaPagar(null)} 
+        />
       )}
     </div>
   );
