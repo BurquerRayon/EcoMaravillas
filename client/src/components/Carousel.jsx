@@ -5,8 +5,8 @@ const images = [
   "/assets/img/Flora/e1.jpeg",
   "/assets/img/Flora/e2.jpeg",
   "/assets/img/Flora/e3.jpeg",
-  "/assets/img/Flora/e4.jpeg",
-  "/assets/img/Flora/e5.jpeg",
+  "/assets/img/Flora/e4.jpg",
+  "/assets/img/Flora/e5.jpg",
 ];
 
 const Carrusel = () => {
