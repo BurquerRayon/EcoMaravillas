@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const { pool, poolConnect } = require('../db/connection');
-const sql = require('mssql'); // Añade esta línea al inicio con las otras importaciones
 
-// 🔧 Función auxiliar para obtener el bloque horario (ej: 09:00 -> '09:00 - 09:30')
+// Función auxiliar para formatear bloques horarios
 function obtenerBloqueHorario(hora) {
   const [h, m] = hora.split(':').map(Number);
   const inicio = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
@@ -13,7 +12,7 @@ function obtenerBloqueHorario(hora) {
 }
 
 // ============================
-// POST /crear - Crear nueva reserva con validaciones
+// POST /crear
 // ============================
 router.post('/crear', async (req, res) => {
   const { id_turista, detalles } = req.body;
@@ -25,7 +24,6 @@ router.post('/crear', async (req, res) => {
   try {
     await poolConnect;
 
-    // Validar cada detalle individualmente antes de insertar
     for (const detalle of detalles) {
       const { id_atraccion, cantidad, fecha, hora } = detalle;
 
@@ -33,53 +31,70 @@ router.post('/crear', async (req, res) => {
         return res.status(400).json({ message: 'Datos incompletos en detalles de la reserva' });
       }
 
-      // Obtener capacidad máxima de la atracción
+      // Evitar reservas duplicadas por el mismo cliente
+      const reservaDuplicada = await pool.request()
+        .input('id_turista', id_turista)
+        .input('id_atraccion', id_atraccion)
+        .input('fecha', fecha)
+        .input('hora', hora)
+        .query(`
+          SELECT COUNT(*) as total
+          FROM Reserva_Detalles RD
+          JOIN Reservas R ON RD.id_reserva = R.id_reserva
+          WHERE R.id_turista = @id_turista
+            AND RD.id_atraccion = @id_atraccion
+            AND RD.fecha = @fecha
+            AND RD.hora = @hora
+            AND R.estado IN ('pendiente', 'confirmado')
+        `);
+
+      if (reservaDuplicada.recordset[0].total > 0) {
+        const bloqueHorario = obtenerBloqueHorario(hora);
+        return res.status(400).json({
+          message: `❌ Ya tienes una reserva en ese bloque horario (${bloqueHorario}) para esa atracción.`
+        });
+      }
+
       const atraccionRes = await pool.request()
         .input('id_atraccion', id_atraccion)
-        .query(`
-          SELECT max_personas FROM Atraccion WHERE id_atraccion = @id_atraccion
-        `);
+        .query('SELECT max_personas FROM Atraccion WHERE id_atraccion = @id_atraccion');
 
       if (atraccionRes.recordset.length === 0) {
         return res.status(404).json({ message: 'Atracción no encontrada' });
       }
 
-      const maxPersonas = atraccionRes.recordset[0].max_personas;
-
-      // Calcular bloque horario
+      const maxPersonas = Number(atraccionRes.recordset[0].max_personas);
       const bloqueHorario = obtenerBloqueHorario(hora);
 
-      // Consultar total de personas ya registradas en ese bloque para la atracción
-      const reservasEnBloque = await pool.request()
+      const reservasRes = await pool.request()
         .input('id_atraccion', id_atraccion)
         .input('fecha', fecha)
-        .input('hora_inicio', hora)
-        .input('hora_fin', hora) // Usamos hora exacta, porque los bloques son fijos
+        .input('hora', hora)
         .query(`
           SELECT SUM(RD.cantidad) AS total_reservado
           FROM Reserva_Detalles RD
-          INNER JOIN Reservas R ON RD.id_reserva = R.id_reserva
+          JOIN Reservas R ON RD.id_reserva = R.id_reserva
           WHERE RD.id_atraccion = @id_atraccion
             AND RD.fecha = @fecha
-            AND RD.hora = @hora_inicio
-            AND R.estado != 'cancelado'
+            AND RD.hora = @hora
+            AND R.estado IN ('pendiente', 'confirmado')
         `);
 
-      const totalActual = reservasEnBloque.recordset[0].total_reservado || 0;
-      const totalFinal = totalActual + cantidad;
+      const totalActual = Number(reservasRes.recordset[0].total_reservado) || 0;
+      const totalFinal = totalActual + Number(cantidad);
 
       if (totalFinal > maxPersonas) {
         return res.status(400).json({
           message: `❌ El bloque horario "${bloqueHorario}" ya tiene ${totalActual} personas reservadas. ` +
-                   `La atracción permite un máximo de ${maxPersonas}. Reduce la cantidad o elige otro horario.`
+                   `La atracción permite un máximo de ${maxPersonas}.`
         });
       }
     }
 
-    // Calcular total estimado
-    const totalEstimado = detalles.reduce((sum, d) => sum + (d.cantidad * d.tarifa_unitaria), 0);
+    const totalEstimado = detalles.reduce(
+      (sum, d) => sum + (Number(d.cantidad) * Number(d.tarifa_unitaria)), 0
+    );
 
-    // Insertar reserva principal
     const reservaInsert = await pool.request()
       .input('id_turista', id_turista)
       .input('total_pago_estimado', totalEstimado)
@@ -91,70 +106,26 @@ router.post('/crear', async (req, res) => {
 
     const id_reserva = reservaInsert.recordset[0].id_reserva;
 
-    // Insertar detalles de la reserva
-
     for (const detalle of detalles) {
-  const { id_atraccion, cantidad, tarifa_unitaria, fecha, hora } = detalle;
-  const subtotal = cantidad * tarifa_unitaria;
+      const { id_atraccion, cantidad, tarifa_unitaria, fecha, hora } = detalle;
+      const subtotal = Number(cantidad) * Number(tarifa_unitaria);
 
-  // 1. Obtener el límite de personas para la atracción
-  const limiteQuery = await pool.request()
-    .input('id_atraccion', id_atraccion)
-    .query(`
-      SELECT max_personas FROM Atraccion WHERE id_atraccion = @id_atraccion
-    `);
+      await pool.request()
+        .input('id_reserva', id_reserva)
+        .input('id_atraccion', id_atraccion)
+        .input('cantidad', cantidad)
+        .input('tarifa_unitaria', tarifa_unitaria)
+        .input('fecha', fecha)
+        .input('hora', hora)
+        .input('subtotal', subtotal)
+        .query(`
+          INSERT INTO Reserva_Detalles
+          (id_reserva, id_atraccion, cantidad, tarifa_unitaria, fecha, hora, subtotal)
+          VALUES (@id_reserva, @id_atraccion, @cantidad, @tarifa_unitaria, @fecha, @hora, @subtotal)
+        `);
+    }
 
-  const max_personas = limiteQuery.recordset[0]?.max_personas;
-
-  if (!max_personas) {
-    return res.status(400).json({ message: `Atracción con ID ${id_atraccion} no encontrada.` });
-  }
-
-  // 2. Obtener total de personas ya reservadas en ese mismo bloque (fecha y hora)
-  const reservasQuery = await pool.request()
-    .input('id_atraccion', id_atraccion)
-    .input('fecha', fecha)
-    .input('hora', hora)
-    .query(`
-      SELECT SUM(cantidad) AS total_reservado
-      FROM Reserva_Detalles RD
-      INNER JOIN Reservas R ON RD.id_reserva = R.id_reserva
-      WHERE RD.id_atraccion = @id_atraccion AND RD.fecha = @fecha AND RD.hora = @hora
-    `);
-
-  const total_reservado = reservasQuery.recordset[0].total_reservado || 0;
-
-  // 3. Sumar la cantidad solicitada
-  const nueva_total = total_reservado + cantidad;
-
-  // 4. Validar contra el límite
-  if (nueva_total > max_personas) {
-    const [horaStr] = hora.split(':');
-    const bloque_inicio = horaStr.padStart(2, '0') + ':00';
-    const bloque_fin = String(Number(horaStr) + 0.5).padStart(2, '0') + ':00';
-
-    return res.status(400).json({
-      message: `El bloque horario "${bloque_inicio} - ${bloque_fin}" ya tiene ${total_reservado} personas reservadas. La atracción permite un máximo de ${max_personas}. Reduce la cantidad o elige otro horario.`
-    });
-  }
-
-  // 5. Insertar el detalle si pasó la validación
-  await pool.request()
-    .input('id_reserva', id_reserva)
-    .input('id_atraccion', id_atraccion)
-    .input('cantidad', cantidad)
-    .input('tarifa_unitaria', tarifa_unitaria)
-    .input('fecha', fecha)
-    .input('hora', hora)
-    .input('subtotal', subtotal)
-    .query(`
-      INSERT INTO Reserva_Detalles
-      (id_reserva, id_atraccion, cantidad, tarifa_unitaria, fecha, hora, subtotal)
-      VALUES (@id_reserva, @id_atraccion, @cantidad, @tarifa_unitaria, @fecha, @hora, @subtotal)
-    `);
-}
-
-    res.status(201).json({ });
+    res.status(201).json({ message: '✅ Reserva creada exitosamente' });
 
   } catch (err) {
     console.error('Error al registrar reserva:', err);
@@ -163,7 +134,7 @@ router.post('/crear', async (req, res) => {
 });
 
 // ============================
-// Actualizar una reserva existente
+// PUT /editar/:id_reserva
 // ============================
 router.put('/editar/:id_reserva', async (req, res) => {
   const { id_reserva } = req.params;
@@ -176,55 +147,45 @@ router.put('/editar/:id_reserva', async (req, res) => {
   try {
     await poolConnect;
 
-    // 1. Verificar que la reserva existe y pertenece al turista
     const reservaCheck = await pool.request()
       .input('id_reserva', id_reserva)
       .input('id_turista', id_turista)
       .query(`
         SELECT estado, ediciones 
         FROM Reservas 
-        WHERE id_reserva = @id_reserva 
-          AND id_turista = @id_turista
+        WHERE id_reserva = @id_reserva AND id_turista = @id_turista
       `);
-    
+
     if (reservaCheck.recordset.length === 0) {
-      return res.status(404).json({ 
-        message: 'Reserva no encontrada o no pertenece al usuario' 
-      });
+      return res.status(404).json({ message: 'Reserva no encontrada o no pertenece al usuario' });
     }
 
     const { estado, ediciones } = reservaCheck.recordset[0];
 
-    // 2. Validar límites de edición según estado
     if (estado === 'cancelado') {
-      return res.status(400).json({ 
-        message: 'No se pueden editar reservas canceladas' 
-      });
+      return res.status(400).json({ message: 'No se pueden editar reservas canceladas' });
     }
-
     if (estado === 'confirmado' && ediciones >= 1) {
-      return res.status(400).json({ 
-        message: 'Solo puedes editar 1 vez las reservas confirmadas' 
-      });
+      return res.status(400).json({ message: 'Solo puedes editar 1 vez las reservas confirmadas' });
     }
-
     if (estado === 'pendiente' && ediciones >= 2) {
-      return res.status(400).json({ 
-        message: 'Solo puedes editar máximo 2 veces las reservas pendientes' 
-      });
+      return res.status(400).json({ message: 'Solo puedes editar máximo 2 veces las reservas pendientes' });
     }
 
-    // 3. Validar disponibilidad en los nuevos horarios
+    // Agrupar detalles por bloque único
+    const bloquesMap = new Map();
     for (const detalle of detalles) {
-      const { id_atraccion, cantidad, fecha, hora } = detalle;
-
-      if (!id_atraccion || !cantidad || !fecha || !hora) {
-        return res.status(400).json({ 
-          message: 'Todos los campos son requeridos en cada detalle' 
-        });
+      const key = `${detalle.id_atraccion}_${detalle.fecha}_${detalle.hora}`;
+      if (!bloquesMap.has(key)) {
+        bloquesMap.set(key, { ...detalle });
+      } else {
+        bloquesMap.get(key).cantidad += Number(detalle.cantidad);
       }
+    }
 
-      // Obtener capacidad máxima
+    for (const bloque of bloquesMap.values()) {
+      const { id_atraccion, cantidad, fecha, hora } = bloque;
+
       const atraccionRes = await pool.request()
         .input('id_atraccion', id_atraccion)
         .query('SELECT max_personas FROM Atraccion WHERE id_atraccion = @id_atraccion');
@@ -233,75 +194,66 @@ router.put('/editar/:id_reserva', async (req, res) => {
         return res.status(404).json({ message: 'Atracción no encontrada' });
       }
 
-      const maxPersonas = atraccionRes.recordset[0].max_personas;
+      const maxPersonas = Number(atraccionRes.recordset[0].max_personas);
       const bloqueHorario = obtenerBloqueHorario(hora);
 
-      // Consultar disponibilidad (excluyendo esta reserva)
-      const disponibilidadRes = await pool.request()
+      const otrasReservas = await pool.request()
         .input('id_atraccion', id_atraccion)
         .input('fecha', fecha)
         .input('hora', hora)
         .input('id_reserva', id_reserva)
         .query(`
-          SELECT SUM(RD.cantidad) AS total_reservado
+          SELECT SUM(RD.cantidad) AS total_otros
           FROM Reserva_Detalles RD
-          INNER JOIN Reservas R ON RD.id_reserva = R.id_reserva
+          JOIN Reservas R ON RD.id_reserva = R.id_reserva
           WHERE RD.id_atraccion = @id_atraccion
             AND RD.fecha = @fecha
             AND RD.hora = @hora
             AND R.id_reserva != @id_reserva
-            AND R.estado != 'cancelado'
+            AND R.estado IN ('pendiente', 'confirmado')
         `);
 
-      const totalActual = disponibilidadRes.recordset[0].total_reservado || 0;
-      const totalFinal = totalActual + cantidad;
+      const totalOtros = Number(otrasReservas.recordset[0].total_otros) || 0;
+      const totalFinal = totalOtros + Number(cantidad);
 
       if (totalFinal > maxPersonas) {
         return res.status(400).json({
-          message: `El bloque horario "${bloqueHorario}" ya tiene ${totalActual} personas reservadas. ` +
-                   `La atracción permite un máximo de ${maxPersonas}. Reduce la cantidad o elige otro horario.`
+          message: `❌ El bloque horario "${bloqueHorario}" ya tiene ${totalOtros} personas reservadas. ` +
+                   `La atracción permite un máximo de ${maxPersonas}.`
         });
       }
     }
 
-    // 4. Usar transacción con el pool existente
     const transaction = pool.transaction();
     await transaction.begin();
 
     try {
-      // 5. Eliminar detalles existentes (nueva instancia de Request)
-      const deleteRequest = transaction.request();
-      await deleteRequest
+      await transaction.request()
         .input('id_reserva', id_reserva)
         .query('DELETE FROM Reserva_Detalles WHERE id_reserva = @id_reserva');
 
-      // 6. Insertar nuevos detalles y calcular nuevo total
       let totalNuevo = 0;
       for (const detalle of detalles) {
-        const subtotal = detalle.cantidad * detalle.tarifa_unitaria;
+        const { id_atraccion, cantidad, tarifa_unitaria, fecha, hora } = detalle;
+        const subtotal = Number(cantidad) * Number(tarifa_unitaria);
         totalNuevo += subtotal;
 
-        // Nueva instancia de Request para cada inserción
-        const insertRequest = transaction.request();
-        await insertRequest
+        await transaction.request()
           .input('id_reserva', id_reserva)
-          .input('id_atraccion', detalle.id_atraccion)
-          .input('cantidad', detalle.cantidad)
-          .input('tarifa_unitaria', detalle.tarifa_unitaria)
-          .input('fecha', detalle.fecha)
-          .input('hora', detalle.hora)
+          .input('id_atraccion', id_atraccion)
+          .input('cantidad', cantidad)
+          .input('tarifa_unitaria', tarifa_unitaria)
+          .input('fecha', fecha)
+          .input('hora', hora)
           .input('subtotal', subtotal)
           .query(`
             INSERT INTO Reserva_Detalles
             (id_reserva, id_atraccion, cantidad, tarifa_unitaria, fecha, hora, subtotal)
-            VALUES
-            (@id_reserva, @id_atraccion, @cantidad, @tarifa_unitaria, @fecha, @hora, @subtotal)
+            VALUES (@id_reserva, @id_atraccion, @cantidad, @tarifa_unitaria, @fecha, @hora, @subtotal)
           `);
       }
 
-      // 7. Actualizar reserva (nueva instancia de Request)
-      const updateRequest = transaction.request();
-      await updateRequest
+      await transaction.request()
         .input('id_reserva', id_reserva)
         .input('total_pago_estimado', totalNuevo)
         .input('ediciones', ediciones + 1)
@@ -318,17 +270,17 @@ router.put('/editar/:id_reserva', async (req, res) => {
     } catch (err) {
       await transaction.rollback();
       console.error('Error en transacción:', err);
-      throw err;
+      res.status(500).json({ message: '❌ Error durante la edición de la reserva' });
     }
 
   } catch (err) {
     console.error('Error al actualizar reserva:', err);
-    res.status(500).json({ 
-      message: '❌ Error interno al actualizar la reserva',
-      error: err.message 
-    });
+    res.status(500).json({ message: '❌ Error interno al actualizar la reserva', error: err.message });
   }
 });
+
+module.exports = router;
+
 
 // ============================
 // Ruta para cancelar reserva

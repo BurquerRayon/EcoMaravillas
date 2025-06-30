@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/ReservaCliente.css';
+import ClientePago from '../Cliente/ClientePago';
 
 const ReservaCliente = () => {
   const [atracciones, setAtracciones] = useState([]);
@@ -14,7 +15,9 @@ const ReservaCliente = () => {
   const [bloquearReservaDuplicada, setBloquearReservaDuplicada] = useState(false);
   const [reservaEditando, setReservaEditando] = useState(null);
   const [modoEdicion, setModoEdicion] = useState(false);
-  
+
+  const [reservaParaPagar, setReservaParaPagar] = useState(null);
+
   // Estados para filtros y paginación
   const [filtroFecha, setFiltroFecha] = useState('');
   const [filtroNombre, setFiltroNombre] = useState('');
@@ -30,7 +33,7 @@ const ReservaCliente = () => {
   // Función para formatear hora
   const formatearHora = (horaObj) => {
     if (!horaObj) return '';
-    
+
     if (typeof horaObj === 'string' && horaObj.match(/^\d{2}:\d{2}$/)) {
       return horaObj;
     }
@@ -79,6 +82,35 @@ const ReservaCliente = () => {
     );
   };
 
+  // Verificar reservas duplicadas contra la base de datos
+  const verificarReservaDuplicadaEnBD = async (detalle) => {
+    if (!detalle.id_atraccion || !detalle.fecha || !detalle.hora) return false;
+
+    try {
+      const response = await axios.get(`http://localhost:3001/api/reservas/turista/${id_turista}`, {
+        params: {
+          completo: 'true',
+          id_atraccion: detalle.id_atraccion,
+          fechaDesde: detalle.fecha,
+          fechaHasta: detalle.fecha
+        }
+      });
+
+      // Filtrar reservas que coincidan exactamente con fecha, hora y atracción
+      // y que estén en estado pendiente o confirmado
+      const reservasExistentes = response.data.filter(reserva => 
+        reserva.fecha.split('T')[0] === detalle.fecha &&
+        formatearHora(reserva.hora) === detalle.hora &&
+        (reserva.estado === 'pendiente' || reserva.estado === 'confirmado')
+      );
+
+      return reservasExistentes.length > 0;
+    } catch (err) {
+      console.error('Error al verificar duplicados en BD:', err);
+      return false;
+    }
+  };
+
   // Cargar datos iniciales
   useEffect(() => {
     axios.get('http://localhost:3001/api/atracciones')
@@ -121,18 +153,33 @@ const ReservaCliente = () => {
       if (atraccion) nuevaLista[index].tarifa_unitaria = atraccion.precio;
     }
 
-    // Verificar duplicados
+    // Verificar duplicados solo si todos los campos necesarios están completos
     if (field === 'id_atraccion' || field === 'fecha' || field === 'hora') {
       const detalleModificado = { ...nuevaLista[index] };
-      const esDuplicado = existeReservaDuplicada(detalleModificado, index);
-      
-      if (esDuplicado) {
-        setMensaje('⚠️ Ya tienes una reserva para esta atracción en la misma fecha y hora');
-        setBloquearReservaDuplicada(true);
+
+      // Solo verificar duplicados si el detalle está completo
+      if (detalleModificado.id_atraccion && detalleModificado.fecha && detalleModificado.hora) {
+        const esDuplicado = existeReservaDuplicada(detalleModificado, index);
+
+        if (esDuplicado) {
+          setMensaje('⚠️ Ya tienes una reserva para esta atracción en la misma fecha y hora');
+          setBloquearReservaDuplicada(true);
+        } else {
+          // Reset the blocking state if no duplicates found
+          setBloquearReservaDuplicada(false);
+          setMensaje('');
+        }
       } else {
+        // Reset blocking if detail is incomplete
         setBloquearReservaDuplicada(false);
         setMensaje('');
       }
+    }
+
+    // Reset blocking when changing quantity (capacity might be valid now)
+    if (field === 'cantidad') {
+      setBloquearReservaDuplicada(false);
+      setMensaje('');
     }
 
     // Calcular subtotal
@@ -149,14 +196,14 @@ const ReservaCliente = () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Validar que no sea lunes (0 = Domingo, 1 = Lunes)
-    if (selectedDate.getDay() === 1) {
+    // Validar que no sea puedan realizar reservas los dias lunes (0 = lunes)
+    if (selectedDate.getDay() === 0) {
       setMensaje('⚠️ No se permiten reservas los lunes. Por favor seleccione otro día.');
-      
+
       const nuevaLista = [...detalles];
       nuevaLista[index].fecha = '';
       setDetalles(nuevaLista);
-      
+
       return;
     }
 
@@ -189,11 +236,11 @@ const ReservaCliente = () => {
   const eliminarDetalle = (index) => {
     const nueva = detalles.filter((_, i) => i !== index);
     setDetalles(nueva);
-    
+
     const hayDuplicados = nueva.some((detalle, idx) => 
       existeReservaDuplicada(detalle, idx)
     );
-    
+
     setBloquearReservaDuplicada(hayDuplicados);
     if (!hayDuplicados) setMensaje('');
   };
@@ -221,7 +268,7 @@ const ReservaCliente = () => {
       // Obtener información básica de la reserva
       const response = await axios.get(`http://localhost:3001/api/reservas/${id_reserva}`);
       const reserva = response.data;
-      
+
       if (!reserva) {
         setMensaje('❌ No se encontró la reserva solicitada');
         return;
@@ -232,12 +279,12 @@ const ReservaCliente = () => {
         setMensaje('❌ Solo puedes editar una vez las reservas confirmadas');
         return;
       }
-      
+
       if (reserva.estado === 'pendiente' && reserva.ediciones >= 2) {
         setMensaje('❌ Solo puedes editar máximo 2 veces las reservas pendientes');
         return;
       }
-      
+
       if (reserva.estado === 'cancelado') {
         setMensaje('❌ No se pueden editar reservas canceladas');
         return;
@@ -245,7 +292,7 @@ const ReservaCliente = () => {
 
       // Obtener los detalles de la reserva
       const detallesReserva = await axios.get(`http://localhost:3001/api/reservas/${id_reserva}/detalles`);
-      
+
       if (!detallesReserva.data || detallesReserva.data.length === 0) {
         setMensaje('❌ La reserva no tiene detalles asociados');
         return;
@@ -260,14 +307,14 @@ const ReservaCliente = () => {
         tarifa_unitaria: d.tarifa_unitaria,
         subtotal: d.subtotal
       }));
-      
+
       // Actualizar estado
       setDetalles(detallesFormateados);
       setReservaEditando(id_reserva);
       setModoEdicion(true);
       setMostrarFormulario(true);
       setMensaje(`Editando reserva #${id_reserva}`);
-      
+
     } catch (err) {
       console.error('Error al cargar reserva para edición:', err);
       setMensaje('❌ Error al cargar la reserva para edición');
@@ -294,8 +341,13 @@ const ReservaCliente = () => {
   // Enviar reserva (creación o edición)
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (bloquearReservaDuplicada) {
+
+    // Check for actual duplicates in the current form
+    const hayDuplicadosEnFormulario = detalles.some((detalle, idx) => 
+      existeReservaDuplicada(detalle, idx)
+    );
+
+    if (hayDuplicadosEnFormulario) {
       setMensaje('❌ Corrige las reservas duplicadas antes de continuar');
       return;
     }
@@ -309,7 +361,7 @@ const ReservaCliente = () => {
     const hayLunes = detalles.some(d => {
       if (!d.fecha) return false;
       const dia = new Date(d.fecha).getDay();
-      return dia === 1; // 1 = Lunes
+      return dia === 0; // 0 = Lunes
     });
 
     if (hayLunes) {
@@ -325,6 +377,9 @@ const ReservaCliente = () => {
       setMensaje('❌ Complete todos los campos correctamente');
       return;
     }
+
+    // Reset any previous blocking state before attempting submission
+    setBloquearReservaDuplicada(false);
 
     try {
       if (modoEdicion && reservaEditando) {
@@ -351,6 +406,7 @@ const ReservaCliente = () => {
     } catch (err) {
       const msg = err.response?.data?.message || '❌ Error al procesar la reserva';
       setMensaje(msg);
+      // Don't permanently block the form - the user can adjust and try again
       console.error('Error en reserva:', msg);
     }
   };
@@ -412,15 +468,20 @@ const ReservaCliente = () => {
         <button 
           onClick={() => {
             setMostrarFormulario(!mostrarFormulario);
+            setMostrarFiltros(false);
             if (mostrarFormulario) cancelarProceso();
           }}
           className="btn-toggle-form"
         >
           {mostrarFormulario ? '➖ Ocultar Formulario' : '➕ Crear Nueva Reserva'}
         </button>
-        
+
         <button 
-          onClick={() => setMostrarFiltros(!mostrarFiltros)}
+          onClick={() => {
+            setMostrarFiltros(!mostrarFiltros);
+            setMostrarFormulario(false);
+            cancelarProceso();
+          }}
           className="btn-toggle-form"
         >
           {mostrarFiltros ? '➖ Ocultar Búsqueda' : '🔍 Buscar Reservas'}
@@ -444,14 +505,14 @@ const ReservaCliente = () => {
               onChange={(e) => setFiltroFecha(e.target.value)}
               placeholder="Filtrar por fecha"
             />
-            
+
             <input
               type="text"
               value={filtroNombre}
               onChange={(e) => setFiltroNombre(e.target.value)}
               placeholder="Filtrar por atracción"
             />
-            
+
             <select
               value={filtroEstado}
               onChange={(e) => setFiltroEstado(e.target.value)}
@@ -471,24 +532,17 @@ const ReservaCliente = () => {
             <strong>Horario de reservas:</strong> Martes a Domingo<br />
             <span className="cerrado-lunes">❌ Los lunes el parque permanece cerrado</span>
           </p>
-          
+
           {modoEdicion && (
             <div className="modo-edicion-info">
               <strong>Editando reserva #{reservaEditando}</strong>
-              <button 
-                type="button" 
-                onClick={cancelarProceso}
-                className="boton-cancelar"
-              >
-                Cancelar Edición
-              </button>
             </div>
           )}
-          
+
           {detalles.map((detalle, idx) => {
             const esDuplicado = existeReservaDuplicada(detalle, idx);
-            const esFechaInvalida = detalle.fecha && new Date(detalle.fecha).getDay() === 1;
-            
+            const esFechaInvalida = detalle.fecha && new Date(detalle.fecha).getDay() === 0;
+
             return (
               <div 
                 key={idx} 
@@ -500,11 +554,15 @@ const ReservaCliente = () => {
                   required
                 >
                   <option value="">Seleccione una atracción</option>
-                  {atracciones.map(a => (
-                    <option key={a.id_atraccion} value={a.id_atraccion}>
-                      {a.nombre} - ${a.precio}
-                    </option>
-                  ))}
+                  {atracciones
+                    .filter(a => !detalles.some((d, dIdx) => 
+                      dIdx !== idx && d.id_atraccion === a.id_atraccion
+                    ))
+                    .map(a => (
+                      <option key={a.id_atraccion} value={a.id_atraccion}>
+                        {a.nombre} - ${a.precio}
+                      </option>
+                    ))}
                 </select>
 
                 <input
@@ -554,7 +612,7 @@ const ReservaCliente = () => {
               + Agregar Atracción
             </button>
             <h4>Total: ${total.toFixed(2)}</h4>
-            
+
             <div className="botones-accion">
               <button 
                 type="button" 
@@ -563,12 +621,13 @@ const ReservaCliente = () => {
               >
                 Cancelar
               </button>
-              
+
               <button 
                 type="submit" 
-                disabled={bloquearReservaDuplicada || detalles.some(d => 
-                  d.fecha && new Date(d.fecha).getDay() === 1
-                )}
+                disabled={
+                  detalles.some((detalle, idx) => existeReservaDuplicada(detalle, idx)) ||
+                  detalles.some(d => d.fecha && new Date(d.fecha).getDay() === 0)
+                }
                 className="btn-confirmar"
               >
                 {modoEdicion ? 'Actualizar Reserva' : 'Confirmar Reserva'}
@@ -611,48 +670,46 @@ const ReservaCliente = () => {
                 <td>${r.subtotal?.toFixed(2)}</td>
                 <td>{r.estado}</td>
                 <td>{r.ediciones}</td>
+                <td className="acciones-reserva">
+                  {r.estado !== 'cancelado' && (
+                    <>
+                      <button 
+                        onClick={() => cargarReservaParaEdicion(r.id_reserva)}
+                        disabled={
+                          (r.estado === 'confirmado' && r.ediciones >= 1) ||
+                          (r.estado === 'pendiente' && r.ediciones >= 2)
+                        }
+                        title={
+                          (r.estado === 'confirmado' && r.ediciones >= 1) ? 
+                          'Solo puedes editar 1 vez las reservas confirmadas' :
+                          (r.estado === 'pendiente' && r.ediciones >= 2) ?
+                          'Solo puedes editar máximo 2 veces las reservas pendientes' :
+                          'Editar reserva'
+                        }
+                      >
+                        ✏️
+                      </button>
 
-                  <td className="acciones-reserva">
-                    {r.estado !== 'cancelado' && (
-                      <>
+                      {r.estado !== 'confirmado' && (
                         <button 
-                          onClick={() => cargarReservaParaEdicion(r.id_reserva)}
-                          disabled={
-                            (r.estado === 'confirmado' && r.ediciones >= 1) ||
-                            (r.estado === 'pendiente' && r.ediciones >= 2)
-                          }
-                          title={
-                            (r.estado === 'confirmado' && r.ediciones >= 1) ? 
-                            'Solo puedes editar 1 vez las reservas confirmadas' :
-                            (r.estado === 'pendiente' && r.ediciones >= 2) ?
-                            'Solo puedes editar máximo 2 veces las reservas pendientes' :
-                            'Editar reserva'
-                          }
+                          onClick={() => cancelarReserva(r.id_reserva)}
+                          title="Cancelar reserva"
                         >
-                          ✏️
+                          ❌
                         </button>
+                      )}
 
-                        {r.estado !== 'confirmado' && (
-                          <button 
-                            onClick={() => cancelarReserva(r.id_reserva)}
-                            title="Cancelar reserva"
-                          >
-                            ❌
-                          </button>
-                        )}
-
-                        {/* ✅ Botón pagar si está pendiente */}
-                        {r.estado === 'pendiente' && (
-                          <button 
-                            onClick={() => navigate(`/cliente/pago/${r.id_reserva}`)}
-                            title="Ir a pagar esta reserva"
-                          >
-                            💳
-                          </button>
-                        )}
-                      </>
-                    )}
-                  </td>
+                      {r.estado === 'pendiente' && (
+                        <button 
+                          onClick={() => setReservaParaPagar(r)}
+                          title="Ir a pagar esta reserva"
+                        >
+                          💳
+                        </button>
+                      )}
+                    </>
+                  )}
+                </td>
               </tr>
             ))
           )}
@@ -675,9 +732,9 @@ const ReservaCliente = () => {
           >
             ‹
           </button>
-          
+
           {renderizarNumerosPagina()}
-          
+
           <button 
             onClick={() => cambiarPagina(paginaActual + 1)} 
             disabled={paginaActual === totalPaginas}
@@ -692,11 +749,17 @@ const ReservaCliente = () => {
           >
             »
           </button>
-          
+
           <span className="paginacion-info">
             Página {paginaActual} de {totalPaginas}
           </span>
         </div>
+      )}
+      {reservaParaPagar && (
+        <ClientePago 
+          reserva={reservaParaPagar} 
+          onCerrar={() => setReservaParaPagar(null)} 
+        />
       )}
     </div>
   );

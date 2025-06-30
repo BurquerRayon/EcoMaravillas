@@ -72,6 +72,34 @@ const HomeGuest = () => {
           </div>
         </section>
 
+        <section className="atracciones-populares">
+          <h2>Atracciones más populares</h2>
+          <div className="atracciones-container">
+            <div className="grafica-container">
+              <Doughnut data={chartData} options={chartOptions} />
+            </div>
+            <div className="lista-atracciones">
+              <h3>Ranking de Atracciones</h3>
+              <ul>
+                {atraccionesData.map((atraccion, index) => (
+                  <li key={index}>
+                    <span className="ranking">{index + 1}.</span>
+                    <span className="nombre">{atraccion.atraccion}</span>
+                    <span className="reservas">{atraccion.total_reservas || 0} reservas</span>
+                    <span className="precio">${parseFloat(atraccion.precio).toFixed(2)}</span>
+                  </li>
+                ))}
+              </ul>
+              <button 
+            className="destacado-button"
+            onClick={() => window.location.href = '/login'}
+          >
+            Iniciar Sesión / Reservar <FaSignInAlt className="icono-destacado" />
+          </button>
+            </div>
+          </div>
+        </section>
+
         <section className="info-section">
           <h2>¿Qué es EcoMaravillas?</h2>
           <p>
@@ -98,34 +126,6 @@ const HomeGuest = () => {
               <FaInfoCircle className="icon" />
               <h3>Educación Ambiental</h3>
               <p>Aprende sobre especies nativas y su ecosistema.</p>
-            </div>
-          </div>
-        </section>
-
-          <section className="atracciones-populares">
-          <h2>Atracciones más populares</h2>
-          <div className="atracciones-container">
-            <div className="grafica-container">
-              <Doughnut data={chartData} options={chartOptions} />
-            </div>
-            <div className="lista-atracciones">
-              <h3>Ranking de Atracciones</h3>
-              <ul>
-                {atraccionesData.map((atraccion, index) => (
-                  <li key={index}>
-                    <span className="ranking">{index + 1}.</span>
-                    <span className="nombre">{atraccion.atraccion}</span>
-                    <span className="reservas">{atraccion.total_reservas || 0} reservas</span>
-                    <span className="precio">${parseFloat(atraccion.precio).toFixed(2)}</span>
-                  </li>
-                ))}
-              </ul>
-              <button 
-            className="destacado-button"
-            onClick={() => window.location.href = '/login'}
-          >
-            Iniciar Sesión / Reservar <FaSignInAlt className="icono-destacado" />
-          </button>
             </div>
           </div>
         </section>

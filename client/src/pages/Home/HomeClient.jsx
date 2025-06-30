@@ -88,15 +88,6 @@ const HomeClient = () => {
         </div>
       </section>
 
-      <section className="cliente-info-extra">
-        <h2>🌿 ¿Por qué EcoMaravillas?</h2>
-        <ul>
-          <li><strong>Compromiso ambiental:</strong> Todas nuestras actividades están certificadas ecológicamente.</li>
-          <li><strong>Seguridad y comodidad:</strong> Reservas fáciles desde casa.</li>
-          <li><strong>Educación ambiental:</strong> Participa en nuestras campañas de concientización.</li>
-        </ul>
-      </section>
-
       <section className="atracciones-populares">
         <h2>Atracciones más populares</h2>
         <div className="atracciones-container">
@@ -122,6 +113,15 @@ const HomeClient = () => {
         </button>
           </div>
         </div>
+      </section>
+
+      <section className="cliente-info-extra">
+        <h2>🌿 ¿Por qué EcoMaravillas?</h2>
+        <ul>
+          <li><strong>Compromiso ambiental:</strong> Todas nuestras actividades están certificadas ecológicamente.</li>
+          <li><strong>Seguridad y comodidad:</strong> Reservas fáciles desde casa.</li>
+          <li><strong>Educación ambiental:</strong> Participa en nuestras campañas de concientización.</li>
+        </ul>
       </section>
 
       <footer className="cliente-footer">

@@ -123,13 +123,13 @@ const Login = () => {
               </button>
 
               <div className="login-links">
-                <button
-                  type="button"
-                  className="login-link-btn"
-                  onClick={() => navigate('/recuperar')}
-                >
-                  ¿Olvidaste tu contraseña?
-                </button>
+              <button
+                type="button"
+                className="login-link-btn"
+                onClick={() => navigate('/forgot-password')}
+              >
+                ¿Olvidaste tu contraseña?
+              </button>
 
                 <button
                   type="button"

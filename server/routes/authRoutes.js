@@ -4,7 +4,7 @@ const { pool, poolConnect } = require('../db/connection');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const { sendVerificationEmail } = require('../utils/email');
+const { sendVerificationEmail, sendPasswordResetEmail } = require('../utils/email');
 
 // ===========================
 // Registro de usuario
@@ -206,7 +206,6 @@ router.post('/login', async (req, res) => {
   }
 });
 
-
 // ===========================
 // Verificación de correo
 // ===========================
@@ -220,14 +219,32 @@ router.get('/verify', async (req, res) => {
   try {
     await poolConnect;
 
+    // Consulta modificada para verificar el tiempo de expiración (90 segundos)
     const result = await pool.request()
       .input('token', token)
       .query(`
         SELECT * FROM Verificacion
-        WHERE token = @token AND usado = 0
+        WHERE token = @token 
+        AND usado = 0
+        AND DATEDIFF(SECOND, fecha_envio, GETDATE()) <= 90
       `);
 
     if (result.recordset.length === 0) {
+      // Verificar si el token existe pero está expirado
+      const expiredCheck = await pool.request()
+        .input('token', token)
+        .query(`
+          SELECT * FROM Verificacion
+          WHERE token = @token
+          AND usado = 0
+        `);
+      
+      if (expiredCheck.recordset.length > 0) {
+        return res.status(400).json({ 
+          message: 'Token expirado. Por favor solicita un nuevo código de verificación',
+          code: 'TOKEN_EXPIRED'
+        });
+      }
       return res.status(400).json({ message: 'Token inválido o ya usado' });
     }
 
@@ -253,7 +270,6 @@ router.get('/verify', async (req, res) => {
     res.status(500).json({ message: '❌ Error interno al verificar la cuenta' });
   }
 });
-
 
 // ===========================
 // Reenviar token de verificación
@@ -320,11 +336,6 @@ router.post('/resend-verification', async (req, res) => {
     res.status(500).json({ message: '❌ Error al reenviar el código de verificación' });
   }
 });
-
-
-
-
-
 
 // ============================
 // Obtener usuarios por parte del administrador
@@ -457,6 +468,113 @@ router.delete('/usuarios/:id', async (req, res) => {
   } catch (err) {
     console.error('Error al eliminar usuario:', err);
     res.status(500).json({ message: 'Error al eliminar el usuario' });
+  }
+});
+
+
+// ===========================
+// Olvidé mi contraseña
+// ===========================
+router.post('/forgot-password', async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ message: 'Correo electrónico requerido' });
+  }
+
+  try {
+    await poolConnect;
+
+    // Verificar si el usuario existe
+    const userResult = await pool.request()
+      .input('correo', email)
+      .query('SELECT id_usuario FROM Usuario WHERE correo = @correo');
+
+    if (userResult.recordset.length === 0) {
+      return res.status(404).json({ message: 'Correo no registrado' });
+    }
+
+    const id_usuario = userResult.recordset[0].id_usuario;
+
+    // Eliminar tokens antiguos
+    await pool.request()
+      .input('id_usuario', id_usuario)
+      .query('DELETE FROM RecuperacionPassword WHERE id_usuario = @id_usuario');
+
+    // Crear token de recuperación
+    const token = crypto.randomBytes(32).toString('hex');
+
+    // Insertar token en la base de datos
+    await pool.request()
+      .input('id_usuario', id_usuario)
+      .input('token', token)
+      .query(`
+        INSERT INTO RecuperacionPassword (id_usuario, token)
+        VALUES (@id_usuario, @token)
+      `);
+
+    // Enviar email con el enlace de recuperación
+    const resetLink = `http://localhost:3000/reset-password?token=${token}`;
+    await sendPasswordResetEmail(email, resetLink);
+
+    res.json({ 
+      message: 'Se ha enviado un enlace de recuperación a tu correo electrónico',
+      token // Solo para desarrollo, quitar en producción
+    });
+
+  } catch (err) {
+    console.error('Error en forgot-password:', err);
+    res.status(500).json({ message: 'Error al procesar la solicitud' });
+  }
+});
+
+// ===========================
+// Restablecer contraseña
+// ===========================
+router.post('/reset-password', async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  if (!token || !newPassword) {
+    return res.status(400).json({ message: 'Token y nueva contraseña son requeridos' });
+  }
+
+  try {
+    await poolConnect;
+
+    // Verificar token válido (válido por 1 hora)
+    const tokenResult = await pool.request()
+      .input('token', token)
+      .query(`
+        SELECT * FROM RecuperacionPassword
+        WHERE token = @token
+        AND DATEDIFF(MINUTE, fecha_creacion, GETDATE()) <= 60
+      `);
+
+    if (tokenResult.recordset.length === 0) {
+      return res.status(400).json({ message: 'Token inválido o expirado' });
+    }
+
+    const { id_usuario } = tokenResult.recordset[0];
+
+    // Hashear nueva contraseña
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Actualizar contraseña
+    await pool.request()
+      .input('id_usuario', id_usuario)
+      .input('contrasena', hashedPassword)
+      .query('UPDATE Usuario SET contrasena = @contrasena WHERE id_usuario = @id_usuario');
+
+    // Eliminar token usado
+    await pool.request()
+      .input('token', token)
+      .query('DELETE FROM RecuperacionPassword WHERE token = @token');
+
+    res.json({ message: 'Contraseña actualizada con éxito' });
+
+  } catch (err) {
+    console.error('Error en reset-password:', err);
+    res.status(500).json({ message: 'Error al restablecer la contraseña' });
   }
 });
 

@@ -112,7 +112,7 @@ const GestionUsuarios = () => {
         <button onClick={() => {
           setMostrarFormulario(!mostrarFormulario);
           setEditandoId(null);
-          setFormulario({ nombre: '', correo: '', contrasena: '', id_rol: 1 });
+          setFormulario({ nombre: '', correo: '', contrasena: '', id_rol: 2 });
         }}>
           {mostrarFormulario ? 'Cancelar' : '➕ Crear Usuario'}
         </button>

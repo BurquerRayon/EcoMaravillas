@@ -1,4 +1,4 @@
--- 1
+ -- 1
 CREATE TABLE Sexo (
     id_sexo INT IDENTITY(1,1) PRIMARY KEY,
     nombre NVARCHAR(100)
@@ -244,9 +244,16 @@ CREATE TABLE Pagos (
     id_metodo_pago INT,
     id_cuenta_banco INT,
     id_moneda INT,
+	id_tarjeta INT NULL,               
+    id_turista INT NOT NULL,  
     fecha DATETIME,
     monto DECIMAL(10,2),
-    tipo_cambio DECIMAL(10,4),
+    tipo_cambio DECIMAL(10,4),         
+    codigo_autorizacion NVARCHAR(50),  
+    estado NVARCHAR(20) DEFAULT 'simulado',               
+    detalles TEXT,                     
+    FOREIGN KEY (id_tarjeta) REFERENCES Tarjeta_Cliente(id_tarjeta),
+    FOREIGN KEY (id_turista) REFERENCES Turista(id_turista),
     FOREIGN KEY (id_reserva) REFERENCES Reservas(id_reserva) ON DELETE CASCADE,
     FOREIGN KEY (id_metodo_pago) REFERENCES Metodo_Pago(id_metodo_pago),
     FOREIGN KEY (id_cuenta_banco) REFERENCES Cuenta_Banco(id_cuenta_banco),
@@ -270,4 +277,17 @@ CREATE TABLE RecuperacionPassword (
     token VARCHAR(255),
     fecha_creacion DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario) ON DELETE CASCADE
+);
+
+-- 29
+CREATE TABLE Tarjeta_Cliente (
+    id_tarjeta INT IDENTITY(1,1) PRIMARY KEY,
+    id_turista INT NOT NULL,
+    ultimos_digitos CHAR(4) NOT NULL,
+    tipo_tarjeta NVARCHAR(20),         
+    nombre_titular NVARCHAR(100),
+    fecha_vencimiento CHAR(5),        
+    activa BIT DEFAULT 1,
+    fecha_registro DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (id_turista) REFERENCES Turista(id_turista) ON DELETE CASCADE
 );
