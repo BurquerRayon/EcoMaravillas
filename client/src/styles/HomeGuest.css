@@ -1,58 +1,66 @@
-.hero, .info-section, .benefits-section, .carousel-section, .cta-section {
-padding: 3rem 2rem;
-text-align: center;
+.hero,
+.info-section,
+.benefits-section,
+.carousel-section,
+.cta-section {
+  padding: 3rem 2rem;
+  text-align: center;
 }
 
 .home-buttons {
-display: flex;
-justify-content: center;
-gap: 1rem;
-margin-top: 1rem;
-flex-wrap: wrap;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
 }
 
-.map-button, .gallery-button, .cta-button {
-padding: 0.75rem 1.5rem;
-font-size: 1rem;
-border: none;
-border-radius: 0.75rem;
-background-color: #2e8b57;
-color: white;
-cursor: pointer;
-display: flex;
-align-items: center;
-gap: 0.5rem;
-box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-transition: background 0.3s;
-width: auto;
-min-width: fit-content;
-white-space: nowrap;
+.map-button,
+.gallery-button,
+.cta-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 0.75rem;
+  background-color: #2e8b57;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: background 0.3s;
+  width: auto;
+  min-width: fit-content;
+  white-space: nowrap;
 }
 
-.map-button:hover, .gallery-button:hover, .cta-button:hover {
-background-color: #256d46;
+.map-button:hover,
+.gallery-button:hover,
+.cta-button:hover {
+  background-color: #256d46;
 }
 
 .benefits-grid {
-display: flex;
-flex-wrap: wrap;
-justify-content: center;
-gap: 2rem;
-margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
 }
 
 .benefit-card {
-background: #f9f9f9;
-padding: 2rem;
-border-radius: 1.25rem;
-max-width: 280px;
-box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  background: #f9f9f9;
+  padding: 2rem;
+  border-radius: 1.25rem;
+  max-width: 280px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .icon {
-font-size: 2.5rem;
-color: #2e8b57;
-margin-bottom: 1rem;
+  font-size: 2.5rem;
+  color: #2e8b57;
+  margin-bottom: 1rem;
 }
 
 /* Para ambos HomeGuest.css y HomeClient.css */

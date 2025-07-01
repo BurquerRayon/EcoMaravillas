@@ -1,5 +1,6 @@
 .navbar {
   background-color: #278f27;
+  position: absolute;
   color: white;
   display: flex;
   justify-content: space-between;
@@ -10,6 +11,8 @@
   position: sticky;
   top: 0;
   z-index: 1000;
+  background: rgba(0, 128, 0, 0.6);
+  backdrop-filter: blur(6px);
 }
 
 .nav-links li,
@@ -19,7 +22,7 @@
   height: 40px;
 }
 
-.navbar .logo{
+.navbar .logo {
   margin: 0;
   font-size: 1.5rem;
   font-weight: bold;
