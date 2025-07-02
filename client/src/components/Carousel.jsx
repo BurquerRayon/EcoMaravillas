@@ -5,6 +5,7 @@ const images = [
   "/assets/img/Instituto/e1.jpeg",
   "/assets/img/Instituto/e2.jpeg",
   "/assets/img/Instituto/e4.jpg",
+  "/assets/img/Instituto/e6.jpg",
 ];
 
 /*const Carrusel = () => {
