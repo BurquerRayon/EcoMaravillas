@@ -1,4 +1,6 @@
- -- 1
+''''''-CAMBIE EL ORDEN DE LA TABLA TARJETA_CLIENTE, LO PUSE ANTES DE LA TABLA PAGO PORQUE SQL LE DABA ERROR PORQUE LA TABLA PAGO REFERENCIABA LA TABLA TARJETA_CLIENTE''''''
+
+-- 1
 CREATE TABLE Sexo (
     id_sexo INT IDENTITY(1,1) PRIMARY KEY,
     nombre NVARCHAR(100)
@@ -238,6 +240,20 @@ CREATE TABLE Personal (
 );
 
 -- 26
+CREATE TABLE Tarjeta_Cliente (
+    id_tarjeta INT IDENTITY(1,1) PRIMARY KEY,
+    id_turista INT NOT NULL,
+    ultimos_digitos CHAR(4) NOT NULL,
+    tipo_tarjeta NVARCHAR(20),         
+    nombre_titular NVARCHAR(100),
+    fecha_vencimiento CHAR(5),        
+    activa BIT DEFAULT 1,
+    fecha_registro DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (id_turista) REFERENCES Turista(id_turista) ON DELETE CASCADE
+);
+
+
+-- 27
 CREATE TABLE Pagos (
     id_pagos INT IDENTITY(1,1) PRIMARY KEY,
     id_reserva INT,
@@ -260,7 +276,7 @@ CREATE TABLE Pagos (
     FOREIGN KEY (id_moneda) REFERENCES Moneda(id_moneda)
 );
 
--- 27
+-- 28
 CREATE TABLE Verificacion (
     id_verificacion INT IDENTITY(1,1) PRIMARY KEY,
     id_usuario INT NOT NULL,
@@ -270,7 +286,7 @@ CREATE TABLE Verificacion (
     FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario) ON DELETE CASCADE
 );
 
--- 28
+-- 29
 CREATE TABLE RecuperacionPassword (
     id INT IDENTITY(1,1) PRIMARY KEY,
     id_usuario INT,
@@ -279,15 +295,4 @@ CREATE TABLE RecuperacionPassword (
     FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario) ON DELETE CASCADE
 );
 
--- 29
-CREATE TABLE Tarjeta_Cliente (
-    id_tarjeta INT IDENTITY(1,1) PRIMARY KEY,
-    id_turista INT NOT NULL,
-    ultimos_digitos CHAR(4) NOT NULL,
-    tipo_tarjeta NVARCHAR(20),         
-    nombre_titular NVARCHAR(100),
-    fecha_vencimiento CHAR(5),        
-    activa BIT DEFAULT 1,
-    fecha_registro DATETIME DEFAULT GETDATE(),
-    FOREIGN KEY (id_turista) REFERENCES Turista(id_turista) ON DELETE CASCADE
-);
+
