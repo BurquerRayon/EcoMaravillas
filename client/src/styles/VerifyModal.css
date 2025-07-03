@@ -23,17 +23,21 @@
 
 .verify-modal-close {
   position: absolute;
-  top: 1rem;
+  top: 0.1rem;
   right: 1rem;
   background: none;
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
   color: #666;
+  width: auto;
+  justify-self: start;
+  min-width: fit-content;
+  white-space: nowrap;
 }
 
 .verify-modal h2 {
-  margin-top: 0;
+margin-top: 1.5;
   color: #333;
 }
 
