@@ -236,6 +236,7 @@ CREATE TABLE Personal (
     fecha_contratacion DATE,
     numero_licencia NVARCHAR(50),
     turno NVARCHAR(50),
+    estado BIT DEFAULT 1,
     FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario) ON DELETE CASCADE
 );
 
