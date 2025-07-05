@@ -24,6 +24,8 @@ import ReportesA from "../pages/Admin/ReportsAdmin";
 import Dashboard from "../pages/Admin/Dashboard";
 import GestionReservasAdmin from "../pages/Admin/AdminReservas";
 import GestionUsuarios from "../pages/Admin/GestionUsuarios";
+import GestionClientes from '../pages/Admin/GestionClientes';
+import GestionEmpleados from '../pages/Admin/GestionEmpleados';
 import ConfigA from "../pages/Admin/Config";
 //admins Config
 import AtraccionesConfig from "../pages/Admin/Config/Atracciones";
@@ -73,6 +75,8 @@ const AppRouter = () => {
           <Route path="/admin/Reservas" element={<GestionReservasAdmin />} />
           <Route path="/admin/reportes" element={<ReportesA />} />
           <Route path="/admin/usuarios" element={<GestionUsuarios />} />
+              <Route path="/admin/gestion-clientes" element={<GestionClientes />} />
+              <Route path="/admin/gestion-empleados" element={<GestionEmpleados />} />
           {/* Rutas de COnfig-administrador */}
           <Route path="/admin/ajustes/roles" element={<RolesConfig />} />
           <Route path="/admin/ajustes/permisos" element={<PermisosConfig />} />

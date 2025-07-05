@@ -21,17 +21,22 @@
   margin-bottom: 20px;
   flex-wrap: wrap;
   gap: 15px;
+  width: auto;
+  justify-self: start;
+  min-width: fit-content;
+  white-space: nowrap;
 }
 
 .acciones-superiores button {
   background-color: #3498db;
   color: white;
   border: none;
-  padding: 10px 15px;
+  padding: 15px 25px;
   border-radius: 4px;
   cursor: pointer;
   font-weight: 500;
   transition: background-color 0.3s;
+  width: auto;
 }
 
 .acciones-superiores button:hover {
@@ -39,11 +44,13 @@
 }
 
 .acciones-superiores input {
-  flex-grow: 1;
-  padding: 10px 15px;
-  border: 1px solid #ddd;
+  flex-grow: 0.8;
+  padding: 12px 20px;
+  border: 2px solid #ddd;
   border-radius: 4px;
-  min-width: 250px;
+  min-width: 450px;
+  justify-self: start;
+  white-space: nowrap;
 }
 
 .formulario-usuario {
@@ -128,6 +135,10 @@
   cursor: pointer;
   margin-right: 8px;
   transition: background-color 0.3s;
+    width: auto;
+  justify-self: start;
+  min-width: fit-content;
+  white-space: nowrap;
 }
 
 .btn-editar:hover {
@@ -142,6 +153,10 @@
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s;
+    width: auto;
+  justify-self: start;
+  min-width: fit-content;
+  white-space: nowrap;
 }
 
 .btn-eliminar:hover {

@@ -108,6 +108,24 @@ const DatosPersonales = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validar campos requeridos
+    if (!formData.nombre.trim()) {
+      setUiState(prev => ({
+        ...prev,
+        message: { text: '❌ El nombre es requerido', type: 'error' }
+      }));
+      return;
+    }
+
+    if (formData.cedula && formData.cedula.length < 11) {
+      setUiState(prev => ({
+        ...prev,
+        message: { text: '❌ La cédula debe tener al menos 11 dígitos', type: 'error' }
+      }));
+      return;
+    }
+
     try {
       setUiState(prev => ({ ...prev, message: { text: 'Guardando...', type: 'info' } }));
       

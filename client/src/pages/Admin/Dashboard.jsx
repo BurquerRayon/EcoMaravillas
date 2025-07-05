@@ -13,7 +13,14 @@ const Dashboard = () => {
           <FaUser className="icon" />
           <h3>Gestión de Usuarios</h3>
           <p>Administra los perfiles de usuarios registrados.</p>
-          <Link to="/admin/usuarios" className="btn-dashboard">Ir</Link>
+          <Link to="/admin/gestion-clientes" className="btn-dashboard">Ir</Link>
+        </div>
+
+        <div className="dashboard-card">
+          <FaUser className="icon" />
+          <h3>Gestión de Empleados</h3>
+          <p>Administra los perfiles de empleados del parque.</p>
+          <Link to="/admin/gestion-empleados" className="btn-dashboard">Ir</Link>
         </div>
 
         <div className="dashboard-card">

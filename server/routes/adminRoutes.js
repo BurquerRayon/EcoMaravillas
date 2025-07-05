@@ -21,6 +21,184 @@ const mapearRol = (idRol) => {
 router.get('/stats', obtenerEstadisticas);
 
 // ============================
+// Rutas para gestión de empleados
+// ============================
+
+// Obtener todos los empleados
+router.get('/empleados', async (req, res) => {
+  try {
+    await poolConnect;
+    const result = await pool.request().query(`
+      SELECT 
+        P.id_personal,
+        P.id_usuario,
+        P.especialidad,
+        P.fecha_contratacion,
+        P.numero_licencia,
+        P.turno,
+        Pe.nombre,
+        U.correo
+      FROM Personal P
+      JOIN Usuario U ON P.id_usuario = U.id_usuario
+      JOIN Persona Pe ON U.id_persona = Pe.id_persona
+      ORDER BY Pe.nombre
+    `);
+    res.status(200).json(result.recordset);
+  } catch (err) {
+    console.error('Error al obtener empleados:', err);
+    res.status(500).json({ message: 'Error al obtener los empleados' });
+  }
+});
+
+// Obtener usuarios con rol de empleado que no están en la tabla Personal
+router.get('/usuarios-empleados', async (req, res) => {
+  try {
+    await poolConnect;
+    const result = await pool.request().query(`
+      SELECT 
+        U.id_usuario,
+        U.correo,
+        P.nombre
+      FROM Usuario U
+      JOIN Persona P ON U.id_persona = P.id_persona
+      WHERE U.id_rol = 2 
+      AND U.id_usuario NOT IN (SELECT id_usuario FROM Personal WHERE id_usuario IS NOT NULL)
+      ORDER BY P.nombre
+    `);
+    res.status(200).json(result.recordset);
+  } catch (err) {
+    console.error('Error al obtener usuarios empleados:', err);
+    res.status(500).json({ message: 'Error al obtener usuarios empleados' });
+  }
+});
+
+// Crear nuevo empleado
+router.post('/empleados', async (req, res) => {
+  const { id_usuario, especialidad, fecha_contratacion, numero_licencia, turno } = req.body;
+  
+  if (!id_usuario || !especialidad || !fecha_contratacion || !numero_licencia || !turno) {
+    return res.status(400).json({ message: 'Faltan datos requeridos' });
+  }
+
+  try {
+    await poolConnect;
+
+    // Verificar si el usuario ya tiene un registro en Personal
+    const existe = await pool.request()
+      .input('id_usuario', id_usuario)
+      .query('SELECT * FROM Personal WHERE id_usuario = @id_usuario');
+
+    if (existe.recordset.length > 0) {
+      return res.status(400).json({ message: 'El usuario ya tiene un perfil de empleado' });
+    }
+
+    // Verificar si el número de licencia ya existe
+    const licenciaExiste = await pool.request()
+      .input('numero_licencia', numero_licencia)
+      .query('SELECT * FROM Personal WHERE numero_licencia = @numero_licencia');
+
+    if (licenciaExiste.recordset.length > 0) {
+      return res.status(400).json({ message: 'El número de licencia ya está en uso' });
+    }
+
+    await pool.request()
+      .input('id_usuario', id_usuario)
+      .input('especialidad', especialidad)
+      .input('fecha_contratacion', fecha_contratacion)
+      .input('numero_licencia', numero_licencia)
+      .input('turno', turno)
+      .query(`
+        INSERT INTO Personal (id_usuario, especialidad, fecha_contratacion, numero_licencia, turno)
+        VALUES (@id_usuario, @especialidad, @fecha_contratacion, @numero_licencia, @turno)
+      `);
+
+    res.status(201).json({ message: 'Empleado creado correctamente' });
+
+  } catch (err) {
+    console.error('Error al crear empleado:', err);
+    res.status(500).json({ message: 'Error interno del servidor' });
+  }
+});
+
+// Actualizar empleado
+router.put('/empleados/:id', async (req, res) => {
+  const id_personal = req.params.id;
+  const { id_usuario, especialidad, fecha_contratacion, numero_licencia, turno } = req.body;
+
+  try {
+    await poolConnect;
+
+    // Verificar si el empleado existe
+    const empleado = await pool.request()
+      .input('id_personal', id_personal)
+      .query('SELECT * FROM Personal WHERE id_personal = @id_personal');
+
+    if (empleado.recordset.length === 0) {
+      return res.status(404).json({ message: 'Empleado no encontrado' });
+    }
+
+    // Verificar si el número de licencia ya existe en otro empleado
+    const licenciaExiste = await pool.request()
+      .input('numero_licencia', numero_licencia)
+      .input('id_personal', id_personal)
+      .query('SELECT * FROM Personal WHERE numero_licencia = @numero_licencia AND id_personal != @id_personal');
+
+    if (licenciaExiste.recordset.length > 0) {
+      return res.status(400).json({ message: 'El número de licencia ya está en uso' });
+    }
+
+    await pool.request()
+      .input('id_personal', id_personal)
+      .input('id_usuario', id_usuario)
+      .input('especialidad', especialidad)
+      .input('fecha_contratacion', fecha_contratacion)
+      .input('numero_licencia', numero_licencia)
+      .input('turno', turno)
+      .query(`
+        UPDATE Personal 
+        SET id_usuario = @id_usuario, especialidad = @especialidad, 
+            fecha_contratacion = @fecha_contratacion, numero_licencia = @numero_licencia, 
+            turno = @turno
+        WHERE id_personal = @id_personal
+      `);
+
+    res.status(200).json({ message: 'Empleado actualizado correctamente' });
+
+  } catch (err) {
+    console.error('Error al actualizar empleado:', err);
+    res.status(500).json({ message: 'Error al actualizar el empleado' });
+  }
+});
+
+// Eliminar empleado
+router.delete('/empleados/:id', async (req, res) => {
+  const id_personal = parseInt(req.params.id);
+
+  try {
+    await poolConnect;
+
+    // Verificar si el empleado existe
+    const empleado = await pool.request()
+      .input('id_personal', id_personal)
+      .query('SELECT * FROM Personal WHERE id_personal = @id_personal');
+
+    if (empleado.recordset.length === 0) {
+      return res.status(404).json({ message: 'Empleado no encontrado' });
+    }
+
+    await pool.request()
+      .input('id_personal', id_personal)
+      .query('DELETE FROM Personal WHERE id_personal = @id_personal');
+
+    res.status(200).json({ message: 'Empleado eliminado correctamente' });
+
+  } catch (err) {
+    console.error('Error al eliminar empleado:', err);
+    res.status(500).json({ message: 'Error interno del servidor' });
+  }
+});
+
+// ============================
 // Obtener todos los usuarios
 // ============================
 router.get('/usuarios', async (req, res) => {
