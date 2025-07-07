@@ -3,6 +3,7 @@ import axios from "axios";
 import "../../styles/PersonalMantenimiento.css";
 import { useNavigate } from "react-router-dom";
 
+//nuevo
 // Componente de la página de PersonalMantenimiento
 const PersonalMantenimiento = () => {
   const [actividades, setActividades] = useState([]);

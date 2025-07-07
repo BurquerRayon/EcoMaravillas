@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/ReporteActividades.css";
 
+// Componente de la página de ReporteActividades
 const ReporteActividades = () => {
   const navigate = useNavigate();
   const [actividades, setActividades] = useState([]);
