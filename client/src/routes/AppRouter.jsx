@@ -32,7 +32,6 @@ import Dashboard from "../pages/Admin/Dashboard";
 import GestionReservasAdmin from "../pages/Admin/AdminReservas";
 import GestionUsuarios from "../pages/Admin/GestionUsuarios";
 import GestionClientes from "../pages/Admin/GestionClientes";
-import GestionEmpleados from "../pages/Admin/GestionEmpleados";
 import ConfigA from "../pages/Admin/Config";
 //admins Config
 import AtraccionesConfig from "../pages/Admin/Config/Atracciones";
