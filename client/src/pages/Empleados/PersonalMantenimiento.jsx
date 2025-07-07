@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../../styles/PersonalMantenimiento.css";
+import { useNavigate } from "react-router-dom";
 
 // Componente de la página de PersonalMantenimiento
 const PersonalMantenimiento = () => {
   const [actividades, setActividades] = useState([]);
   const [personal, setPersonal] = useState([]); // Lista de empleados de mantenimiento
+  const navigate = useNavigate();
   const [nuevaActividad, setNuevaActividad] = useState({
     titulo: "",
     descripcion: "",
@@ -127,34 +129,15 @@ const PersonalMantenimiento = () => {
         </select>
 
         <button onClick={agregarActividad}>Agregar</button>
-      </div>
-
-      <div className="lista-actividades">
-        <h3>Actividades Programadas</h3>
-        {actividades.map((a) => (
-          <div key={a.id} className="actividad-card">
-            <h4>{a.titulo}</h4>
-            <p>{a.descripcion}</p>
-            <p>
-              <b>Fecha:</b> {a.fecha} <b>Hora:</b> {a.hora}
-            </p>
-            <p>
-              <b>Frecuencia:</b> {a.frecuencia}
-            </p>
-            <p>
-              <b>Responsables:</b> {getResponsableNombres(a.responsables)}
-            </p>
-            <p>
-              <b>Estado:</b> {a.estado}
-            </p>
-            {a.estado === "pendiente" && (
-              <button onClick={() => marcarComoCompletado(a.id)}>
-                Marcar como completada
-              </button>
-            )}
-            <button onClick={() => eliminarActividad(a.id)}>Eliminar</button>
-          </div>
-        ))}
+        <button
+          onClick={() => {
+            localStorage.setItem("actividades", JSON.stringify(actividades));
+            localStorage.setItem("personal", JSON.stringify(personal));
+            navigate("/Employee/ReporteActividades");
+          }}
+        >
+          Ver reporte
+        </button>
       </div>
     </div>
   );
