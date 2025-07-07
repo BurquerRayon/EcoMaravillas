@@ -1,6 +1,8 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "../context/AuthContext";
+
+//Homes
 //Homes
 import Home from "../pages/Home/Home";
 import HomeClient from "../pages/Home/HomeClient";
@@ -19,13 +21,17 @@ import Verify from "../pages/Verify";
 //Empleados
 import ReportesE from "../pages/Empleados/Reports";
 import GestionReservasE from "../pages/Empleados/GestionReservas";
+import PersonalMantenimiento from "../pages/Empleados/PersonalMantenimiento";
+import Contable from "../pages/Empleados/Contable";
+import GuiaTuristico from "../pages/Empleados/GuiaTuristico";
+
 //admins
 import ReportesA from "../pages/Admin/ReportsAdmin";
 import Dashboard from "../pages/Admin/Dashboard";
 import GestionReservasAdmin from "../pages/Admin/AdminReservas";
 import GestionUsuarios from "../pages/Admin/GestionUsuarios";
+import GestionUsuarios from "../pages/Admin/GestionUsuarios";
 import GestionClientes from '../pages/Admin/GestionClientes';
-import GestionEmpleados from '../pages/Admin/GestionEmpleados';
 import ConfigA from "../pages/Admin/Config";
 //admins Config
 import AtraccionesConfig from "../pages/Admin/Config/Atracciones";
@@ -68,6 +74,12 @@ const AppRouter = () => {
           {/* Rutas de Empleados */}
           <Route path="/Employee/reportes" element={<ReportesE />} />
           <Route path="/Employee/reservas" element={<GestionReservasE />} />
+          <Route
+            path="/Employee/PersonalMantenimiento"
+            element={<PersonalMantenimiento />}
+          />
+          <Route path="/Employee/Contable" element={<Contable />} />
+          <Route path="/Employee/GuiaTuristico" element={<GuiaTuristico />} />
 
           {/* Rutas de administrador */}
           <Route path="/admin/config" element={<ConfigA />} />
@@ -75,8 +87,9 @@ const AppRouter = () => {
           <Route path="/admin/Reservas" element={<GestionReservasAdmin />} />
           <Route path="/admin/reportes" element={<ReportesA />} />
           <Route path="/admin/usuarios" element={<GestionUsuarios />} />
-              <Route path="/admin/gestion-clientes" element={<GestionClientes />} />
-              <Route path="/admin/gestion-empleados" element={<GestionEmpleados />} />
+          <Route path="/admin/gestion-clientes" element={<GestionClientes />} />
+          <Route path="/admin/gestion-empleados" element={<GestionEmpleados />} />
+
           {/* Rutas de COnfig-administrador */}
           <Route path="/admin/ajustes/roles" element={<RolesConfig />} />
           <Route path="/admin/ajustes/permisos" element={<PermisosConfig />} />
