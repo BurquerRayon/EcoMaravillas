@@ -92,10 +92,8 @@ const AppRouter = () => {
           <Route path="/admin/Reservas" element={<GestionReservasAdmin />} />
           <Route path="/admin/reportes" element={<ReportesA />} />
           <Route path="/admin/usuarios" element={<GestionUsuarios />} />
-          <Route path="/admin/GestionClientes" element={<GestionClientes />} />
-          <Route
-            path="/admin/GestionEmpleados"
-            element={<GestionEmpleados />}
+          <Route path="/admin/gestion-clientes" element={<GestionClientes />} />
+          <Route path="/admin/gestion-empleados" element={<GestionEmpleados />}
           />
 
           {/* Rutas de COnfig-administrador */}
