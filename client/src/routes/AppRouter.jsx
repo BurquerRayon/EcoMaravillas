@@ -76,14 +76,8 @@ const AppRouter = () => {
           <Route path="/home/HomeEmployee" element={<HomeEmployee />} />
           <Route path="/Employee/reportes" element={<ReportesE />} />
           <Route path="/Employee/reservas" element={<GestionReservasE />} />
-          <Route
-            path="/Employee/PersonalMantenimiento"
-            element={<PersonalMantenimiento />}
-          />
-          <Route
-            path="/Employee/ReporteActividades"
-            element={<ReporteActividades />}
-          />
+          <Route path="/Employee/PersonalMantenimiento" element={<PersonalMantenimiento />}/>
+          <Route path="/Employee/ReporteActividades" element={<ReporteActividades />}/>
           <Route path="/Employee/Contable" element={<Contable />} />
           <Route path="/Employee/GuiaTuristico" element={<GuiaTuristico />} />
 
@@ -93,29 +87,17 @@ const AppRouter = () => {
           <Route path="/admin/Reservas" element={<GestionReservasAdmin />} />
           <Route path="/admin/reportes" element={<ReportesA />} />
           <Route path="/admin/usuarios" element={<GestionUsuarios />} />
-          <Route path="/admin/GestionClientes" element={<GestionClientes />} />
-          <Route
-            path="/admin/GestionEmpleados"
-            element={<GestionEmpleados />}
-          />
+          <Route path="/admin/gestion-clientes" element={<GestionClientes />} />
+          <Route path="/admin/gestion-empleados" element={<GestionEmpleados />} />
 
-          {/* Rutas de COnfig-administrador */}
+          {/* Rutas de Config-administrador */}
           <Route path="/admin/ajustes/roles" element={<RolesConfig />} />
           <Route path="/admin/ajustes/permisos" element={<PermisosConfig />} />
-          <Route
-            path="/admin/ajustes/atracciones"
-            element={<AtraccionesConfig />}
-          />
+          <Route path="/admin/ajustes/atracciones" element={<AtraccionesConfig />} />
           <Route path="/admin/ajustes/monedas" element={<MonedasConfig />} />
           <Route path="/admin/ajustes/reportes" element={<ReportesConfig />} />
-          <Route
-            path="/admin/ajustes/nacionalidades"
-            element={<NacionalidadesConfig />}
-          />
-          <Route
-            path="/admin/ajustes/configuracionhoras"
-            element={<ConfigHoras />}
-          />
+          <Route path="/admin/ajustes/nacionalidades" element={<NacionalidadesConfig />} />
+          <Route path="/admin/ajustes/configuracionhoras" element={<ConfigHoras />} />
 
           {/* Rutas de Paginas Home */}
           <Route path="/home/client" element={<HomeClient />} />
@@ -136,15 +118,11 @@ const AppRouter = () => {
           <Route path="/cliente/pago/:id_reserva" element={<ClientePago />} />
 
           {/* Rutas de Config Cliente */}
-          <Route
-            path="/cliente/config/datos-personales"
-            element={<DatosPC />}
+          <Route path="/cliente/config/datos-personales" element={<DatosPC />}
           />
           {/* <Route path="/cliente/config/contacto" element={<ContactoForm />} /> */}
           <Route path="/cliente/config/bancaria" element={<BancariaForm />} />
-          <Route
-            path="/cliente/config/documentos"
-            element={<DocumentosForm />}
+          <Route path="/cliente/config/documentos" element={<DocumentosForm />}
           />
 
           {/* Ruta para errores 404 */}
