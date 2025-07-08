@@ -4,7 +4,10 @@ import Carrusel from "../../components/Carousel";
 import "../../styles/Gallery.css";
 import Footer from "../../components/Footer";
 import "../../styles/Footer.css";
-
+/**
+ *
+ * @returns
+ */
 const Galeria = () => {
   const [filtroEspecie, setFiltroEspecie] = useState("");
   const [filtroHabitat, setFiltroHabitat] = useState("");
