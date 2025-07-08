@@ -1,3 +1,31 @@
+.menu-opciones-container {
+  padding: 30px;
+  text-align: center;
+}
+
+.opciones-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.opcion-btn {
+  padding: 16px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  background-color: #3b82f6;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.opcion-btn:hover {
+  background-color: #2563eb;
+}
+
+/*
 .home-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -42,5 +70,4 @@
     .home-container li {
       font-size: 1rem;
     }
-  }
-  
+  } */

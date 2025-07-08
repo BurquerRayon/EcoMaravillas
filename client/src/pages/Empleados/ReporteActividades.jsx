@@ -59,7 +59,7 @@ const ReporteActividades = () => {
   return (
     <div className="reporte-container">
       <h2>Reporte de Actividades de Mantenimiento</h2>
-      <button onClick={() => navigate(-1)}>← Volver</button>
+      <button onClick={() => navigate(-1)} className="boton-volver">← Volver</button>
 
       <table className="reporte-tabla">
         <thead>

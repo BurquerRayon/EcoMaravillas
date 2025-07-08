@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Carrusel from "../../components/Carousel";
 import "../../styles/Gallery.css";
 import Footer from "../../components/Footer";
@@ -10,6 +10,17 @@ const Galeria = () => {
   const [filtroHabitat, setFiltroHabitat] = useState("");
   const [especieSeleccionada, setEspecieSeleccionada] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const desde = location.state?.from;
+  const handleVolver = () => {
+    if (desde === "HomeEmployee") {
+      navigate("/home/HomeEmployee");
+    } else if (desde === "HomeClient") {
+      navigate("/home/HomeClient");
+    } else {
+      navigate("/");
+    }
+  };
   const [tarjetaExpandida, setTarjetaExpandida] = useState(null); //estado para mostrar caracteristica//
   const [imagenesMezcladas, setImagenesMezcladas] = useState([]);
 
@@ -895,7 +906,7 @@ const Galeria = () => {
     <div className="page-wrapper">
       <main className="content">
         <div className="galeria-container">
-          <button className="btn-salir" onClick={() => navigate("/")}>
+          <button className="btn-salir" onClick={handleVolver}>
             ← Volver al Inicio
           </button>
 

@@ -1,4 +1,22 @@
 /*  css reporte actividades */
+
+.boton-volver {
+  background-color:rgb(34, 167, 85); /* azul oscuro */
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  width: auto;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-bottom: 12px;
+  transition: background-color 0.3s ease;
+}
+
+.boton-volver:hover {
+  background-color: #3730a3; /* azul más oscuro */
+}
+
 .reporte-container {
   padding: 20px;
 }

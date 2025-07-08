@@ -5,12 +5,15 @@ import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import axios from 'axios';
 import '../../styles/HomeClient.css';
+import { useNavigate } from "react-router-dom";
+
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const HomeClient = () => {
   const { user } = useAuth();
   const [atraccionesData, setAtraccionesData] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios.get('http://localhost:3001/api/admin/stats')
@@ -74,8 +77,8 @@ const HomeClient = () => {
           <h3>Ver Mapa</h3>
           <p>Descubre hábitats y atracciones disponibles.</p>
         </div>
-
-        <div className="cliente-card" onClick={() => window.location.href = '/gallery'}>
+       
+        <div className="cliente-card" onClick={() => navigate('/Gallery', { state: { from: 'HomeClient' } })}>
           <FaImages className="icono-card" />
           <h3>Galería de Especies</h3>
           <p>Observa la fauna y flora destacada de la reserva.</p>
