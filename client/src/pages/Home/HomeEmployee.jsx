@@ -1,7 +1,7 @@
 import React from "react";
 import "../../styles/Home.css";
 import { useNavigate } from "react-router-dom";
-
+/**/
 const HomeEmployee = () => {
   console.log("Entrando al menú de empleados...");
   const navigate = useNavigate();
