@@ -11,9 +11,9 @@ function obtenerBloqueHorario(hora) {
   return `${inicio} - ${fin}`;
 }
 
-// ============================
-// POST /crear
-// ============================
+// ==================================================================================
+// POST /crear  Logica Para - crear una nueva reserva - ReservasCliente.jsx
+// ==================================================================================
 router.post('/crear', async (req, res) => {
   const { id_turista, detalles } = req.body;
 
@@ -133,9 +133,9 @@ router.post('/crear', async (req, res) => {
   }
 });
 
-// ============================
-// PUT /editar/:id_reserva
-// ============================
+// ==================================================================================
+// PUT /editar/:id_reserva - Logica para editar una reserva - ReservasCliente.jsx
+// ==================================================================================
 router.put('/editar/:id_reserva', async (req, res) => {
   const { id_reserva } = req.params;
   const { id_turista, detalles } = req.body;
@@ -279,12 +279,9 @@ router.put('/editar/:id_reserva', async (req, res) => {
   }
 });
 
-module.exports = router;
-
-
-// ============================
-// Ruta para cancelar reserva
-// ============================
+// =====================================================================================
+// Ruta para cancelar reserva - Logica para Cancelar una reserva - ReservasCliente.jsx
+// =====================================================================================
 router.put('/cancelar/:id_reserva', async (req, res) => {
   const { id_reserva } = req.params;
   
@@ -320,7 +317,9 @@ router.put('/cancelar/:id_reserva', async (req, res) => {
   }
 });
 
-// Ruta para obtener detalles de una reserva específica
+// ============================================================================
+// Ruta para obtener detalles de una reserva específica - ReservasCliente.jsx
+// ============================================================================
 router.get('/:id_reserva/detalles', async (req, res) => {
   const { id_reserva } = req.params;
   
@@ -354,9 +353,9 @@ router.get('/:id_reserva/detalles', async (req, res) => {
   }
 });
 
-//======================================================================
-// Obtener todas las reservas con detalles y nombre del cliente
-//======================================================================
+//===================================================================================
+// Obtener todas las reservas con detalles y nombre del cliente - AdminReservas.jsx
+//====================================================================================
 router.get('/admin', async (req, res) => {
   try {
     await poolConnect;
@@ -387,7 +386,9 @@ router.get('/admin', async (req, res) => {
   }
 });
 
-// Ruta para obtener información básica de una reserva
+//==========================================================================================
+// Ruta obtener información de una reserva lo que permite su edicion - ReservasCliente.jsx
+//==========================================================================================
 router.get('/:id_reserva', async (req, res) => {
   const { id_reserva } = req.params;
   
@@ -418,10 +419,10 @@ router.get('/:id_reserva', async (req, res) => {
   }
 });
 
-// =============================================
-// Obtener historial de reservas por id_turista
-// =============================================
-// Modificar la ruta GET /turista/:id_turista
+// =========================================================================================================================================================
+// Obtener historial de reservas de cada turista asi como tambien funciona como filtro para las reservas entre usuarios Turistas y las compara entre si
+// - HistorialReservas.jsx y - ReservasCliente.jsx
+// =========================================================================================================================================================
 router.get('/turista/:id_turista', async (req, res) => {
   const { id_turista } = req.params;
   const { completo, fechaDesde, fechaHasta, estado, id_atraccion, atraccion } = req.query;
@@ -487,9 +488,9 @@ router.get('/turista/:id_turista', async (req, res) => {
   }
 });
 
-// ===============================
-// Cambiar estado de una reserva
-// ===============================
+// =====================================================================================
+// Cambiar estado de una reserva por parte del administrador - AdminReservas.jsx
+// =====================================================================================
 router.put('/estado/:id', async (req, res) => {
   const { id } = req.params;
   const { estado } = req.body;
