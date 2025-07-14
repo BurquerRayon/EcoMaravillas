@@ -34,9 +34,10 @@ import GestionUsuarios from "../pages/Admin/GestionUsuarios";
 import GestionClientes from "../pages/Admin/GestionClientes";
 import GestionEmpleados from "../pages/Admin/GestionEmpleados";
 import ConfigA from "../pages/Admin/Config";
+
 //admins Config
 import AtraccionesConfig from "../pages/Admin/Config/Atracciones";
-import MonedasConfig from "../pages/Admin/Config/Monedas";
+
 import NacionalidadesConfig from "../pages/Admin/Config/Nacionalidades";
 import PermisosConfig from "../pages/Admin/Config/Permisos";
 import RolesConfig from "../pages/Admin/Config/Roles";
@@ -91,12 +92,8 @@ const AppRouter = () => {
           <Route path="/admin/gestion-empleados" element={<GestionEmpleados />} />
 
           {/* Rutas de Config-administrador */}
-          <Route path="/admin/ajustes/roles" element={<RolesConfig />} />
-          <Route path="/admin/ajustes/permisos" element={<PermisosConfig />} />
           <Route path="/admin/ajustes/atracciones" element={<AtraccionesConfig />} />
-          <Route path="/admin/ajustes/monedas" element={<MonedasConfig />} />
           <Route path="/admin/ajustes/reportes" element={<ReportesConfig />} />
-          <Route path="/admin/ajustes/nacionalidades" element={<NacionalidadesConfig />} />
           <Route path="/admin/ajustes/configuracionhoras" element={<ConfigHoras />} />
 
           {/* Rutas de Paginas Home */}
